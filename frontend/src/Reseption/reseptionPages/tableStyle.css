@@ -1,0 +1,69 @@
+.no {
+    width: 50px;
+}
+
+.date {
+    width: 100px;
+}
+
+.fish {
+    width: 200px !important;
+    text-align: left;
+}
+
+.id {
+    width: 100px !important;
+    text-align: center;
+}
+
+.turn {
+    width: 100px !important;
+    text-align: center;
+}
+
+.phone {
+    width: 150px !important;
+    text-align: center;
+}
+
+.section {
+    width: 140px !important;
+    text-align: center;
+}
+
+.edit {
+    width: 100px;
+    text-align: center !important;
+}
+
+.prices {
+    width: 100px !important;
+    text-align: center;
+}
+
+.position {
+    width: 150px !important;
+}
+
+a {
+    text-decoration: none !important;
+    color: #45D3D3;
+}
+
+.cek {
+    width: 100px !important;
+    text-align: center;
+}
+
+tr:nth-child(even) {
+    background-color: #eee;
+}
+
+td{
+    padding: 10px 0 !important;
+}
+
+td:nth-child(1) {
+    font-weight: 600;
+    text-align: center;
+}

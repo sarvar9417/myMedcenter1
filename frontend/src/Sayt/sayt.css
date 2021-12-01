@@ -1,0 +1,148 @@
+/*Islom*/
+* {
+    box-sizing: border-box;
+}
+
+.body {
+    background-color: #eee;
+    padding-bottom: 200px;
+    height: 100vh;
+}
+
+.header {
+    text-align: center;
+}
+
+.header>h1 {
+    padding: 2rem;
+}
+
+.links {
+    max-width: 1200px;
+    margin: auto;
+    display: -webkit-flex;
+    display: -ms-flex;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 2rem;
+}
+
+.links>a {
+    text-decoration: none;
+    color: black;
+}
+
+.link {
+    min-width: 300px;
+    max-width: 350px;
+    padding: 1.875rem;
+    box-shadow: 0 10px 20px 10px rgba(0, 0, 0, 0.05),
+        0 6px 6px rgba(0, 0, 0, 0.01);
+    position: relative;
+    overflow: hidden;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+
+.link::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+}
+
+.cyan::after {
+    background-color: hsl(180, 62%, 55%);
+}
+
+.red::after {
+    background-color: hsl(0, 78%, 62%);
+}
+
+.orange::after {
+    background-color: hsl(34, 97%, 64%);
+}
+
+.blue::after {
+    background-color: hsl(212, 86%, 64%);
+}
+
+.image>img {
+    width: 80px;
+    height: 80px;
+    display: block;
+    margin-left: auto;
+}
+
+.cyan,
+.orange {
+    transform: translateY(50%);
+}
+
+@media (max-width:1400px) {
+
+    .cyan,
+    .orange {
+        transform: translateY(50%);
+    }
+
+    .link {
+        width: 250px !important;
+    }
+}
+
+@media (max-width:992px) {
+    .link {
+        width: 200px !important;
+    }
+
+}
+
+@media (max-width: 767px) {
+    .body {
+        font-size: 92%;
+    }
+
+    .cyan,
+    .orange { 
+        transform: translateY(0);
+    }
+}
+
+/* Cards */
+
+.kards {
+    max-width: 1200px;
+    margin: auto;
+    margin-top: 50px;
+    display: flex;
+    gap: 2rem;
+}
+.kard {
+    min-width: 280px;
+    max-width: 350px;
+    padding-bottom: 10px;
+    box-shadow: 0 10px 20px 10px rgba(0, 0, 0, 0.05),
+        0 6px 6px rgba(0, 0, 0, 0.01);
+    position: relative;
+    overflow: hidden;
+    background-color: rgba(255, 255, 255, 0.5);
+}
+.kard::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 4px;
+}
+.dk::after {
+    background-color: hsl(212, 86%, 64%);
+}
+.text {
+    color: #fff;
+    text-align: center;
+    padding: 5px 0;
+} 

@@ -1,0 +1,376 @@
+@import url("https://fonts.googleapis.com/css?family=Montserrat:400,500,600,700,800,900");
+@import url("https://cdn.linearicons.com/free/1.0.0/icon-font.min.css");
+
+*{
+    box-sizing: border-box;
+}
+.wrapper h1,
+.wrapper h3 {
+    text-decoration: none;
+    padding: 10px;
+}
+
+body {
+    font-family: 'Montserrat', sans-serif;
+}
+
+.weather-card {
+    margin: 60px auto;
+    height: 450px;
+    width: 80%;
+    background: #fff;
+    box-shadow: 0 1px 38px rgba(0, 0, 0, 0.15), 0 5px 12px rgba(0, 0, 0, 0.25);
+    overflow: hidden;
+}
+
+.weather-card .top {
+    background-color: aqua;
+    position: relative;
+    height: 370px;
+    width: 100%;
+    overflow: hidden;
+    text-align: center;
+}
+
+.weather-card .top .wrapper {
+    padding: 30px;
+    position: relative;
+    z-index: 1;
+}
+
+.weather-card .top .wrapper .mynav {
+    height: 20px;
+}
+
+.weather-card .top .wrapper .mynav .lnr {
+    color: #fff;
+    font-size: 20px;
+}
+
+.weather-card .top .wrapper .mynav .lnr-chevron-left {
+    display: inline-block;
+    float: left;
+}
+
+.weather-card .top .wrapper .mynav .lnr-cog {
+    display: inline-block;
+    float: right;
+}
+
+.weather-card .top .wrapper .heading {
+    text-align: right;
+    font-weight: 400;
+    color: #fff;
+}
+
+.weather-card .top .wrapper .location {
+    font-size: 21px;
+    font-weight: 400;
+    color: #fff;
+}
+
+.weather-card .top .wrapper .temp {
+    margin-top: 20px;
+}
+
+.weather-card .top .wrapper .temp a {
+    text-decoration: none;
+    color: #fff;
+}
+
+.weather-card .top .wrapper .temp a .temp-type {
+    font-size: 85px;
+}
+
+.weather-card .top .wrapper .temp .temp-value {
+    display: inline-block;
+    font-size: 40px;
+    font-weight: 600;
+    color: #fff;
+}
+
+.weather-card .top .wrapper .temp .deg {
+    display: inline-block;
+    font-size: 35px;
+    font-weight: 600;
+    color: #fff;
+    vertical-align: top;
+    margin-top: 10px;
+}
+
+.weather-card .top:after {
+    content: "";
+    height: 100%;
+    width: 100%;
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    background: rgba(0, 0, 0, 0.5);
+}
+
+.weather-card .bottom {
+    padding: 0 30px;
+    background: #fff;
+    text-align: center;
+}
+
+.weather-card .bottom .wrapper .forecast {
+    overflow: hidden;
+    margin: 0;
+    font-size: 0;
+    padding: 0;
+    padding-top: 20px;
+    max-height: 155px;
+}
+
+.weather-card .bottom .wrapper .forecast a {
+    text-decoration: none;
+    color: #000;
+}
+
+.weather-card .bottom .wrapper .forecast .go-up {
+    text-align: center;
+    display: block;
+    font-size: 25px;
+    margin-bottom: 10px;
+}
+
+.weather-card .bottom .wrapper .forecast li {
+    display: block;
+    font-size: 25px;
+    font-weight: 400;
+    color: rgba(0, 0, 0, 0.25);
+    line-height: 1em;
+    margin-bottom: 30px;
+}
+
+.weather-card .bottom .wrapper .forecast li .date {
+    display: inline-block;
+}
+
+.weather-card .bottom .wrapper .forecast li .condition {
+    display: inline-block;
+    vertical-align: middle;
+    float: right;
+    font-size: 25px;
+}
+
+.weather-card .bottom .wrapper .forecast li .condition .temp {
+    display: inline-block;
+    vertical-align: top;
+    font-family: 'Montserrat', sans-serif;
+    font-size: 20px;
+    font-weight: 400;
+    padding-top: 2px;
+}
+
+.weather-card .bottom .wrapper .forecast li .condition .temp .deg {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    margin-left: 3px;
+    vertical-align: top;
+}
+
+.weather-card .bottom .wrapper .forecast li .condition .temp .temp-type {
+    font-size: 20px;
+}
+
+.weather-card .bottom .wrapper .forecast li.active {
+    color: rgba(0, 0, 0, 0.8);
+}
+
+.weather-card.rain .top {
+    background-color: rgb(0, 255, 76);
+
+}
+
+
+.gender {
+    border: 1px solid black;
+    width: 100px;
+    height: 20px;
+    background-color: rgb(236, 240, 6);
+}
+
+.table-box {
+    height: 60vh;
+    overflow: scroll;
+}
+
+
+
+.price {
+    font-weight: 700;
+    color: rgb(10, 149, 28) !important;
+    margin-left: 30px;
+    display: inline-block;
+}
+
+.price-right {
+    margin-right: 60px;
+}
+
+.dropdown-menu {
+    z-index: 20000 !important;
+}
+
+.cards h5 {
+    text-decoration: none !important;
+    color: #666;
+    text-transform: none !important;
+
+}
+
+
+
+/*-----------------
+	11. Login
+-----------------------*/
+
+.login-body {
+    display: table;
+    height: 100vh;
+    min-height: 100vh;
+}
+
+.login-wrapper {
+    width: 100%;
+    height: 100%;
+    display: table-cell;
+    vertical-align: middle;
+}
+
+.login-wrapper .loginbox {
+    background-color: #fff;
+    border-radius: 6px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    margin: 1.875rem auto;
+    max-width: 800px;
+    min-height: 500px;
+    width: 100%;
+}
+
+.login-wrapper .loginbox .login-left {
+    align-items: center;
+    background: linear-gradient(180deg, #1b5a90, #00d0f1);
+    border-radius: 6px 0 0 6px;
+    flex-direction: column;
+    justify-content: center;
+    width: 400px;
+    display: flex;
+}
+
+.login-wrapper .loginbox .login-right {
+    align-items: center;
+    display: flex;
+    justify-content: center;
+    padding: 40px;
+    width: 400px;
+}
+
+.login-wrapper .loginbox .login-right .login-right-wrap {
+    max-width: 100%;
+    flex: 0 0 100%;
+}
+
+.login-wrapper .loginbox .login-right h1 {
+    font-size: 26px;
+    font-weight: 500;
+    margin-bottom: 5px;
+    text-align: center;
+}
+
+.account-subtitle {
+    color: #4c4c4c;
+    font-size: 17px;
+    margin-bottom: 1.875rem;
+    text-align: center;
+}
+
+.login-wrapper .loginbox .login-right .forgotpass a {
+    color: #a0a0a0;
+}
+
+.login-wrapper .loginbox .login-right .forgotpass a:hover {
+    color: #333;
+    text-decoration: underline;
+}
+
+.login-wrapper .loginbox .login-right .dont-have {
+    color: #a0a0a0;
+    margin-top: 1.875rem;
+}
+
+.login-wrapper .loginbox .login-right .dont-have a {
+    color: #333;
+}
+
+.login-wrapper .loginbox .login-right .dont-have a:hover {
+    text-decoration: underline;
+}
+
+.social-login {
+    text-align: center;
+}
+
+.social-login>span {
+    color: #a0a0a0;
+    margin-right: 8px;
+}
+
+.social-login>a {
+    background-color: #ccc;
+    border-radius: 4px;
+    color: #fff;
+    display: inline-block;
+    font-size: 18px;
+    height: 32px;
+    line-height: 32px;
+    margin-right: 6px;
+    text-align: center;
+    width: 32px;
+}
+
+.social-login>a:last-child {
+    margin-right: 0;
+}
+
+.social-login>a.facebook {
+    background-color: #4b75bd;
+}
+
+.social-login>a.google {
+    background-color: #fe5240;
+}
+
+.login-or {
+    color: #a0a0a0;
+    margin-bottom: 20px;
+    margin-top: 20px;
+    padding-bottom: 10px;
+    padding-top: 10px;
+    position: relative;
+}
+
+.or-line {
+    background-color: #e5e5e5;
+    height: 1px;
+    margin-bottom: 0;
+    margin-top: 0;
+    display: block;
+}
+
+.span-or {
+    background-color: #fff;
+    display: block;
+    left: 50%;
+    margin-left: -20px;
+    position: absolute;
+    text-align: center;
+    text-transform: uppercase;
+    top: 0;
+    width: 42px;
+}

@@ -1,0 +1,68 @@
+.wrapper {
+  display: flex;
+}
+.input[type="radio"] {
+  display: none;
+}
+.label {
+  position: relative;
+  color: #0d6efd;
+  border: 2px solid #0d6efd;
+  padding: 5px 15px;
+  margin: 3px;
+  border-radius: 5px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: pointer;
+}
+.clabel {
+  color: #fff;
+  background-color: #0d6efd;
+  border-color: #0d6efd;
+}
+
+/* Form style */
+.input_box {
+  position: relative;
+}
+.inp{
+  width: 100%;
+  height: 40px;
+  font-weight: 400;
+  font-size: 15px;
+  border: 1px solid #999;
+  color: #222;
+}
+.inp::placeholder {
+  visibility: hidden;
+  font-weight: 400;
+  font-size: 13px;
+}
+.inp:focus{
+  outline: none;
+  border: 1px solid #2b6dd6;
+}
+.inp:focus::placeholder {
+  visibility: visible;
+  color: #2f2f2f;
+}
+.labels {
+  color:#555;
+  position: absolute;
+  pointer-events: none;
+  top: 14px;
+  left: 15px;
+  padding: 0 5px;
+  transition: .2s;
+  background: #fff;
+  padding: 0 5px;
+  margin-left: 5px;
+}
+
+.input_box .inp:valid ~ .labels {
+  top: -7px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
