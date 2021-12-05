@@ -40,7 +40,7 @@ export const EditClient = () => {
             })
         } catch (e) {
         }
-    }, [request, clientId])
+    }, [request, clientId, auth])
 
     const changeHandlar = event => {
         setForm({ ...form, [event.target.name]: event.target.value })
@@ -80,13 +80,11 @@ export const EditClient = () => {
             notify(error)
             clearError()
         }
-        if (form === '') {
-            if (form.firstname === "") {
-                getClient()
-            }
+        if (form.firstname === "") {
+            getClient()
         }
-        }, [error, clearError, getClient, form])
-    
+    }, [error, clearError, getClient, form])
+
     if (loading) {
         return <Loader />
     }
@@ -166,7 +164,6 @@ export const EditClient = () => {
                                                 for="ayol"
                                             >
                                                 Ayol
-                                                Ayol
                                             </label>
                                         </div>
                                     </div>
@@ -212,7 +209,7 @@ export const EditClient = () => {
                                 className="btn btn-primary profile-button"
                                 type="button"
                             >
-                                Save Profile
+                                O'zgartirishni saqlash
                             </button>
                         </div>
                     </div>

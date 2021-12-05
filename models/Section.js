@@ -3,6 +3,7 @@ const Joi = require('joi')
 
 const section = new Schema({
     client: { type: Types.ObjectId, ref: "Clients" },
+    connector: { type: Types.ObjectId, ref: "Connector" },
     name: { type: String, required: true },
     price: { type: Number, required: true },
     priceCashier: { type: Number, required: true },
@@ -23,6 +24,7 @@ const section = new Schema({
 function validateSection(section) {
     const schema = Joi.object({
         client: Joi.string(),
+        connector: Joi.string(),
         name: Joi.string(),
         price: Joi.number(),
         priceCashier: Joi.number(),

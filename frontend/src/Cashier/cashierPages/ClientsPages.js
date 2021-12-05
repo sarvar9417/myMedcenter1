@@ -19,11 +19,14 @@ export const ClientsPages = () => {
     const auth = useContext(AuthContext)
     const payment = ["to'langan", "to'lanmagan", "kutilmoqda"]
     const options = [
-        { value: 'all', label: 'Barcha' },
-        { value: 'offline', label: 'Offline' },
-        { value: 'online', label: 'Online' }
+        { value: 'all', label: 'Barchasi' },
+        { value: 'kutilmoqda', label: "Kutilayotgan" },
+        { value: "to'langan", label: "To'langan" },
+        { value: "to'lanmagan", label: "Rad etilgan" }
     ]
 
+    let paid = 0
+    let unpaid = 0
     let k = 0
     let kk = 0
     let position = "all"
@@ -87,7 +90,7 @@ export const ClientsPages = () => {
             setSections(c)
         } else {
             AllSections.map((section) => {
-                if (section.bron === event.value && setSortDate(section))
+                if (section.payment === event.value && setSortDate(section))
                     c.push(section)
             })
             setSections(c)
@@ -214,7 +217,7 @@ export const ClientsPages = () => {
 
             </div>
             <div>
-                <div style={{ minWidth: "1000px" }} >
+                <div style={{ minWidth: "1300px" }} >
                     <table id="" className="table-striped table-hover" style={{ borderBottom: "1px solid #aaa", marginBottom: "10px" }} >
                         <thead>
                             <tr>
@@ -227,28 +230,32 @@ export const ClientsPages = () => {
                                 <th scope="" className="edit text-center">Tahrirlash <FontAwesomeIcon icon={faSort} /></th>
                                 <th scope="" className="prices text-center">To'lov <FontAwesomeIcon icon={faSort} /></th>
                                 <th scope="" className="cek text-center"> Summasi <FontAwesomeIcon icon={faSort} /></th>
+                                <th scope="" className="cek text-center"> To'langan <FontAwesomeIcon icon={faSort} /></th>
+                                <th scope="" className="cek text-center"> Qoldiq <FontAwesomeIcon icon={faSort} /></th>
                             </tr>
                         </thead>
                     </table>
                 </div>
             </div>
 
-            <div className="overflow-auto" style={{ height: "70vh", minWidth: "1000px" }}>
+            <div className="overflow-auto" style={{ height: "59vh", minWidth: "1300px" }}>
                 <table className=" table-hover"  >
                     <tbody className="" >
                         {sections.map((section, key) => {
                             return AllClients.map(client => {
                                 if (client._id === section.client) {
+                                    paid = paid + section.priceCashier
+                                    unpaid = unpaid + (section.price - section.priceCashier)
                                     k++
                                     return (
                                         <tr key={key} >
                                             <td className="no" >{k}</td>
                                             <td className="date" >{new mongoose.Types.ObjectId(client._id).getTimestamp().toLocaleDateString()}</td>
-                                            <td className="fish text-uppercase" ><Link style={{ fontWeight: "500" }} to={`/cashier/pay/${client._id}`} > {client.lastname} {client.firstname} {client.fathername} </Link></td>
+                                            <td className="fish text-uppercase" ><Link style={{ fontWeight: "500" }} to={`/cashier/pay/${client._id}/${section.connector}`} > {client.lastname} {client.firstname} {client.fathername} </Link></td>
                                             <td className="id" >{client.id}</td>
                                             <td className="phone">+{client.phone}</td>
-                                            <td className="section text-uppercase"> <Link to={`/reseption/clienthistory/${section._id}`} style={{ color: "#00aa00", fontWeight: "600" }} > {section.name} </Link></td>
-                                            <td className="edit"> <Link to={`/cashier/pay/${client._id}`} > <FontAwesomeIcon icon={faPenAlt} className="text-dark" /> </Link>  </td>
+                                            <td className="section text-uppercase fw-bold text-success">  {section.name}</td>
+                                            <td className="edit"> <Link to={`/cashier/payedit/${client._id}/${section.connector}`} > <FontAwesomeIcon icon={faPenAlt} className="text-dark" /> </Link>  </td>
                                             <td className={
                                                 payment.map((pay) => {
                                                     if (pay === "to'langan" && section.payment === "to'langan") {
@@ -276,7 +283,9 @@ export const ClientsPages = () => {
                                                     })
                                                 }
                                             </td>
-                                            <td className="cek"> {section.price}</td>
+                                            <td className="cek fw-bold"> {section.payment === "to'lanmagan" ? "" : section.price}</td>
+                                            <td className="cek fw-bold text-success"> {section.payment === "to'lanmagan" ? "" :section.priceCashier}</td>
+                                            <td className="cek fw-bold text-warning"> {section.payment === "to'lanmagan" ? "" :section.price - section.priceCashier}</td>
                                         </tr>
                                     )
                                 }
@@ -288,9 +297,35 @@ export const ClientsPages = () => {
                 </table>
             </div>
 
+            <div>
+                <div style={{ minWidth: "1300px" }} >
+                    <table id="" className="table-striped table-hover pt-2" style={{ borderBottom: "1px solid #aaa", marginBottom: "10px" }} >
+                        <tfooter>
+                            <tr className="mt-4">
+                                <th className="no" scope="" >Jami:</th>
+                                <th scope="" className="date text-center" ></th>
+                                <th scope="" className="fish text-center"></th>
+                                <th scope="" className="id text-center"></th>
+                                <th scope="" className="phone text-center"></th>
+                                <th scope="" className="section text-center"></th>
+                                <th scope="" className="edit text-center"> </th>
+                                <th scope="" className="prices text-center"> </th>
+                                <th scope="" className="cek text-center "> {unpaid + paid}</th>
+                                <th scope="" className="cek text-center text-success"> {paid} </th>
+                                <th scope="" className="cek text-center text-danger">  {unpaid} </th>
+                            </tr>
+                        </tfooter>
+                    </table>
+                </div>
+            </div>
+
+
+
+
+
             <div className="d-none" >
                 <table id="reseptionReport" className=" table-hover"  >
-                    <thead className="d-none ">
+                    <thead className=" ">
                         <tr>
                             <th className="no" scope="" >№ <FontAwesomeIcon icon={faSort} /> </th>
                             <th scope="" className="date text-center" >Kelgan vaqti <FontAwesomeIcon icon={faSort} /></th>
@@ -300,7 +335,8 @@ export const ClientsPages = () => {
                             <th scope="" className="phone text-center">Tel <FontAwesomeIcon icon={faSort} /></th>
                             <th scope="" className="section text-center">Bo'limi <FontAwesomeIcon icon={faSort} /></th>
                             <th scope="" className="prices text-center">To'lov <FontAwesomeIcon icon={faSort} /></th>
-                            <th scope="" className="prices text-center">To'lov summasi <FontAwesomeIcon icon={faSort} /></th>
+                            <th scope="" className="prices text-center">To'langan <FontAwesomeIcon icon={faSort} /></th>
+                            <th scope="" className="prices text-center">Qoldiq <FontAwesomeIcon icon={faSort} /></th>
                         </tr>
                     </thead>
                     <tbody className="" >
@@ -312,17 +348,18 @@ export const ClientsPages = () => {
                                         <tr key={key} >
                                             <td className="no" >{kk}</td>
                                             <td className="date" >{new mongoose.Types.ObjectId(client._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(client._id).getTimestamp().toLocaleTimeString()}</td>
-                                            <td className="fish text-uppercase" ><Link style={{ fontWeight: "500" }} to={`/reseption/clientallhistory/${client._id}`} > {client.lastname} {client.firstname} {client.fathername} </Link></td>
+                                            <td className="fish text-uppercase" > {client.lastname} {client.firstname} {client.fathername}</td>
                                             <td className="id" >{client.id}</td>
-                                            <td className="turn">{section.bron === "offline" ? section.turn : section.bron + " " + section.bronTime + " " + new Date(section.bronDay).toLocaleDateString()}</td>
+                                            <td className="turn">{section.bron === "offline" ? section.turn : section.bronTime + " " + new Date(section.bronDay).toLocaleDateString()}</td>
                                             <td className="phone">+{client.phone}</td>
-                                            <td className="section text-uppercase"> <Link to={`/reseption/clienthistory/${section._id}`} style={{ color: "#00aa00", fontWeight: "600" }} > {section.name} </Link></td>
-                                            <td className={section.payment === "to'langan" ? "text-success prices" : "text-danger prices "} >
-                                                {section.payment}
+                                            <td className="section text-uppercase">  {section.name} </td>
+                                            <td  >
+                                                {section.payment === "to'lanmagan" ? "" :section.price}
                                             </td>
-                                            <td className={section.payment === "to'langan" ? "text-success prices" : "text-danger prices "} >
-                                                {section.price}
+                                            <td >
+                                                {section.payment === "to'lanmagan" ? "" :section.priceCashier}
                                             </td>
+                                            <td className="cek fw-bold text-danger"> {section.payment === "to'lanmagan" ? "" :section.price - section.priceCashier}</td>
                                         </tr>
                                     )
                                 }
@@ -331,6 +368,14 @@ export const ClientsPages = () => {
                         }
                         )}
                     </tbody>
+                    <tfooter className=" ">
+                        <tr>
+                            <th className="no" colSpan="7" scope="" > Jami </th>
+                            <th scope="" className="prices text-center">{paid+unpaid}</th>
+                            <th scope="" className="prices text-center">{paid}</th>
+                            <th scope="" className="prices text-center">{unpaid}</th>
+                        </tr>
+                    </tfooter>
 
                 </table>
             </div>

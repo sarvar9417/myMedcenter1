@@ -6,8 +6,6 @@ import { AuthPage } from './reseptionPages/ReseptionAuth'
 import { Home } from './reseptionPages/Home'
 import { Sayt } from '../Sayt/sayt'
 import { EditClient } from './reseptionPages/EditClient'
-import { CreateCost } from './reseptionPages/CreateCost'
-import { CostsPages } from './reseptionPages/CostsPages'
 import { Reciept } from './reseptionPages/CreateCleint/Reciept'
 import { ClientsOnPages } from './reseptionPages/ClientsOnPages'
 import { CreateOnlineClient } from './reseptionPages/CreateOnlineClient'
@@ -34,17 +32,11 @@ export const ReseptionRoutes = (isAuthenticated) => {
                     <Route path="/reseption/onlineclients" >
                         <ClientsOnPages />
                     </Route>
-                    <Route path="/reseption/reciept/:id" >
+                    <Route path="/reseption/reciept/:id/:connector" >
                         <Reciept />
                     </Route>
                     <Route path="/reseption/edit/:id" >
                         <EditClient />
-                    </Route>
-                    <Route path="/reseption/cost" >
-                        <CreateCost />
-                    </Route>
-                    <Route path="/reseption/costs" >
-                        <CostsPages />
                     </Route>
                     <Route path="/reseption/clienthistory/:id" >
                         <ClientHistory />

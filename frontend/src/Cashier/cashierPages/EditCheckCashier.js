@@ -19,7 +19,7 @@ const customStyles = {
     },
 };
 
-export const CheckCashier = () => {
+export const EditCheckCashier = () => {
     const auth = useContext(AuthContext)
     const history = useHistory()
     const [modalIsOpen, setIsOpen] = useState(false);
@@ -65,9 +65,7 @@ export const CheckCashier = () => {
             })
             let s = []
             fetch.map((section) => {
-                if (section.payment === "kutilmoqda") {
                     s.push(section)
-                }
             })
             setSections(s)
         } catch (e) {
@@ -138,7 +136,6 @@ export const CheckCashier = () => {
         }
     }, [request])
 
-    const [printPage, setPrintPage] = useState(false) 
     const setPayments = () => {
         sections.map((section) => {
             patchPayments(section)
@@ -170,7 +167,6 @@ export const CheckCashier = () => {
     }, [getAllSections, getClient])
     return (
         <>
-        
             <div style={{ margin: "30px auto", maxWidth: "1000px", padding: "20px 10px", border: "1px solid #999", borderRadius: "5px" }}>
                 <div className="row" style={{ justifyContent: "space-between" }}>
                     <div className="col-sm-6 col-lg-4 input_box" >
@@ -227,7 +223,7 @@ export const CheckCashier = () => {
                                         <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{section.price}</td>
                                         <td style={{ width: "25%", padding: "10px 0" }}>
                                             <input onChange={event => inputPriceCashier(event, key)} value={section.priceCashier} type="number" className="form-control" style={{ width: "80%", margin: "auto", display: "inline" }} />
-                                            <input id={`checkbox${key}`} onChange={event => checkbox(event, key)} type="checkbox" className="check" style={{ position: "absolute" }} />
+                                            <input checked={section.price === section.priceCashier? true:false} id={`checkbox${key}`} onChange={event => checkbox(event, key)} type="checkbox" className="check" style={{ position: "absolute" }} />
                                         </td>
                                         <td style={{ width: "10%", textAlign: "center", padding: "10px 0", color: "red" }}>
                                             <div className="wrapper" style={{ justifyContent: "center" }}>

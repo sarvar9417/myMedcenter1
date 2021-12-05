@@ -1,6 +1,5 @@
 import { Link } from 'react-router-dom'
 import { Loading } from './Loading'
-import { Particle } from './Particle'
 import './sayt.css'
 import AOS from 'aos'
 import 'aos/dist/aos'
@@ -14,8 +13,9 @@ import { useEffect, useState } from 'react'
 
 export const Sayt = () => {
 
-    const [loader, setLoader] = useState(false)
+    const [loader, setLoader] = useState(true)
     useEffect(() => {
+            setLoader(false)
         AOS.init({
             duration: 2000
         })
@@ -29,7 +29,6 @@ export const Sayt = () => {
 
     return (
         <div className="body">
-            {/* <Particle />  */}
             <div className="header">
                 <h1>XALQ XIZMATI OLIY MAQSAD</h1>
             </div>
@@ -37,7 +36,7 @@ export const Sayt = () => {
                 <Link to="/reseption" data-aos="fade-right">
                     <article className="link cyan">
                         <div className="info">
-                            <h2>QABUL BO'LIMI</h2>
+                            <h2>QABUL</h2>
                             <p></p>
                         </div>
                         <div className="row">

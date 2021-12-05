@@ -1,12 +1,12 @@
 import React from 'react'
-
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
+import gif from '../../gif/4.gif'
 export const Loader = () => {
     return (
-        <div style={{textAlign:"center"}} className="m-5" >
-            <button className="btn btn-primary" type="button" disabled>
-                <span className="spinner-border spinner-border-sm" role="status" aria-hidden="true"></span>
-                <span className="visually-hidden">Loading...</span>
-            </button>
-        </div>
+        <>
+            <div className="m-auto text-center mt-5" >
+                <img alt="loader" style={{ marginTop: "14%" }} width="200px" src={gif} />
+            </div>
+        </>
     )
 }

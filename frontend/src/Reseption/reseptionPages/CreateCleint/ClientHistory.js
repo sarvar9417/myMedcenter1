@@ -49,7 +49,7 @@ export const ClientHistory = () => {
                 <div className="container p-3" style={{ fontFamily: "times" }}>
                     <div className="row">
                         <div className="col-12 p-t3">
-                            <h1 className="text-center" > HISTORY CLIENT</h1>
+                            <h1 className="text-center" > KASALLIK TARIXI</h1>
                         </div>
                         <hr style={{ border: "2px solid black" }} />
                     </div>

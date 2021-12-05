@@ -1,9 +1,9 @@
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
-import { useParams } from 'react-router-dom'
+import { useParams, useLocation } from 'react-router-dom'
 import { useReactToPrint } from 'react-to-print'
-import { Loader } from '../../components/Loader'
-import { AuthContext } from '../../context/AuthContext'
-import { useHttp } from '../../hooks/http.hook'
+import { Loader } from '../components/Loader'
+import { AuthContext } from '../context/AuthContext'
+import { useHttp } from '../hooks/http.hook'
 
 export const Reciept = () => {
     //Avtorizatsiyani olish
@@ -13,24 +13,17 @@ export const Reciept = () => {
         content: () => componentRef.current,
     })
     const clientId = useParams().id
-    const connectorId = useParams().connector
     const today = (new Date().getDate().toString() + "." + (new Date().getMonth() + 1).toString() + "." + new Date().getFullYear().toString() + " " + new Date().getHours().toString() + ":" + new Date().getMinutes().toString() + ":" + new Date().getSeconds().toString())
-    const [sections, setSections] = useState([])
+    const sections = useLocation().state
+
+    let unpaid = 0
+    let paid = 0
     let price = 0
     let k = 0
     let l = 0
     const [client, setClient] = useState('')
     const { loading, request } = useHttp()
 
-    const getSections = useCallback(async () => {
-        try {
-            const data = await request(`/api/section/reseptionid/${clientId}/${connectorId}`, 'GET', null, {
-                Authorization: `Bearer ${auth.token}`
-            })
-            setSections(data)
-        } catch (e) {
-        }
-    }, [request, clientId, auth])
 
     const getClient = useCallback(async () => {
         try {
@@ -42,20 +35,11 @@ export const Reciept = () => {
         }
     }, [request, clientId, auth])
 
-    useEffect(() => {
-
-        if (sections.length === 0) {
-            getSections()
-        }
-
-    }, [getSections, sections])
 
     useEffect(() => {
-
         if (client === '') {
             getClient()
         }
-
     }, [getClient, client])
 
     if (loading) {
@@ -108,25 +92,27 @@ export const Reciept = () => {
                                             <th className="text-center" style={{ fontSize: "10pt", fontFamily: "times" }}>Bo'lim</th>
                                             <th className="text-center" style={{ fontSize: "10pt", fontFamily: "times" }}>Navbat</th>
                                             <th className="text-center" style={{ fontSize: "10pt", fontFamily: "times" }}>To'lov miqdori</th>
+                                            <th className="text-center" style={{ fontSize: "10pt", fontFamily: "times" }}>To'langan</th>
+                                            <th className="text-center" style={{ fontSize: "10pt", fontFamily: "times" }}>To'lanmagan</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {
                                             sections.map((section) => {
+                                                paid = paid + section.priceCashier
+                                                section.payment === "to'lanmagan" ? unpaid = unpaid : unpaid = unpaid + (section.price - section.priceCashier)
+                                                k++
+                                                price = price + (section.price - section.priceCashier)
+                                                return (<tr>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }}>{k}</td>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.name}</td>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.bron === 'offline' ? section.turn : section.bronTime}</td>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.payment === "to'lanmagan" ? "Rad etilgan" : section.price}</td>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.payment === "to'lanmagan" ? "Rad etilgan" : section.priceCashier}</td>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center"> {section.payment === "to'lanmagan" ? "Rad etilgan" : section.price - section.priceCashier}</td>
+                                                </tr>
+                                                )
 
-                                                if (
-                                                    section.payment === 'kutilmoqda'
-                                                ) {
-                                                    k++
-                                                    price = price + (section.price - section.priceCashier)
-                                                    return (<tr>
-                                                        <td style={{ fontSize: "10pt", fontFamily: "times" }}>{k}</td>
-                                                        <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.name}</td>
-                                                        <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.bron === 'offline' ? section.turn : section.bronTime}</td>
-                                                        <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.price - section.priceCashier}</td>
-                                                    </tr>
-                                                    )
-                                                }
                                             })
 
                                         }
@@ -138,7 +124,9 @@ export const Reciept = () => {
                                             <th style={{ fontSize: "10pt", fontFamily: "times" }} className="text-right"></th>
                                             <th style={{ fontSize: "10pt", fontFamily: "times" }} className="text-right"></th>
                                             <th style={{ fontSize: "10pt", fontFamily: "times" }} className="text-right">Jami to'lov:</th>
-                                            <th style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{price}</th>
+                                            <th style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{unpaid + paid}</th>
+                                            <th style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{paid}</th>
+                                            <th style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{unpaid}</th>
                                         </tr>
                                     </tfoot>
                                 </table>
@@ -191,27 +179,27 @@ export const Reciept = () => {
                                             <th className="text-center" style={{ fontSize: "10pt", fontFamily: "times" }}>Bo'lim</th>
                                             <th className="text-center" style={{ fontSize: "10pt", fontFamily: "times" }}>Navbat</th>
                                             <th className="text-center" style={{ fontSize: "10pt", fontFamily: "times" }}>To'lov miqdori</th>
+                                            <th className="text-center" style={{ fontSize: "10pt", fontFamily: "times" }}>To'langan</th>
+                                            <th className="text-center" style={{ fontSize: "10pt", fontFamily: "times" }}>To'lanmagan</th>
                                         </tr>
                                     </thead>
                                     <tbody>
                                         {
                                             sections.map((section) => {
-
-                                                if (
-                                                    section.payment === 'kutilmoqda'
-                                                ) {
-                                                    l++
-                                                    return (<tr>
-                                                        <td style={{ fontSize: "10pt", fontFamily: "times" }}>{l}</td>
-                                                        <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.name}</td>
-                                                        <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.bron === 'offline' ? section.turn : section.bronTime}</td>
-                                                        <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{ section.price- section.priceCashier}</td>
-                                                    </tr>
-                                                    )
-                                                }
+                                                l++
+                                                return (<tr>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }}>{k}</td>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.name}</td>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.bron === 'offline' ? section.turn : section.bronTime}</td>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.payment === "to'lanmagan" ? "Rad etilgan" : section.price}</td>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.payment === "to'lanmagan" ? "Rad etilgan" : section.priceCashier}</td>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center"> {section.payment === "to'lanmagan" ? "Rad etilgan" : section.price - section.priceCashier}</td>
+                                                </tr>
+                                                )
                                             })
 
                                         }
+
 
                                     </tbody>
                                     <tfoot>
@@ -219,7 +207,9 @@ export const Reciept = () => {
                                             <th style={{ fontSize: "10pt", fontFamily: "times" }} className="text-right"></th>
                                             <th style={{ fontSize: "10pt", fontFamily: "times" }} className="text-right"></th>
                                             <th style={{ fontSize: "10pt", fontFamily: "times" }} className="text-right">Jami to'lov:</th>
-                                            <th style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{price}</th>
+                                            <th style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{unpaid + paid}</th>
+                                            <th style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{paid}</th>
+                                            <th style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{unpaid}</th>
                                         </tr>
                                     </tfoot>
                                 </table>

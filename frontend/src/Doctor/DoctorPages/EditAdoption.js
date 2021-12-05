@@ -15,7 +15,7 @@ const customStyles = {
 };
 
 
-export const Adoption = () => {
+export const EditAdoption = () => {
     const { request, loading } = useHttp()
     const sectionId = useParams().id
     const auth = useContext(AuthContext)
@@ -57,6 +57,7 @@ export const Adoption = () => {
             const fetch = await request(`/api/section/doctor/${sectionId}`, 'GET', null, {
                 Authorization: `Bearer ${auth.token}`
             })
+            console.log(fetch)
             getClient(fetch.client)
             setSection(fetch)
         } catch (error) {
@@ -77,48 +78,47 @@ export const Adoption = () => {
 
 
     // Comment yozish
-    const comments = [
-        ` Contrary to popular belief, Lorem Ipsum is not simply `,
-        ` . It has roots in a piece of classical Latin literature from 45 BC, making it over `,
-        ` years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, `,
-        ` , from a Lorem Ipsum passage, and going through the cites of the word in `,
-        ` , discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" ( `,
-        ` )by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. `,
-        ` Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section `,
-        ` .`
-    ]
-    const changeComment = () => {
-        let s = ""
-        for (let i = 0; i < comments.length-1; i++) {
-            let n = document.getElementsByClassName("comment")[i].value
-            s = s + comments[i] + n
+    // const comments = [
+    //     ` Contrary to popular belief, Lorem Ipsum is not simply `,
+    //     ` . It has roots in a piece of classical Latin literature from 45 BC, making it over `,
+    //     ` years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, `,
+    //     ` , from a Lorem Ipsum passage, and going through the cites of the word in `,
+    //     ` , discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" ( `,
+    //     ` )by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. `,
+    //     ` Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section `,
+    //     ` .`
+    // ]
+    const changeComment = (event) => {
+        // let s = ""
+        // for (let i = 0; i < comments.length-1; i++) {
+        //     let n = document.getElementsByClassName("comment")[i].value
+        //     s = s + comments[i] + n
             
-        }
-        s = s + comments[comments.length-1]
-        setSection({ ...section, comment: s })
+        // }
+        // s = s + comments[comments.length-1]
+        setSection({ ...section, [event.target.name]: event.target.value })
     }
 
     // Xulosa yozish
-    const summary = [
-        `  There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, `,
-        ` ,or randomised words which don't look even slightly believable. `,
-        ` to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. `,
-        ` generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of `,
-        ` words, combined with a handful of model sentence structures, `,
-        ` Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition,
-            injected humour, or non-characteristic words etc.
-        `
-    ]
-    const changeSummary = () => {
-        let s = ""
-        for (let i = 0; i < summary.length - 1; i++) {
-            let n = document.getElementsByClassName("summary")[i].value
-            s = s + summary[i] + n
+    // const summary = [
+    //     `  There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, `,
+    //     ` ,or randomised words which don't look even slightly believable. `,
+    //     ` to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. `,
+    //     ` generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of `,
+    //     ` words, combined with a handful of model sentence structures, `,
+    //     ` Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition,
+    //         injected humour, or non-characteristic words etc.
+    //     `
+    // ]
+    const changeSummary = (event) => {
+        // let s = ""
+        // for (let i = 0; i < summary.length - 1; i++) {
+        //     let n = document.getElementsByClassName("summary")[i].value
+        //     s = s + summary[i] + n
 
-        }
-        s = s + summary[summary.length - 1]
-        console.log(s);
-        setSection({ ...section, summary: s })
+        // }
+        // s = s + summary[summary.length - 1]
+        setSection({ ...section, [event.target.name]: event.target.value })
     }
 
     const checkUp = (event) => {
@@ -245,39 +245,10 @@ export const Adoption = () => {
                     <h1 className="mt-5" style={{ marginBottom: "50px", textAlign: "center" }}>MedicalCenter  Navoi</h1>
                     <h5>{new Date().toLocaleDateString()}</h5>
                     <h5>Bemor: <span className="fs-4">{client.firstname} {client.lastname} {client.fathername}</span></h5>
-                    <p id="comment">
-                        Contrary to popular belief, Lorem Ipsum is not simply
-                        <input onChange={changeComment} type="text" style={{ width: "150px" }} className="input comment" />.
-                        It has roots in a piece of classical Latin literature from 45 BC, making it over
-                        <input onChange={changeComment} type="text" style={{ width: "150px" }} className="input comment" />
-                        years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words,
-                        <input onChange={changeComment} type="text" style={{ width: "150px" }} className="input comment" />
-                        , from a Lorem Ipsum passage, and going through the cites of the word in
-                        <input onChange={changeComment} type="text" style={{ width: "150px" }} className="input comment" />,
-                        discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (
-                        <input onChange={changeComment} type="text" style={{ width: "150px" }} className="input comment" />
-                        )by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance.
-                        <input onChange={changeComment} type="text" style={{ width: "150px" }} className="input comment" />
-                        Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section
-                        <input onChange={changeComment} type="text" style={{ width: "150px" }} className="input comment" />.
-                    </p>
-                    <p>
-                        There are many variations of passages of Lorem Ipsum available,
-                        but the majority have suffered alteration in some form, 
-                        <input onChange={changeSummary} type="text" style={{ width: "150px" }} className="input summary" />
-                        ,or randomised words which don't look even slightly believable.
-                        <input onChange={changeSummary} type="text" style={{ width: "150px" }} className="input summary" />
-                        to use a passage of Lorem Ipsum, you need to be sure there isn't anything
-                        embarrassing hidden in the middle of text. 
-                        <input onChange={changeSummary} type="text" style={{ width: "150px" }} className="input summary" />
-                        generators on the Internet tend to repeat predefined chunks as necessary,
-                        making this the first true generator on the Internet. It uses a dictionary of
-                        <input onChange={changeSummary} type="text" style={{ width: "150px" }} className="input summary" />
-                        words, combined with a handful of model sentence structures, 
-                        <input onChange={changeSummary} type="text" style={{ width: "150px" }} className="input summary" />
-                        Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition,
-                        injected humour, or non-characteristic words etc.
-                    </p>
+                    <textarea name="comment" onChange={changeComment} style={{ height: "200px" }} className="form-control" defaultValue={section.comment}></textarea>
+                    <br/>
+                    <textarea name="summary" onChange={changeSummary} style={{height:"200px"}} className="form-control" defaultValue={section.summary}></textarea>
+                    
                     <br />
     
                     <h5>Doctor: <span className="fs-4">{auth.doctor.lastname} {auth.doctor.firstname[0]}</span></h5>

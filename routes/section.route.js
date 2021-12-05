@@ -31,7 +31,8 @@ router.post('/reseption/register/:id', auth, async (req, res) => {
             bronDay,
             bronTime,
             position,
-            checkup
+            checkup,
+            connector,
 
         } = req.body
         const section = new Section({
@@ -48,7 +49,8 @@ router.post('/reseption/register/:id', auth, async (req, res) => {
             bronDay,
             bronTime,
             position,
-            checkup
+            checkup,
+            connector
         })
         await section.save()
         res.status(201).send(section)
@@ -81,10 +83,11 @@ router.get('/reseption/:id', auth, async (req, res) => {
 })
 
 // /api/section/reseption/clientId //
-router.get('/reseptionid/:id', auth, async (req, res) => {
+router.get('/reseptionid/:id/:connector', auth, async (req, res) => {
     try {
         const id = req.params.id
-        const sections = await Section.find({ client: id })
+        const connector = req.params.connector
+        const sections = await Section.find({ client: id, connector: connector })
         res.json(sections)
 
     } catch (e) {
@@ -156,8 +159,9 @@ router.patch('/cashier/:id', auth, async (req, res) => {
 
 // ===================================================================================
 // ===================================================================================
-// CASHIER routes
 // DOCTOR routes
+
+
 
 // Get online sections
 router.get('/doctoronline/:section', auth, async (req, res) => {
@@ -189,6 +193,7 @@ router.get('/doctoroffline/:section', auth, async (req, res) => {
     }
 })
 
+
 // /api/section/doctor
 router.get('/doctor/:id', auth, async (req, res) => {
     try {
@@ -201,6 +206,7 @@ router.get('/doctor/:id', auth, async (req, res) => {
     }
 })
 
+
 router.put('/doctordontcome/:id', auth, async (req, res) => {
     try {
         const id = req.params.id
@@ -209,6 +215,30 @@ router.put('/doctordontcome/:id', auth, async (req, res) => {
         await edit.save()
         res.json(edit)
 
+    } catch (e) {
+        res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
+    }
+})
+
+// Get sections
+router.get('/doctorall/:section', auth, async (req, res) => {
+    try {
+        const section = await Section.find({
+            name: req.params.section
+        }).sort({ turn: 1 })
+        res.json(section)
+    } catch (e) {
+        res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
+    }
+})
+
+// Get history
+router.get('/doctorhistory/:id', auth, async (req, res) => {
+    try {
+        const section = await Section.find({
+            client: req.params.id
+        }).sort({ turn: -1 })
+        res.json(section)
     } catch (e) {
         res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
     }
@@ -229,6 +259,8 @@ router.put('/doctordone/:id', auth, async (req, res) => {
         res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
     }
 })
+
+
 
 // END DOCTOR SECTION
 // ===================================================================================

@@ -1,40 +1,79 @@
-import React, { useCallback, useContext, useEffect, useState } from "react";
-import { useHistory } from "react-router-dom";
-import { useHttp } from "../../hooks/http.hook";
-import "react-toastify/dist/ReactToastify.css";
-import { Loader } from "../../components/Loader";
-import { toast } from "react-toastify";
-import Select from "react-select";
-import makeAnimated from "react-select/animated";
-import { CheckClentData } from "./CheckClentData";
-import { AuthContext } from "../../context/AuthContext";
+import React, { useCallback, useContext, useEffect, useState } from "react"
+import { useHistory } from "react-router-dom"
+import { useHttp } from "../../hooks/http.hook"
+import "react-toastify/dist/ReactToastify.css"
+import { Loader } from "../../components/Loader"
+import { toast } from "react-toastify"
+import Select from "react-select"
+import makeAnimated from "react-select/animated"
+import { CheckClentData } from "./CheckClentData"
+import { AuthContext } from "../../context/AuthContext"
 import '../radio.css'
-const mongoose = require("mongoose");
-const animatedComponents = makeAnimated();
+import Modal from 'react-modal'
+const mongoose = require("mongoose")
+const animatedComponents = makeAnimated()
 
-toast.configure();
+const customStyles = {
+  content: {
+    top: '50%',
+    left: '50%',
+    right: 'auto',
+    bottom: 'auto',
+    marginRight: '-50%',
+    transform: 'translate(-50%, -50%)',
+  },
+}
+
+
+toast.configure()
 export const NewClient = () => {
+
+  // Modal oyna funksiyalari
+  let allPrice = 0
+  const [modalIsOpen, setIsOpen] = useState(false)
+
+  function openModal() {
+    setIsOpen(true)
+  }
+
+  function closeModal() {
+    setIsOpen(false)
+  }
+
   //Avtorizatsiyani olish
   const auth = useContext(AuthContext)
   let s = []
 
 
   // So'rov kutish va xatoliklarni olish
-  const { loading, request, error, clearError } = useHttp();
+  const { loading, request, error, clearError } = useHttp()
 
   //Navbatni ro'yxatga olish
-  const [turns, seTurns] = useState([]);
+  const [turns, seTurns] = useState([])
 
   //Registratsiyadan o'tgan bo'limlarni olish
   const [sections, setSections] = useState([])
 
   //Xatoliklar chiqaruvi
   const notify = (e) => {
-    toast.error(e);
-  };
+    toast.error(e)
+  }
 
   //Boshqa sahifaga yo'naltirish yuklanishi
-  const history = useHistory();
+  const history = useHistory()
+
+  // Bo'limlar
+  const [options, setOptions] = useState()
+  const getOptions = useCallback(async () => {
+    try {
+      const data = await request("/api/direction/", "GET", null, {
+        Authorization: `Bearer ${auth.token}`
+      })
+      setOptions(data)
+    } catch (e) {
+      notify(e)
+    }
+  }, [auth, request, setOptions])
 
   // Mijoz sxemasi
   const [client, setClient] = useState({
@@ -45,29 +84,29 @@ export const NewClient = () => {
     phone: "",
     id: 0,
     born: "",
-  });
+  })
 
 
   const changeHandlar = (event) => {
-    setClient({ ...client, [event.target.name]: event.target.value });
-  };
+    setClient({ ...client, [event.target.name]: event.target.value })
+  }
 
   const changeDate = (event) => {
-    setClient({ ...client, born: new Date(event.target.value) });
-  };
+    setClient({ ...client, born: new Date(event.target.value) })
+  }
 
   const changeSections = (event) => {
-    s = [];
+    s = []
     event.map((section) => {
-      let turn = 0;
+      let turn = 0
       turns.map((sec) => {
         if (checkTurn(sec, section.value)) {
-          turn++;
+          turn++
         }
-      });
+      })
       s.push({
         name: section.value,
-        price: 0,
+        price: section.price,
         priceCashier: 0,
         comment: " ",
         summary: " ",
@@ -79,13 +118,13 @@ export const NewClient = () => {
         bronTime: " ",
         position: "offline",
         checkup: "chaqirilmagan"
-      });
-    });
-    setSections(s);
-  };
+      })
+    })
+    setSections(s)
+  }
 
   const createSections = (event) => {
-    let key = parseInt(event.target.id);
+    let key = parseInt(event.target.id)
     setSections(
       Object.values({
         ...sections,
@@ -98,8 +137,8 @@ export const NewClient = () => {
             [key]: { ...sections[key], turn: parseInt(event.target.name) },
           })
         )
-    );
-  };
+    )
+  }
 
   const allClients = useCallback(async () => {
     try {
@@ -109,47 +148,65 @@ export const NewClient = () => {
       const sec = await request("/api/section/reseption", "GET", null, {
         Authorization: `Bearer ${auth.token}`
       })
-      seTurns(sec);
-      client.id = fetch.length + 1000001;
-    } catch (e) { }
-  }, [request, auth]);
+      seTurns(sec)
+      client.id = fetch.length + 1000001
+    } catch (e) {
+      notify(e)
+    }
+  }, [request, auth])
 
   const checkData = () => {
     if (CheckClentData(client)) {
-      return notify(CheckClentData(client));
+      return notify(CheckClentData(client))
     }
-    createHandler();
-  };
+    openModal()
+  }
+
 
   const createHandler = async () => {
     try {
       const data = await request("/api/clients/reseption/register", "POST", { ...client }, {
         Authorization: `Bearer ${auth.token}`
-      });
-      
-      createAllSections(data._id)
-      history.push(`/reseption/reciept/${data._id}`)
-    } catch (e) { }
-  };
-
-  const createAllSections = (id) => {
-    sections.map((section) => {
-      create(id, section)
-    })
-    history.push(`/reseption/reciept/${id}`)
+      })
+      createConnector(data._id)
+    } catch (e) {
+      notify(e)
+    }
   }
 
-  const create = async (id, section) => {
+  const createConnector = async (client) => {
     try {
-      const data = await request(`/api/section/reseption/register/${id}`, "POST", { ...section }, {
+      const connector = await request("/api/connector/register", "POST", { client }, {
         Authorization: `Bearer ${auth.token}`
-      });
-    } catch (e) { }
-  };
+      })
 
+      createAllSections(client, connector._id)
+    } catch (e) {
+      notify(e)
+    }
+  }
 
+  const createAllSections = (id, connector) => {
+    sections.map((section) => {
+      create(id, section, connector)
+    })
+    history.push(`/reseption/reciept/${id}/${connector}`)
+  }
+
+  const create = async (id, section, connector) => {
+    try {
+      const data = await request(`/api/section/reseption/register/${id}`, "POST", { ...section, connector }, {
+        Authorization: `Bearer ${auth.token}`
+      })
+    } catch (e) {
+      notify(e)
+    }
+  }
 
   useEffect(() => {
+    if (!options) {
+      getOptions()
+    }
     allClients()
   }, [allClients])
 
@@ -163,23 +220,23 @@ export const NewClient = () => {
       new Date().getDate() &&
       turn.name === name
     )
-      return true;
-    return false;
-  };
+      return true
+    return false
+  }
 
   if (loading) {
-    return <Loader />;
+    return <Loader />
   }
 
   return (
-    <>
-      <div className="row">
+    <div data-aos="flip-right">
+      <div className="row" >
         <div className="col-12 mt-3 d-flex justify-content-center align-items-center">
           <h4 className="text-right">Mijozning ma'lumotlarini kiritish</h4>
         </div>
-      </div> 
+      </div>
       <div className="row">
-        <div className="col-md-6 input_box" data-aos="fade-right">
+        <div className="col-md-6 mb-2 input_box" >
           <input
             onChange={changeHandlar}
             name="lastname"
@@ -189,7 +246,7 @@ export const NewClient = () => {
           />
           <label className="labels">Familiya</label>
         </div>
-        <div className="col-md-6 input_box" data-aos="fade-left">
+        <div className="col-md-6 mb-2 input_box" >
           <input
             onChange={changeHandlar}
             name="firstname"
@@ -201,7 +258,7 @@ export const NewClient = () => {
         </div>
       </div>
       <div className="row" style={{ padding: "15px 0" }}>
-        <div className="col-md-6 input_box" data-aos="fade-right">
+        <div className="col-md-6 mb-2 input_box" >
           <input
             onChange={changeHandlar}
             name="fathername"
@@ -211,7 +268,7 @@ export const NewClient = () => {
           />
           <label className="labels">Otasining ismi</label>
         </div>
-        <div className="col-md-6 input_box" data-aos="fade-left">
+        <div className="col-md-6 mb-2 input_box" >
           <input
             onChange={changeDate}
             type="date"
@@ -224,9 +281,8 @@ export const NewClient = () => {
         </div>
       </div>
       <div className="row">
-        <div className="col-md-6" data-aos="zoom-out">
+        <div className="col-md-6 mb-2" >
           <div className="form-group">
-            {/* <label className="text-muted mandatory d-block">Jinsi</label> */}
             <div className="btn-group" data-toggle="buttons">
               <div className="wrapper">
                 <input
@@ -263,7 +319,7 @@ export const NewClient = () => {
             </div>
           </div>
         </div>
-        <div className="col-md-6 input_box" data-aos="fade-left">
+        <div className="col-md-6 mb-2 input_box" >
           <input
             onChange={changeHandlar}
             type="number"
@@ -279,29 +335,26 @@ export const NewClient = () => {
       <hr className="form-control" />
 
       <div className="row">
-        <div className="col-md-12" data-aos="zoom-out">
-          <label className="labels">qayta tanlaganda narx o'chib ketadi</label>
+        <div className="col-md-12" >
+          {/* <label className="labels">qayta tanlaganda narx o'chib ketadi</label> */}
           <Select
             className="mt-3"
             onChange={(event) => changeSections(event)}
             closeMenuOnSelect={false}
             components={animatedComponents}
             isMulti
-            options={[
-              { value: "Lor", label: "Lor" },
-              { value: "Kardiolog", label: "Kardilog" },
-              { value: "Terapevt", label: "Terapevt" },
-            ]}
+            options={options && options}
           />
         </div>
       </div>
       <div className="row">
         {sections.map((section, key) => {
           return (
-            <>
-              <div className="col-7">
+            <div key={key} className="row">
+              <div className="col-7" >
                 <label className="text-muted mandatory"></label>
                 <input
+                  disabled
                   defaultValue={section.price}
                   onChange={createSections}
                   id={key}
@@ -322,45 +375,75 @@ export const NewClient = () => {
                   disabled
                 />
               </div>
-            </>
-          );
+            </div>
+          )
         })}
       </div>
-      {/* <div className="row">
-                <div className="col-md-6">
-                    <div className="form-group">
-                        <label className="text-muted mandatory d-block">Maqsad</label>
-                        <div className="btn-group" data-toggle="buttons">
-                            <label htmlFor="intact" className="btn btn-primary form-check-label">
-                                <input
-                                    onChange={changeHandlar}
-                                    name="intact"
-                                    className="form-check-input"
-                                    type="radio"
-                                    defaultValue="Ko`rik"
-                                />
-                                Ko`rik
-                            </label>
-                            <label htmlFor="intact" className="btn btn-primary form-check-label">
-                                <input
-                                    onChange={changeHandlar}
-                                    defaultValue="Davolanish"
-                                    name="intact"
-                                    className="form-check-input"
-                                    type="radio"
-                                />
-                                Davolanish
-                            </label>
-                        </div>
-                    </div>
-                </div>
 
-            </div> */}
-      <div className="mt-3 text-center" data-aos="fade-up">
-        <button onClick={checkData} className="btn btn-primary profile-button">
+      <div className="mt-5 text-center" >
+        <button onClick={checkData} className="btn btn-primary profile-button mb-5">
           Saqlash
         </button>
       </div>
-    </>
-  );
-};
+
+      {/* Modal oynaning ochilishi */}
+      <div>
+        <Modal
+          isOpen={modalIsOpen}
+          onRequestClose={closeModal}
+          style={customStyles}
+          contentLabel="Example Modal"
+        >
+          <div className="text-center fs-4 fw-bold text-secondary">
+            <span className="text-dark">Mijoz: </span>  {client.lastname} {client.firstname} {client.fathername}
+          </div>
+          <table className="w-100 mt-3">
+            <thead>
+              <tr style={{ borderBottom: "1px solid #999" }} >
+                <th style={{ width: "10%", textAlign: "center", padding: "10px 0" }}>№</th>
+                <th style={{ width: "30%", textAlign: "center", padding: "10px 0" }}>Bo'limlar</th>
+                <th style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>Hisob</th>
+              </tr>
+            </thead>
+            <tbody style={{ borderBottom: "1px solid #999" }}>
+
+              {
+                sections.map((section, key) => {
+                  allPrice = allPrice + section.price
+                  return (
+                    <tr key={key}>
+                      <td style={{ width: "10%", textAlign: "center", padding: "10px 0" }}>{key + 1}</td>
+                      <td style={{ width: "30%", textAlign: "center", padding: "10px 0" }}>
+                        {section.name}
+                      </td>
+                      <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{section.price}</td>
+                    </tr>
+                  )
+                })
+              }
+
+            </tbody>
+          </table>
+
+          <div className="row m-1 mt-3">
+            <div className="col-6">
+              <div className="fw-bold text-primary">Jami to'lov:</div>
+            </div>
+            <div className="col-6">
+              <div className="fw-bold  text-end ">{allPrice}</div>
+            </div>
+            <hr />
+
+          </div>
+          <div className="row m-1">
+            <div className="col-12 text-center">
+              <button onClick={createHandler} className="btn btn-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
+              <button onClick={closeModal} className="btn btn-danger" >Qaytish</button>
+            </div>
+          </div>
+
+        </Modal>
+      </div>
+    </div>
+  )
+}

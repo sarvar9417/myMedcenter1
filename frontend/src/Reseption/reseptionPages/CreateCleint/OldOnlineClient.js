@@ -6,10 +6,21 @@ import { Loader } from '../../components/Loader'
 import { toast } from 'react-toastify'
 import Select from 'react-select'
 import makeAnimated from 'react-select/animated'
-import { CheckClentData } from './CheckClentData'
 import { AuthContext } from '../../context/AuthContext'
+import Modal from 'react-modal'
 const mongoose = require("mongoose")
 const animatedComponents = makeAnimated()
+
+const customStyles = {
+    content: {
+        top: '50%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        marginRight: '-50%',
+        transform: 'translate(-50%, -50%)',
+    },
+}
 
 toast.configure()
 export const OldOnlineClient = () => {
@@ -23,6 +34,33 @@ export const OldOnlineClient = () => {
     const notify = (e) => {
         toast.error(e)
     }
+
+    // Modal oyna funksiyalari
+    let allPrice = 0
+    const [modalIsOpen, setIsOpen] = useState(false)
+
+    function openModal() {
+        setIsOpen(true)
+    }
+
+    function closeModal() {
+        setIsOpen(false)
+    }
+
+    // Bo'limlar
+    const [options, setOptions] = useState()
+    const getOptions = useCallback(async () => {
+        try {
+            const data = await request("/api/direction/", "GET", null, {
+                Authorization: `Bearer ${auth.token}`
+            })
+            setOptions(data)
+        } catch (e) {
+            notify(e)
+        }
+    }, [auth, request, setOptions])
+
+
     const history = useHistory()
     const [client, setClient] = useState({
         _id: '',
@@ -46,10 +84,6 @@ export const OldOnlineClient = () => {
         setSections(Object.values({ ...sections, [key]: { ...sections[key], bronTime: event.target.value } }))
     }
 
-    // const changeDate = (event) => {
-    //     setClient({ ...client, born: new Date(event.target.value) })
-    // }
-
     const changeBronDate = (event) => {
         console.log(event.target.value);
         let key = parseInt(event.target.id)
@@ -67,7 +101,8 @@ export const OldOnlineClient = () => {
             })
             s.push({
                 name: section.value,
-                price: 0,
+                priceCashier: 0,
+                price: section.price,
                 comment: " ",
                 summary: " ",
                 done: "tasdiqlanmagan",
@@ -97,24 +132,6 @@ export const OldOnlineClient = () => {
         } catch (e) { }
     }, [request])
 
-
-    const checkData = () => {
-        if (CheckClentData(client)) {
-            return notify(CheckClentData(client))
-        }
-        createHandler()
-    }
-
-    const createHandler = async () => {
-        try {
-            const data = await request('/api/clients/reseption/register', 'POST', { ...client }, {
-                Authorization: `Bearer ${auth.token}`
-            })
-            createAllSections(data._id)
-            // history.push(`/reseption/reciept/${data._id}`)
-        } catch (e) { }
-    }
-
     const searchClient = (id) => {
         clients.map((clt) => {
             if (clt.id === id) {
@@ -123,33 +140,43 @@ export const OldOnlineClient = () => {
         })
     }
 
-    const createAllSections = () => {
-        sections.map((section) => {
-            create( section)
-        })
-        history.push(`/reseption/reciept/${client._id}`)
-    }
-
-    const create = async ( section) => {
+    const createConnector = async () => {
         try {
-            const data = await request(`/api/section/reseption/register/${client._id}`, 'POST', { ...section }, {
+            const connector = await request("/api/connector/register", "POST", { client:client._id }, {
                 Authorization: `Bearer ${auth.token}`
             })
-            console.log(data);
-        } catch (e) { }
+            createAllSections(connector._id)
+        } catch (e) {
+            notify(e)
+        }
+    }
+
+    const createAllSections = (connector) => {
+        sections.map((section) => {
+            create(section, connector)
+        })
+        history.push(`/reseption/reciept/${client._id}/${connector}`)
+    }
+
+    const create = async (section, connector) => {
+        try {
+            const data = await request(`/api/section/reseption/register/${client._id}`, "POST", { ...section, connector }, {
+                Authorization: `Bearer ${auth.token}`
+            })
+            console.log(data)
+        } catch (e) {
+            notify(e)
+        }
     }
 
     useEffect(() => {
+        if (!options) {
+            getOptions()
+
+        }
         allClients()
     }, [allClients])
 
-
-    useEffect(() => {
-        if (error) {
-            notify(error)
-            clearError()
-        }
-    }, [error, clearError])
 
     const checkTurn = (turn, name) => {
         if (
@@ -176,6 +203,7 @@ export const OldOnlineClient = () => {
             <div className="row">
                 <div className="col-md-6 input_box">
                     <input
+                        defaultValue={client.id}
                         onChange={(event) => searchClient(parseInt(event.target.value))}
                         name='ID'
                         type="number"
@@ -186,7 +214,7 @@ export const OldOnlineClient = () => {
                 </div>
                 <div className="col-md-6 input_box">
                     <input
-                        value={client.phone}
+                        defaultValue={client.phone}
                         onChange={changeHandlar}
                         type="number"
                         name='phone'
@@ -199,33 +227,30 @@ export const OldOnlineClient = () => {
 
                 </div>
             </div>
-            <div className="row" style={{padding:"15px 0"}}>
+            <div className="row" style={{ padding: "15px 0" }}>
                 <div className="col-md-6 input_box">
                     <input
-                    value={client.lastname}
+                        value={client.lastname}
                         disabled
-                        // onChange={changeHandlar}
                         name='lastname'
                         type="text"
                         className="form-control inp"
                         placeholder=""
-                        style={{background:"#fff"}}
+                        style={{ background: "#fff" }}
                     />
-                    <label className="labels" style={{top:"-7px",fontSize:"12px",fontWeight:"500"}}>Familiya</label>
+                    <label className="labels" style={{ top: "-7px", fontSize: "12px", fontWeight: "500" }}>Familiya</label>
                 </div>
                 <div className="col-md-6 input_box">
                     <input
                         disabled
                         value={client.firstname}
-
-                        // onChange={changeHandlar}
                         name="firstname"
                         type="text"
                         className="form-control inp"
-                        placeholder="" 
-                        style={{background:"#fff"}}
-                        />
-                <label className="labels" style={{top:"-7px",fontSize:"12px",fontWeight:"500"}}>Ism</label>
+                        placeholder=""
+                        style={{ background: "#fff" }}
+                    />
+                    <label className="labels" style={{ top: "-7px", fontSize: "12px", fontWeight: "500" }}>Ism</label>
                 </div>
             </div>
             <div className="row">
@@ -233,58 +258,28 @@ export const OldOnlineClient = () => {
                     <input
                         disabled
                         value={client.fathername}
-                        // onChange={changeHandlar}
                         name="fathername"
                         type="text"
                         className="form-control inp"
                         placeholder=""
-                        style={{background:"#fff"}}
+                        style={{ background: "#fff" }}
                     />
-                    <label className="labels" style={{top:"-7px",fontSize:"12px",fontWeight:"500"}}>Otasining ismi</label>
+                    <label className="labels" style={{ top: "-7px", fontSize: "12px", fontWeight: "500" }}>Otasining ismi</label>
                 </div>
                 <div className="col-md-6 input_box">
                     <input
                         disabled
-                        // onChange={changeDate}
                         value={new Date(client.born).getFullYear().toString() + '-' + (new Date(client.born).getMonth() < 9 ? "0" + (new Date(client.born).getMonth() + 1).toString() : (new Date(client.born).getMonth() + 1).toString()) + '-' + (new Date(client.born).getDate() < 10 ? "0" + (new Date(client.born).getDate()).toString() : (new Date(client.born).getDate()).toString())}
                         type="date"
                         name='born'
                         className="form-control inp"
                         placeholder=""
-                        style={{background:"#fff",color:"#999"}}
+                        style={{ background: "#fff", color: "#999" }}
                     />
-                    <label className="labels" style={{top:"-7px",fontSize:"12px",fontWeight:"500"}}>Tug'ilgan sanasi</label>
+                    <label className="labels" style={{ top: "-7px", fontSize: "12px", fontWeight: "500" }}>Tug'ilgan sanasi</label>
                 </div>
             </div>
             <div className="row">
-                {/* <div className="col-md-6">
-                    <div className="form-group">
-                        <label className="text-muted mandatory d-block">Jinsi</label>
-                        <div className="btn-group" data-toggle="buttons">
-                            <label htmlFor="gender" className="btn btn-primary form-check-label">
-                                <input
-                                    onChange={changeHandlar}
-                                    name="gender"
-                                    className="form-check-input"
-                                    type="radio"
-                                    defaultValue="man"
-                                />
-                                Erkak
-                            </label>
-                            <label htmlFor="gender" className="btn btn-primary form-check-label">
-                                <input
-                                    onChange={changeHandlar}
-                                    defaultValue="woman"
-                                    name="gender"
-                                    className="form-check-input"
-                                    type="radio"
-                                />
-                                Ayol
-                            </label>
-                        </div>
-                    </div>
-                </div> */}
-                
             </div>
             <hr className="form-control" />
 
@@ -297,11 +292,7 @@ export const OldOnlineClient = () => {
                         closeMenuOnSelect={false}
                         components={animatedComponents}
                         isMulti
-                        options={[
-                            { value: 'Lor', label: 'Lor' },
-                            { value: 'Kardiolog', label: 'Kardilog' },
-                            { value: 'Terapevt', label: 'Terapevt' }
-                        ]}
+                        options={options}
                     />
                 </div>
             </div>
@@ -313,7 +304,8 @@ export const OldOnlineClient = () => {
                                 <div className="col-md-4 col-sm-6" >
                                     <label className=""></label>
                                     <input
-                                        defaultValue={section.price}
+                                        disabled
+                                        value={section.price}
                                         onChange={createSections}
                                         id={key}
                                         type="number"
@@ -352,43 +344,76 @@ export const OldOnlineClient = () => {
                 }
 
             </div>
-            {/* <div className="row">
-                <div className="col-md-6">
-                    <div className="form-group">
-                        <label className="text-muted mandatory d-block">Maqsad</label>
-                        <div className="btn-group" data-toggle="buttons">
-                            <label htmlFor="intact" className="btn btn-primary form-check-label">
-                                <input
-                                    onChange={changeHandlar}
-                                    name="intact"
-                                    className="form-check-input"
-                                    type="radio"
-                                    defaultValue="Ko`rik"
-                                />
-                                Ko`rik
-                            </label>
-                            <label htmlFor="intact" className="btn btn-primary form-check-label">
-                                <input
-                                    onChange={changeHandlar}
-                                    defaultValue="Davolanish"
-                                    name="intact"
-                                    className="form-check-input"
-                                    type="radio"
-                                />
-                                Davolanish
-                            </label>
-                        </div>
-                    </div>
-                </div>
-
-            </div> */}
-            <div className="mt-3 text-center">
+            <div className="mt-5 text-center">
                 <button
-                    onClick={createAllSections}
+                    onClick={openModal}
                     className="btn btn-primary profile-button"
                 >
                     Saqlash
                 </button>
+            </div>
+
+            {/* Modal oynaning ochilishi */}
+            <div>
+                <Modal
+                    isOpen={modalIsOpen}
+                    onRequestClose={closeModal}
+                    style={customStyles}
+                    contentLabel="Example Modal"
+                >
+                    <div className="text-center fs-4 fw-bold text-secondary">
+                        <span className="text-dark">Mijoz: </span>  {client.lastname} {client.firstname} {client.fathername}
+                    </div>
+                    <table className="w-100 mt-3">
+                        <thead>
+                            <tr style={{ borderBottom: "1px solid #999" }} >
+                                <th style={{ width: "10%", textAlign: "center", padding: "10px 0" }}>№</th>
+                                <th style={{ width: "30%", textAlign: "center", padding: "10px 0" }}>Bo'limlar</th>
+                                <th style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>Hisob</th>
+                                <th style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>Kuni</th>
+                                <th style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>Soati</th>
+                            </tr>
+                        </thead>
+                        <tbody style={{ borderBottom: "1px solid #999" }}>
+
+                            {
+                                sections.map((section, key) => {
+                                    allPrice = allPrice + section.price
+                                    return (
+                                        <tr key={key}>
+                                            <td style={{ width: "10%", textAlign: "center", padding: "10px 0" }}>{key + 1}</td>
+                                            <td style={{ width: "30%", textAlign: "center", padding: "10px 0" }}>
+                                                {section.name}
+                                            </td>
+                                            <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{section.price}</td>
+                                            <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{new Date(section.bronDay).toLocaleDateString()}</td>
+                                            <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{section.bronTime}</td>
+                                        </tr>
+                                    )
+                                })
+                            }
+
+                        </tbody>
+                    </table>
+
+                    <div className="row m-1 mt-3">
+                        <div className="col-6">
+                            <div className="fw-bold text-primary">Jami to'lov:</div>
+                        </div>
+                        <div className="col-6">
+                            <div className="fw-bold  text-end ">{allPrice}</div>
+                        </div>
+                        <hr />
+
+                    </div>
+                    <div className="row m-1">
+                        <div className="col-12 text-center">
+                            <button onClick={createConnector} className="btn btn-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
+                            <button onClick={closeModal} className="btn btn-danger" >Qaytish</button>
+                        </div>
+                    </div>
+
+                </Modal>
             </div>
         </>
     )

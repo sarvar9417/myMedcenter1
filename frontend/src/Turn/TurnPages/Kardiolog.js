@@ -1,10 +1,8 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
-import { AuthContext } from '../context/AuthContext'
+import React, { useCallback, useState } from 'react'
 import { useHttp } from '../hooks/http.hook'
 
 export const Kardiolog = () => {
 
-    const auth = useContext(AuthContext)
     const { request } = useHttp()
 
     const [offline, setOffline] = useState(0)
@@ -22,7 +20,7 @@ export const Kardiolog = () => {
         } catch (e) {
 
         }
-    }, [request, auth, offline, setOffline])
+    }, [request, offline, setOffline])
 
     setInterval(() => {
         getOffline()

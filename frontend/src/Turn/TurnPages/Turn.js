@@ -23,8 +23,8 @@ export const Turn = () => {
                     </div>
                 </div>
             </div>
-            <div className="row" style={{ overflowX: "hidden" }}>
-                <div className="col-lg-3 col-md-4 col-sm-6">
+            <div className="row mb-4" style={{ overflowX: "hidden" }}>
+                <div className="col-lg-3 col-md-4 col-sm-6 mt-">
                     <Kardiolog />
                 </div>
                 <div className="col-lg-3 col-md-4 col-sm-6">
@@ -37,7 +37,7 @@ export const Turn = () => {
 
                 </div>
             </div>
-            <div className="row mt-3" style={{ overflowX: "hidden" }}>
+            <div className="row mb-4" style={{ overflowX: "hidden" }}>
                 <div className="col-lg-3 col-md-4 col-sm-6">
 
                 </div>
@@ -51,7 +51,7 @@ export const Turn = () => {
 
                 </div>
             </div>
-            <div className="row mt-3" style={{ overflowX: "hidden" }}>
+            <div className="row mb-4" style={{ overflowX: "hidden" }}>
                 <div className="col-lg-3 col-md-4 col-sm-6">
 
                 </div>
@@ -64,6 +64,9 @@ export const Turn = () => {
                 <div className="col-lg-3 col-md-4 col-sm-6">
 
                 </div>
+            </div>
+            <div className="d-inline-none rounded-circle" style={{ right: "30px", bottom: "30px", position: "fixed" }}>
+                
             </div>
         </div>
     )

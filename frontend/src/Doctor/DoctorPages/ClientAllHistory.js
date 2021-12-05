@@ -1,8 +1,8 @@
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router'
 import { useReactToPrint } from 'react-to-print'
-import { AuthContext } from '../../context/AuthContext'
-import { useHttp } from '../../hooks/http.hook'
+import { AuthContext } from '../context/AuthContext'
+import { useHttp } from '../hooks/http.hook'
 const mongoose = require("mongoose")
 
 export const ClientAllHistory = () => {
@@ -21,7 +21,7 @@ export const ClientAllHistory = () => {
 
     const getClient = useCallback(async () => {
         try {
-            const data = await request(`/api/clients/reseption/${clientId}`, 'GET', null,
+            const data = await request(`/api/clients/doctor/${clientId}`, 'GET', null,
                 {
                     Authorization: `Bearer ${auth.token}`
                 })
@@ -33,14 +33,12 @@ export const ClientAllHistory = () => {
 
     const getSections = useCallback(async () => {
         try {
-            const fetch = await request(`/api/section/reseptionid/${clientId}`, 'GET', null,
+            const fetch = await request(`/api/section/doctorhistory/${clientId}`, 'GET', null,
                 {
                     Authorization: `Bearer ${auth.token}`
                 })
-                console.log(fetch);
             setSections(fetch)
         } catch (e) {
-
         }
     }, [request])
 

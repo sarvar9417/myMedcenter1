@@ -1,9 +1,12 @@
 import React from 'react'
-import Loader from 'react-loaders'
+import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
+import gif from '../gif/4.gif'
 export const Loading = () => {
   return (
     <>
-      <Loader type="ball-spin-fade-loader" />
+      <div className="m-auto text-center mt-5" >
+        <img alt="loader" style={{marginTop: "14%"}} width="200px" src={gif} />
+      </div>
     </>
   )
 }

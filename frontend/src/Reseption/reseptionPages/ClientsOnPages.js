@@ -2,35 +2,62 @@ import React, { useCallback, useEffect, useState, Component, useContext } from '
 import { Loader } from '../components/Loader'
 import { useHttp } from '../hooks/http.hook'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPenAlt, faSearch, faSort, faClock, faTimesCircle, faCheck } from '@fortawesome/free-solid-svg-icons'
-import { Link } from 'react-router-dom'
+import { faPenAlt, faSearch, faSort, faClock, faTimesCircle, faCheck, faSyncAlt } from '@fortawesome/free-solid-svg-icons'
+import { Link, useHistory } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import DatePicker from "react-datepicker"
 import './tableStyle.css'
-import Select from 'react-select'
 import ReactHTMLTableToExcel from 'react-html-to-excel'
-
+import Select from 'react-select'
 import "react-datepicker/dist/react-datepicker.css"
 import { AuthContext } from '../context/AuthContext'
-const mongoose = require('mongoose')
+import Modal from 'react-modal'
+const mongoose = require("mongoose")
+
+const customStyles = {
+    content: {
+        top: '50%',
+        left: '50%',
+        right: 'auto',
+        bottom: 'auto',
+        marginRight: '-50%',
+        transform: 'translate(-50%, -50%)',
+    },
+}
 
 toast.configure()
 export const ClientsOnPages = () => {
-    //Avtorizatsiyani olish
-    const auth = useContext(AuthContext)
     const options = [
         { value: 'all', label: 'Barcha' },
-        { value: 'offline', label: 'Offline' },
-        { value: 'online', label: 'Online' }
+        { value: 'kelgan', label: 'kelgan' },
+        { value: 'kelmagan', label: 'kelmagan' },
+        { value: 'kutilmoqda', label: 'kutilayotgan' }
     ]
+    const history = useHistory()
+    //Avtorizatsiyani olish
+    const auth = useContext(AuthContext)
     const payment = ["to'langan", "to'lanmagan", "kutilmoqda"]
 
+    // Modal oyna funksiyalari
+    let allPrice = 0
+    const [modalIsOpen, setIsOpen] = useState(false)
+
+    function openModal() {
+        setIsOpen(true)
+    }
+
+    function closeModal() {
+        setIsOpen(false)
+    }
+
+    let unpaid = 0
+    let paid = 0
     let k = 0
+    let l = 0
     const [startDate, setStartDate] = useState(new Date())
     const [endDate, setEndDate] = useState(new Date())
     const [born, setBorn] = useState('')
     const { loading, request, error, clearError } = useHttp()
-    const [clients, setClients] = useState([])
     const [sections, setSections] = useState([])
     const [AllSections, setAllSections] = useState([])
     const [AllClients, setAllClients] = useState([])
@@ -71,16 +98,6 @@ export const ClientsOnPages = () => {
         }
     }, [request, auth])
 
-    useEffect(() => {
-        if (error) {
-            notify(error)
-            clearError()
-        }
-        getClients()
-        getAllSections()
-    }, [getClients, getAllSections])
-
-
     const searchDate = () => {
         let c = []
         AllSections.map((section) => {
@@ -91,17 +108,60 @@ export const ClientsOnPages = () => {
         setSections(c)
     }
 
-    const sortOnOff = (event) => {
-        let c = []
-        if (event.value === "all") {
-            setSections(AllSections)
-        } else {
-            AllSections.map((section) => {
-                if (section.bron === event.value)
-                    c.push(section)
-            })
-            setSections(c)
+    // Tanlangan Mijoz ma'lumotlarini olib modalga yo'naltirish
+    const [sortSections, setSortSections] = useState()
+    const [client, setClient] = useState()
+    const getSections = (client) => {
+        let s = []
+        AllSections.map((section) => {
+            if (
+                section.client === client._id
+                &&
+                section.bron === "online"
+                &&
+                new Date(section.bronDay).toLocaleDateString() === new Date().toLocaleDateString()
+                &&
+                section.payment === "kutilmoqda"
+                &&
+                section.position !== "kelgan"
+            ) {
+                s.push(section)
+            }
+        })
+        setSortSections(s)
+        setClient(client)
+        openModal()
+    }
+
+    const Confirm = () => {
+        sortSections.map((section) => {
+            positionUpdate(section._id, "kelgan")
+        })
+        history.push(`/reseption/reciept/${client._id}`)
+    }
+
+
+    const [counter, setCounter] = useState(true)
+    setTimeout(() => {
+        if (counter && AllSections.length !== 0) {
+            dontCome()
         }
+    }, 1)
+    const dontCome = () => {
+        let year = new Date().getFullYear()
+        let month = new Date().getMonth() * 100
+        let day = new Date().getDate()
+        let n = year + month + day
+        AllSections.map((section) => {
+            let years = new Date(section.bronDay).getFullYear()
+            let months = new Date(section.bronDay).getMonth() * 100
+            let days = new Date(section.bronDay).getDate()
+            let ns = years + months + days
+            if (section.bron === "online" && n > ns) {
+                positionUpdate(section._id, "kelmagan")
+            }
+        })
+        setCounter(false)
     }
 
     //Xatoliklar chiqaruvi
@@ -155,19 +215,48 @@ export const ClientsOnPages = () => {
         day = endDate.getDate().toString() < 10 ? "0" + endDate.getDate().toString() : endDate.getDate().toString()
         let date3 = parseInt(year + month + day)
 
-        year = new mongoose.Types.ObjectId(section._id).getTimestamp().getFullYear().toString()
-        month = new mongoose.Types.ObjectId(section._id).getTimestamp().getMonth().toString() < 10 ? "0" + new mongoose.Types.ObjectId(section._id).getTimestamp().getMonth().toString() : new mongoose.Types.ObjectId(section._id).getTimestamp().getMonth().toString()
-        day = new mongoose.Types.ObjectId(section._id).getTimestamp().getDate().toString() < 10 ? "0" + new mongoose.Types.ObjectId(section._id).getTimestamp().getDate().toString() : new mongoose.Types.ObjectId(section._id).getTimestamp().getDate().toString()
+        year = new Date(section.bronDay).getFullYear()
+        month = new Date(section.bronDay).getMonth().toString() < 10 ? "0" + new Date(section.bronDay).getMonth().toString() : new Date(section.bronDay).getMonth().toString()
+        day = new Date(section.bronDay).getDate().toString() < 10 ? "0" + new Date(section.bronDay).getDate().toString() : new Date(section.bronDay).getDate().toString()
+
         let date2 = parseInt(year + month + day)
         return (date1 <= date2 && date2 <= date3)
     }
+
+    const sort = (event) => {
+        let c = []
+        if (event.value === "all") {
+            AllSections.map((section) => {
+                if (setSortDate(section)) {
+                    c.push(section)
+                }
+            })
+            setSections(c)
+        } else {
+            AllSections.map((section) => {
+                if (section.position === event.value && setSortDate(section))
+                    c.push(section)
+            })
+            setSections(c)
+        }
+    }
+
+    useEffect(() => {
+        if (error) {
+            notify(error)
+            clearError()
+        }
+        getClients()
+        getAllSections()
+    }, [getClients, getAllSections])
+
 
     if (loading) {
         return <Loader />
     }
 
     return (
-        <div className="container m-5"  >
+        <div className="container m-5" onLoad={dontCome} >
 
             <div className="row mb-3">
                 <div className=" col-lg-2 col-md-4 col-sm-4">
@@ -189,26 +278,34 @@ export const ClientsOnPages = () => {
                 <div className="col-lg-1 col-md-1 col-sm-2">
                     <button onClick={searchBornDate} className="btn text-white mb-2" style={{ backgroundColor: "#45D3D3" }}><FontAwesomeIcon icon={faSearch} /></button>
                 </div>
-                <div className="col-lg-2 col-md-2 col-sm-2 text-end">
+                <div className="col-lg-2 col-md-6 col-sm-6 p-0 ">
+                    <Select onChange={(event) => sort(event)} defaultValue={options[0]} options={options} />
+                </div>
+            </div>
+            <div className="row mb-3 mt-3">
+                <div className="offset-10 col-1 text-end">
                     <ReactHTMLTableToExcel
                         className="btn text-white mb-2 btn-success"
                         table="reseptionReport"
-                        filename="reseptionReport"
+                        filename={new Date().toLocaleDateString()}
                         sheet="Sheet"
                         buttonText="Excel"
                     />
                 </div>
-
+                <div className=" col-1 text-end">
+                    <button onClick={() => setSections(AllSections)} className="btn text-white" style={{ backgroundColor: "#45D3D3" }} ><FontAwesomeIcon icon={faSyncAlt} /> </button>
+                </div>
             </div>
+
             <div>
-                <div style={{ minWidth: "1000px" }} >
+                <div style={{ minWidth: "1300px" }} >
                     <table id="" className="table-striped table-hover" style={{ borderBottom: "1px solid #aaa", marginBottom: "10px" }} >
                         <thead>
                             <tr>
                                 <th className="no" scope="" >№ <FontAwesomeIcon icon={faSort} /> </th>
-                                <th scope="" className="date text-center" >Kelgan vaqti <FontAwesomeIcon icon={faSort} /></th>
                                 <th scope="" className="fish text-center">F.I.Sh <FontAwesomeIcon icon={faSort} /></th>
                                 <th scope="" className="id text-center">ID <FontAwesomeIcon icon={faSort} /></th>
+                                <th scope="" className="date text-center" >Kuni <FontAwesomeIcon icon={faSort} /></th>
                                 <th scope="" className="turn text-center">Vaqti <FontAwesomeIcon icon={faSort} /></th>
                                 <th scope="" className="phone text-center">Tel <FontAwesomeIcon icon={faSort} /></th>
                                 <th scope="" className="section text-center">Bo'limi <FontAwesomeIcon icon={faSort} /></th>
@@ -220,15 +317,15 @@ export const ClientsOnPages = () => {
                     </table>
                 </div>
             </div>
-            <div className="overflow-auto" style={{ height: "70vh", minWidth: "1000px" }}>
-                <table id="reseptionReport" className="table-hover"  >
+            <div className="overflow-auto" style={{ height: "70vh", minWidth: "1300px" }}>
+                <table className="table-hover"  >
                     <thead className="d-none">
                         <tr>
                             <th className="no" scope="" >№ <FontAwesomeIcon icon={faSort} /> </th>
-                            <th scope="" className="date text-center" >Kelgan vaqti <FontAwesomeIcon icon={faSort} /></th>
                             <th scope="" className="fish text-center">F.I.Sh <FontAwesomeIcon icon={faSort} /></th>
                             <th scope="" className="id text-center">ID <FontAwesomeIcon icon={faSort} /></th>
-                            <th scope="" className="turn text-center">Kelish vaqti <FontAwesomeIcon icon={faSort} /></th>
+                            <th scope="" className="date text-center" >Kuni <FontAwesomeIcon icon={faSort} /></th>
+                            <th scope="" className="turn text-center">Vaqti <FontAwesomeIcon icon={faSort} /></th>
                             <th scope="" className="phone text-center">Tel <FontAwesomeIcon icon={faSort} /></th>
                             <th scope="" className="section text-center">Bo'limi <FontAwesomeIcon icon={faSort} /></th>
                             <th scope="" className="edit text-center">Tahrirlash <FontAwesomeIcon icon={faSort} /></th>
@@ -237,63 +334,209 @@ export const ClientsOnPages = () => {
                         </tr>
                     </thead>
                     <tbody className="" >
-                        {sections.map((section, key) => {
-                            return AllClients.map((client, index) => {
-                                if (client._id === section.client && section.bron === "online") {
-                                    k++
-                                    return (
-                                        <tr key={key} id={index} >
-                                            <td className="no" >{k}</td>
-                                            <td className="date" >{new mongoose.Types.ObjectId(client._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(client._id).getTimestamp().toLocaleTimeString()}</td>
-                                            <td className="fish" ><Link to={`/reseption/clientallhistory/${client._id}`} > {client.lastname} {client.firstname} {client.fathername} </Link></td>
-                                            <td className="id" >{client.id}</td>
-                                            <td className="turn">{section.bronTime}</td>
-                                            <td className="phone">+{client.phone}</td>
-                                            <td className="section"> <Link to={`/reseption/clienthistory/${section._id}`} > {section.name} </Link></td>
-                                            <td className="edit"> <Link to={`/reseption/edit/${client._id}`} > <FontAwesomeIcon icon={faPenAlt} /> </Link>  </td>
-                                            <td className={
-                                                payment.map((pay, key) => {
-                                                    if (pay === "to'langan" && section.payment === "to'langan") {
-                                                        return " text-success prices text-center"
-                                                    }
-                                                    if (pay === "to'lanmagan" && section.payment === "to'lanmagan") {
-                                                        return " text-danger prices text-center"
-                                                    }
-                                                    if (pay === "kutilmoqda" && section.payment === "kutilmoqda") {
-                                                        return (" text-warning prices text-center")
-                                                    }
-                                                })
-                                            } >
-                                                {
+                        {
+                            sections.map((section, key) => {
+                                return AllClients.map((client, index) => {
+                                    if (client._id === section.client && section.bron === "online") {
+                                        k++
+                                        return (
+                                            <tr key={key} id={index} >
+                                                <td className="no" >{k}</td>
+                                                <td className="fish text-uppercase" ><Link style={{ fontWeight: "600" }} to={`/reseption/clientallhistory/${client._id}`} > {client.lastname} {client.firstname} {client.fathername} </Link></td>
+                                                <td className="id" >{client.id}</td>
+                                                <td className="date text-center" >{new Date(section.bronDay).toLocaleDateString()}</td>
+                                                <td className="turn">{section.bronTime}</td>
+                                                <td className="phone">+{client.phone}</td>
+                                                <td className="section text-uppercase"> <Link to={`/reseption/clienthistory/${section._id}`} style={{ color: "#00aa00", fontWeight: "600" }}> {section.name} </Link></td>
+                                                <td className="edit"> <Link to={`/reseption/edit/${client._id}`} > <FontAwesomeIcon icon={faPenAlt} className="text-dark" /> </Link>  </td>
+                                                <td className={
                                                     payment.map((pay, key) => {
                                                         if (pay === "to'langan" && section.payment === "to'langan") {
-                                                            return (<FontAwesomeIcon icon={faCheck} />)
+                                                            return " text-success prices text-center"
                                                         }
                                                         if (pay === "to'lanmagan" && section.payment === "to'lanmagan") {
-                                                            return (<FontAwesomeIcon icon={faTimesCircle} />)
+                                                            return " text-danger prices text-center"
                                                         }
                                                         if (pay === "kutilmoqda" && section.payment === "kutilmoqda") {
-                                                            return (<FontAwesomeIcon icon={faClock} />)
+                                                            return (" text-warning prices text-center")
                                                         }
                                                     })
+                                                } >
+                                                    {
+                                                        payment.map((pay, key) => {
+                                                            if (pay === "to'langan" && section.payment === "to'langan") {
+                                                                return (<FontAwesomeIcon icon={faCheck} />)
+                                                            }
+                                                            if (pay === "to'lanmagan" && section.payment === "to'lanmagan") {
+                                                                return (<FontAwesomeIcon icon={faTimesCircle} />)
+                                                            }
+                                                            if (pay === "kutilmoqda" && section.payment === "kutilmoqda") {
+                                                                return (<FontAwesomeIcon icon={faClock} />)
+                                                            }
+                                                        })
+                                                    }
+                                                </td>
+                                                <td className="position text-center" >
+                                                    {
+                                                        section.position === "kutilmoqda" ?
+                                                            <>
+                                                                <button onClick={() => { getSections(client) }} className="btn come mx-1" to={`/reseption/reciept/${client._id}`} >Qabul qilish</button>
+                                                                <button onClick={() => positionUpdate(section._id, "kelmagan")} className="btn dontcome" >Rad etish</button>
+                                                            </> :
+                                                            section.position
+                                                    }
+                                                </td>
+                                            </tr>
+                                        )
+                                    }
+                                })
+
+                            })
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            {/* Modal oynaning ochilishi */}
+            <div>
+                <Modal
+                    isOpen={modalIsOpen}
+                    onRequestClose={closeModal}
+                    style={customStyles}
+                    contentLabel="Example Modal"
+                >
+                    <div className="text-center fs-4 fw-bold text-secondary">
+                        <span className="text-dark">Mijoz: </span>  {client && client.lastname} {client && client.firstname} {client && client.fathername}
+                    </div>
+                    <table className="w-100 mt-3">
+                        <thead>
+                            <tr style={{ borderBottom: "1px solid #999" }} >
+                                <th style={{ width: "10%", textAlign: "center", padding: "10px 0" }}>№</th>
+                                <th style={{ width: "30%", textAlign: "center", padding: "10px 0" }}>Bo'limlar</th>
+                                <th style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>Hisob</th>
+                                <th style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>Kuni</th>
+                                <th style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>Soati</th>
+                            </tr>
+                        </thead>
+                        <tbody style={{ borderBottom: "1px solid #999" }}>
+
+                            {
+                                sortSections && sortSections.map((section, key) => {
+                                    allPrice = allPrice + section.price
+                                    return (
+                                        <tr key={key}>
+                                            <td style={{ width: "10%", textAlign: "center", padding: "10px 0" }}>{key + 1}</td>
+                                            <td style={{ width: "30%", textAlign: "center", padding: "10px 0" }}>
+                                                {section.name}
+                                            </td>
+                                            <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{section.price}</td>
+                                            <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{new Date(section.bronDay).toLocaleDateString()}</td>
+                                            <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{section.bronTime}</td>
+                                        </tr>
+                                    )
+                                })
+                            }
+
+                        </tbody>
+                    </table>
+
+                    <div className="row m-1 mt-3">
+                        <div className="col-6">
+                            <div className="fw-bold text-primary">Jami to'lov:</div>
+                        </div>
+                        <div className="col-6">
+                            <div className="fw-bold  text-end ">{allPrice}</div>
+                        </div>
+                        <hr />
+
+                    </div>
+                    <div className="row m-1">
+                        `            <div className="col-12 text-center">
+                            <button onClick={Confirm} className="btn btn-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
+                            <button onClick={closeModal} className="btn btn-danger" >Qaytish</button>
+                        </div>
+                    </div>
+
+                </Modal>
+            </div>
+
+
+            {/* ========================================================== */}
+            {/* ========================================================== */}
+            {/* ========================================================== */}
+            {/* ========================== EXCEL ========================= */}
+            <table id="reseptionReport" className="table-hover d-none"  >
+                <thead className="d-none">
+                    <tr>
+                        <th className="no" scope="" >№ <FontAwesomeIcon icon={faSort} /> </th>
+                        <th scope="" className="fish text-center">F.I.Sh <FontAwesomeIcon icon={faSort} /></th>
+                        <th scope="" className="id text-center">ID <FontAwesomeIcon icon={faSort} /></th>
+                        <th scope="" className="date text-center" >Kuni <FontAwesomeIcon icon={faSort} /></th>
+                        <th scope="" className="turn text-center">Vaqti <FontAwesomeIcon icon={faSort} /></th>
+                        <th scope="" className="phone text-center">Tel <FontAwesomeIcon icon={faSort} /></th>
+                        <th scope="" className="section text-center">Bo'limi <FontAwesomeIcon icon={faSort} /></th>
+                        <th scope="" className="prices text-center">To'lov <FontAwesomeIcon icon={faSort} /></th>
+                        <th scope="" className="prices text-center">To'langan <FontAwesomeIcon icon={faSort} /></th>
+                        <th scope="" className="position text-center">Holati <FontAwesomeIcon icon={faSort} /></th>
+                    </tr>
+                </thead>
+                <tbody className="" >
+
+                    {
+                        sections.map((section, key) => {
+                            return AllClients.map((client, index) => {
+                                if (client._id === section.client && section.bron === "online") {
+                                    l++
+                                    paid = paid + section.priceCashier
+                                    unpaid = unpaid + (section.price + section.priceCashier)
+                                    return (
+                                        <tr key={key} id={index} >
+                                            <td className="no" >{l}</td>
+                                            <td className="fish text-uppercase" > {client.lastname} {client.firstname} {client.fathername}</td>
+                                            <td className="id" >{client.id}</td>
+                                            <td className="date text-center" >{new Date(section.bronDay).toLocaleDateString()}</td>
+                                            <td className="turn">{section.bronTime}</td>
+                                            <td className="phone">+{client.phone}</td>
+                                            <td className="section text-uppercase"> {section.name} </td>
+                                            <td  >
+                                                {
+                                                    section.price
                                                 }
                                             </td>
-                                            <td className="position" >{
-                                                section.position === "kutilmoqda" ?
-                                                    <><Link onClick={() => positionUpdate(section._id, "kelgan")} className="btn btn-success mb-1" to={`/reseption/reciept/${client._id}`} >Qabul qilish</Link>
-                                                        <button onClick={() => positionUpdate(section._id, "kelmagan")} className="btn btn-danger" >Rad etish</button></> :
+                                            <td className="position" >
+                                                {
+                                                    section.priceCashier
+                                                }
+                                            </td>
+                                            <td className="position" >
+                                                {
                                                     section.position
-                                            }</td>
+                                                }
+                                            </td>
                                         </tr>
                                     )
                                 }
                             })
 
-                        }
-                        )}
-                    </tbody>
-                </table>
-            </div>
+                        })
+                    }
+                </tbody>
+                <footer className="d-none">
+                    <tr>
+                        <th className="no" scope="" >Jami </th>
+                        <th scope="" className="fish text-center"></th>
+                        <th scope="" className="id text-center"></th>
+                        <th scope="" className="date text-center" ></th>
+                        <th scope="" className="turn text-center"></th>
+                        <th scope="" className="phone text-center"></th>
+                        <th scope="" className="section text-center"></th>
+                        <th scope="" className="prices text-center"> {unpaid + paid} </th>
+                        <th scope="" className="prices text-center"> {paid} </th>
+                        <th scope="" className="position text-center">  </th>
+                    </tr>
+                </footer>
+            </table>
+
         </div>
     )
 }

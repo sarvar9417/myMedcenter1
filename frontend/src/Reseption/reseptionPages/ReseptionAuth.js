@@ -28,20 +28,20 @@ export const AuthPage = () => {
         setForm({ ...form, [event.target.name]: event.target.value })
     }
 
-    const registerHandler = async () => {
-        try {
-            const data = await request('/api/auth/reseption/register', 'POST', { ...form })
-        } catch (e) {
+    // const registerHandler = async () => {
+    //     try {
+    //         const data = await request('/api/auth/reseption/register', 'POST', { ...form })
+    //     } catch (e) {
 
-        }
-    }
+    //     }
+    // }
 
     const loginHandler = async () => {
         try {
             const data = await request('/api/auth/reseption/login', 'POST', { ...form })
             auth.login(data.token, data.reseptionId, data.user)
         } catch (e) {
-
+            notify(e)
         }
     }
 
@@ -93,14 +93,14 @@ export const AuthPage = () => {
                                             >
                                                 Kirish
                                             </button>
-                                            <button
+                                            {/* <button
                                                 onClick={registerHandler}
                                                 className="btn btn-primary btn-block"
                                                 type="button"
                                                 disabled={loading}
                                             >
                                                 Regitratsiya
-                                            </button>
+                                            </button> */}
                                         </div>
                                         <div className="login-or">
                                             <span className="or-line"></span>
