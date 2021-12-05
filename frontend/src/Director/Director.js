@@ -3,7 +3,6 @@ import { DirectorRoutes } from './DirectorRoutes'
 import { BrowserRouter as Router } from 'react-router-dom'
 import { useAuth } from './hooks/auth.hook'
 import { AuthContext } from './context/AuthContext'
-import { Navbar } from './components/Navbar'
 
 export const Director = () => {
     localStorage.removeItem('doctorData')
@@ -15,7 +14,6 @@ export const Director = () => {
     return (
         <AuthContext.Provider value={{ login, logout, token, directorId, director, isAuthenticated }} >
             <Router>
-                {isAuthenticated && <Navbar />}
                 {directorRouter}
             </Router>
         </AuthContext.Provider>

@@ -22,7 +22,8 @@ router.post('/directorresume/register', async (req, res) => {
             section,
             gender,
             born,
-            phone } = req.body
+            phone,
+        img } = req.body
 
         const directorResume = new DirectorResume({
             firstname,
@@ -31,7 +32,8 @@ router.post('/directorresume/register', async (req, res) => {
             section,
             gender,
             born,
-            phone
+            phone,
+            img
         })
         await directorResume.save()
         res.status(201).json({ directorResume })

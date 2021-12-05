@@ -230,7 +230,7 @@ export const CheckCashier = () => {
                                             <input id={`checkbox${key}`} onChange={event => checkbox(event, key)} type="checkbox" className="check" style={{ position: "absolute" }} />
                                         </td>
                                         <td style={{ width: "10%", textAlign: "center", padding: "10px 0", color: "red" }}>
-                                            <div className="wrapper" style={{ justifyContent: "center" }}>
+                                            <div className="wrapp" style={{ justifyContent: "center" }}>
                                                 {
                                                     payment.map((pay) => {
                                                         if ((pay === "kutilmoqda" && section.payment === "kutilmoqda") ||

@@ -8,7 +8,8 @@ const directorResume = new Schema({
     gender: { type: String, required: true },
     phone: { type: Number },
     born: { type: Date },
-    section: { type: String }
+    section: { type: String },
+    img: {type:String}
 })
 
 function validateDirectorResume(directorResume) {
@@ -19,7 +20,8 @@ function validateDirectorResume(directorResume) {
         section: Joi.string(),
         gender: Joi.string(),
         phone: Joi.number(),
-        born: Joi.date()
+        born: Joi.date(),
+        img: Joi.string()
     })
     return schema.validate(directorResume)
 }

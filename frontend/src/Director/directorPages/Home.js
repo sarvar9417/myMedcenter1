@@ -4,33 +4,38 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faClock } from '@fortawesome/free-solid-svg-icons'
 import { AuthContext } from '../context/AuthContext'
 import { useHttp } from '../hooks/http.hook'
-
-
 import "react-datepicker/dist/react-datepicker.css";
-import { AddDoctor } from './AddDoctor'
-
+import { Chart } from './Chart'
+import { Admin } from './Admin'
 export const Home = () => {
     const month = ["yanvar", "fevral", "mart", "aprel", "may", "iyun", "iyul", "avgust", "sentabr", "oktabr", "noyabr", "dekabr"]
     const auth = useContext(AuthContext)
 
     return (
         <>
-            <div className="container mb-5">
+
+            <Admin/>
+
+
+            <div className=" mb-5">
                 <article className="linkk mt-5" >
                     <h1>Alo/24 Director</h1>
                     <div className="row mt-2" style={{ borderBottom: "1px solid #999", borderTop: "1px solid #999", padding: "2rem 0" }}>
-                        <div className="col-md-4 text-center">
-                            <img style={{ width: "70%", borderRadius: "50%" }} src="https://www.medclean.com/wp-content/uploads/2018/03/doctor-in-white-coat-blog.jpg" />
+                        <div className="col-md-3 text-center pt-3">
+                            <img style={{ width: "190px", borderRadius: "50%" }} src="https://www.medclean.com/wp-content/uploads/2018/03/doctor-in-white-coat-blog.jpg" />
                         </div>
                         <div className="col-md-6">
-                            <h2>{auth.director && auth.director.lastname} {auth.director && auth.director.firstname} {auth.director && auth.director.fathername} </h2>
-                            <p style={{ fontSize: "20px" }}> {auth.director && new Date(auth.director.born).getDate()} {auth.director && month[new Date(auth.director.born).getMonth()]} {auth.director && new Date(auth.director.born).getFullYear()}</p>
-                            <p style={{ fontSize: "20px" }}> {auth.director && auth.director.section}</p>
-                            <p style={{ fontSize: "20px" }}>+{auth.director && auth.director.phone}</p>
-                            <p style={{ fontSize: "20px" }}>nosirovislom07@gmail.com</p>
-                            <p style={{ textAlign: "right" }}>
-                                <button className="btn text-white" style={{ backgroundColor: "rgb(83, 158, 241)", width: "20%", marginLeft: "5%" }}>Edit</button>
+                            <h4>{auth.director && auth.director.lastname} {auth.director && auth.director.firstname} {auth.director && auth.director.fathername} </h4>
+                            <p > {auth.director && new Date(auth.director.born).getDate()} {auth.director && month[new Date(auth.director.born).getMonth()]} {auth.director && new Date(auth.director.born).getFullYear()}</p>
+                            <p > {auth.director && auth.director.section}</p>
+                            <p >+{auth.director && auth.director.phone}</p>
+                            <p >nosirovislom07@gmail.com</p>
+                            <p >
+                                <Link className="btn text-white" style={{ backgroundColor: "rgb(83, 158, 241)", width: "20%", marginLeft: "5%" }}>Edit</Link>
                             </p>
+
+                        </div>
+                        <div className="col-">
 
                         </div>
 
@@ -83,8 +88,10 @@ export const Home = () => {
 
                 </article>
             </div>
+            <Chart />
 
-            <AddDoctor/>
+
+
         </>
 
     )

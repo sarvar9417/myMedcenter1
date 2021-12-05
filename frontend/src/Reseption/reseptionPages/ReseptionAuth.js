@@ -49,8 +49,8 @@ export const AuthPage = () => {
         <section>
             {/*  */}
             <div className="container">
-                <div className="main-wrapper login-body" style={{ margin: "0 auto" }}>
-                    <div className="login-wrapper">
+                <div className="main-wrapp login-body" style={{ margin: "0 auto" }}>
+                    <div className="login-wrapp">
                         <div className="container">
                             <div className=" loginbox ">
                                 <div className="login-left">

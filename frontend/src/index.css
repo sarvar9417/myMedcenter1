@@ -4,8 +4,8 @@
 *{
     box-sizing: border-box;
 }
-.wrapper h1,
-.wrapper h3 {
+.wrapp h1,
+.wrapp h3 {
     text-decoration: none;
     padding: 10px;
 }
@@ -32,64 +32,64 @@ body {
     text-align: center;
 }
 
-.weather-card .top .wrapper {
+.weather-card .top .wrapp {
     padding: 30px;
     position: relative;
     z-index: 1;
 }
 
-.weather-card .top .wrapper .mynav {
+.weather-card .top .wrapp .mynav {
     height: 20px;
 }
 
-.weather-card .top .wrapper .mynav .lnr {
+.weather-card .top .wrapp .mynav .lnr {
     color: #fff;
     font-size: 20px;
 }
 
-.weather-card .top .wrapper .mynav .lnr-chevron-left {
+.weather-card .top .wrapp .mynav .lnr-chevron-left {
     display: inline-block;
     float: left;
 }
 
-.weather-card .top .wrapper .mynav .lnr-cog {
+.weather-card .top .wrapp .mynav .lnr-cog {
     display: inline-block;
     float: right;
 }
 
-.weather-card .top .wrapper .heading {
+.weather-card .top .wrapp .heading {
     text-align: right;
     font-weight: 400;
     color: #fff;
 }
 
-.weather-card .top .wrapper .location {
+.weather-card .top .wrapp .location {
     font-size: 21px;
     font-weight: 400;
     color: #fff;
 }
 
-.weather-card .top .wrapper .temp {
+.weather-card .top .wrapp .temp {
     margin-top: 20px;
 }
 
-.weather-card .top .wrapper .temp a {
+.weather-card .top .wrapp .temp a {
     text-decoration: none;
     color: #fff;
 }
 
-.weather-card .top .wrapper .temp a .temp-type {
+.weather-card .top .wrapp .temp a .temp-type {
     font-size: 85px;
 }
 
-.weather-card .top .wrapper .temp .temp-value {
+.weather-card .top .wrapp .temp .temp-value {
     display: inline-block;
     font-size: 40px;
     font-weight: 600;
     color: #fff;
 }
 
-.weather-card .top .wrapper .temp .deg {
+.weather-card .top .wrapp .temp .deg {
     display: inline-block;
     font-size: 35px;
     font-weight: 600;
@@ -115,7 +115,7 @@ body {
     text-align: center;
 }
 
-.weather-card .bottom .wrapper .forecast {
+.weather-card .bottom .wrapp .forecast {
     overflow: hidden;
     margin: 0;
     font-size: 0;
@@ -124,19 +124,19 @@ body {
     max-height: 155px;
 }
 
-.weather-card .bottom .wrapper .forecast a {
+.weather-card .bottom .wrapp .forecast a {
     text-decoration: none;
     color: #000;
 }
 
-.weather-card .bottom .wrapper .forecast .go-up {
+.weather-card .bottom .wrapp .forecast .go-up {
     text-align: center;
     display: block;
     font-size: 25px;
     margin-bottom: 10px;
 }
 
-.weather-card .bottom .wrapper .forecast li {
+.weather-card .bottom .wrapp .forecast li {
     display: block;
     font-size: 25px;
     font-weight: 400;
@@ -145,18 +145,18 @@ body {
     margin-bottom: 30px;
 }
 
-.weather-card .bottom .wrapper .forecast li .date {
+.weather-card .bottom .wrapp .forecast li .date {
     display: inline-block;
 }
 
-.weather-card .bottom .wrapper .forecast li .condition {
+.weather-card .bottom .wrapp .forecast li .condition {
     display: inline-block;
     vertical-align: middle;
     float: right;
     font-size: 25px;
 }
 
-.weather-card .bottom .wrapper .forecast li .condition .temp {
+.weather-card .bottom .wrapp .forecast li .condition .temp {
     display: inline-block;
     vertical-align: top;
     font-family: 'Montserrat', sans-serif;
@@ -165,7 +165,7 @@ body {
     padding-top: 2px;
 }
 
-.weather-card .bottom .wrapper .forecast li .condition .temp .deg {
+.weather-card .bottom .wrapp .forecast li .condition .temp .deg {
     display: inline-block;
     font-size: 10px;
     font-weight: 600;
@@ -173,11 +173,11 @@ body {
     vertical-align: top;
 }
 
-.weather-card .bottom .wrapper .forecast li .condition .temp .temp-type {
+.weather-card .bottom .wrapp .forecast li .condition .temp .temp-type {
     font-size: 20px;
 }
 
-.weather-card .bottom .wrapper .forecast li.active {
+.weather-card .bottom .wrapp .forecast li.active {
     color: rgba(0, 0, 0, 0.8);
 }
 
@@ -235,14 +235,14 @@ body {
     min-height: 100vh;
 }
 
-.login-wrapper {
+.login-wrapp {
     width: 100%;
     height: 100%;
     display: table-cell;
     vertical-align: middle;
 }
 
-.login-wrapper .loginbox {
+.login-wrapp .loginbox {
     background-color: #fff;
     border-radius: 6px;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
@@ -253,7 +253,7 @@ body {
     width: 100%;
 }
 
-.login-wrapper .loginbox .login-left {
+.login-wrapp .loginbox .login-left {
     align-items: center;
     background: linear-gradient(180deg, #1b5a90, #00d0f1);
     border-radius: 6px 0 0 6px;
@@ -263,7 +263,7 @@ body {
     display: flex;
 }
 
-.login-wrapper .loginbox .login-right {
+.login-wrapp .loginbox .login-right {
     align-items: center;
     display: flex;
     justify-content: center;
@@ -271,12 +271,12 @@ body {
     width: 400px;
 }
 
-.login-wrapper .loginbox .login-right .login-right-wrap {
+.login-wrapp .loginbox .login-right .login-right-wrap {
     max-width: 100%;
     flex: 0 0 100%;
 }
 
-.login-wrapper .loginbox .login-right h1 {
+.login-wrapp .loginbox .login-right h1 {
     font-size: 26px;
     font-weight: 500;
     margin-bottom: 5px;
@@ -290,25 +290,25 @@ body {
     text-align: center;
 }
 
-.login-wrapper .loginbox .login-right .forgotpass a {
+.login-wrapp .loginbox .login-right .forgotpass a {
     color: #a0a0a0;
 }
 
-.login-wrapper .loginbox .login-right .forgotpass a:hover {
+.login-wrapp .loginbox .login-right .forgotpass a:hover {
     color: #333;
     text-decoration: underline;
 }
 
-.login-wrapper .loginbox .login-right .dont-have {
+.login-wrapp .loginbox .login-right .dont-have {
     color: #a0a0a0;
     margin-top: 1.875rem;
 }
 
-.login-wrapper .loginbox .login-right .dont-have a {
+.login-wrapp .loginbox .login-right .dont-have a {
     color: #333;
 }
 
-.login-wrapper .loginbox .login-right .dont-have a:hover {
+.login-wrapp .loginbox .login-right .dont-have a:hover {
     text-decoration: underline;
 }
 

@@ -51,7 +51,7 @@ export const AddDoctor = () => {
                     </div>
                     <div className="row mt-3">
                         <div className="col-md-6 input_box" data-aos="fade-right">
-                        <div className="wrapper">
+                        <div className="wrapp">
                 <input
                   className="input"
                   id="erkak"

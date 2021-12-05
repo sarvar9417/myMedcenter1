@@ -275,7 +275,7 @@ export const NewOnlineClient = () => {
                 <div className="col-md-6" >
                     <div className="form-group">
                         <div className="btn-group" data-toggle="buttons">
-                            <div className="wrapper">
+                            <div className="wrapp">
                                 <input
                                     className="input"
                                     id="erkak"

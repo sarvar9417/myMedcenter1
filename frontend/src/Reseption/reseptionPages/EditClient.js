@@ -136,7 +136,7 @@ export const EditClient = () => {
                                 <div className="form-group">
                                     {/* <label className="text-muted mandatory d-block">Jinsi</label> */}
                                     <div className="btn-group" data-toggle="buttons">
-                                        <div className="wrapper">
+                                        <div className="wrapp">
                                             <input
                                                 className="input"
                                                 id="erkak"
