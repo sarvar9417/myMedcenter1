@@ -81,6 +81,7 @@ export const ClientAllHistory = () => {
                     {
                         sections && sections.map((section, key) => {
                             return (
+                                // o'zgartiriladi
                                 <div className="row">
                                     <div className="col-3" style={{ borderRight: "3px solid black" }}>
                                         <ul style={{ listStyle: "none" }}>
