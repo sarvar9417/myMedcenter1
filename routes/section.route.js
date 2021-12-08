@@ -269,6 +269,43 @@ router.put('/doctordone/:id', auth, async (req, res) => {
 
 // ===================================================================================
 // ===================================================================================
+// DIRECTOR routes
+
+router.get('/director', auth, async (req, res) => {
+    try {
+        const sections = await Section.find()
+        res.json(sections)
+    } catch (e) {
+        res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
+    }
+})
+
+router.get('/director/:index', auth, async (req, res) => {
+    try {
+        const months = parseInt(req.params.index)
+        const sections = await Section.find()
+        var m = 0
+        var n = 0
+        sections.map((section) => {
+            if (parseInt(new Date(section.bronDay).getMonth()) === months) {
+                m++
+                n = n + section.priceCashier
+            }
+        })
+        res.json({ count: m, price: n })
+    } catch (e) {
+        res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
+    }
+})
+
+
+// END DIRECTOR SECTION
+// ===================================================================================
+// ===================================================================================
+
+
+// ===================================================================================
+// ===================================================================================
 // TURN routes
 
 router.get('/turn/:section', async (req, res) => {

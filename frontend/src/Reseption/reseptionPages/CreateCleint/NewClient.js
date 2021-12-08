@@ -88,6 +88,7 @@ export const NewClient = () => {
 
 
   const changeHandlar = (event) => {
+    console.log(event.target.value);
     setClient({ ...client, [event.target.name]: event.target.value })
   }
 
@@ -283,12 +284,12 @@ export const NewClient = () => {
       <div className="row">
         <div className="col-md-6 mb-2" >
           <div className="form-group">
-            <div className="btn-group" data-toggle="buttons">
-              <div className="wrapper">
+            <div className="btn-group">
+              <div className="wrapp">
                 <input
                   className="input"
                   id="erkak"
-                  onChange={changeHandlar}
+                  onClick={changeHandlar}
                   name="gender"
                   type="radio"
                   defaultValue="man"

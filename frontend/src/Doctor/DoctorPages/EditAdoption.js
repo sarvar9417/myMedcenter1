@@ -245,9 +245,9 @@ export const EditAdoption = () => {
                     <h1 className="mt-5" style={{ marginBottom: "50px", textAlign: "center" }}>MedicalCenter  Navoi</h1>
                     <h5>{new Date().toLocaleDateString()}</h5>
                     <h5>Bemor: <span className="fs-4">{client.firstname} {client.lastname} {client.fathername}</span></h5>
-                    <textarea name="comment" onChange={changeComment} style={{ height: "200px" }} className="form-control" defaultValue={section.comment}></textarea>
+                    <textarea name="comment" onChange={changeComment} style={{ height: "200px" }} className="form-control" defaultValue={section && section.comment}></textarea>
                     <br/>
-                    <textarea name="summary" onChange={changeSummary} style={{height:"200px"}} className="form-control" defaultValue={section.summary}></textarea>
+                    <textarea name="summary" onChange={changeSummary} style={{ height: "200px" }} className="form-control" defaultValue={section && section.summary}></textarea>
                     
                     <br />
     
