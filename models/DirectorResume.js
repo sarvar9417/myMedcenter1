@@ -5,7 +5,6 @@ const directorResume = new Schema({
     firstname: { type: String, required: true },
     lastname: { type: String, required: true },
     fathername: { type: String },
-    gender: { type: String, required: true },
     phone: { type: Number },
     born: { type: Date },
     section: { type: String },
@@ -18,7 +17,6 @@ function validateDirectorResume(directorResume) {
         lastname: Joi.string(),
         fathername: Joi.string(),
         section: Joi.string(),
-        gender: Joi.string(),
         phone: Joi.number(),
         born: Joi.date(),
         img: Joi.string()

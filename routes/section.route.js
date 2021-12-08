@@ -83,11 +83,10 @@ router.get('/reseption/:id', auth, async (req, res) => {
 })
 
 // /api/section/reseption/clientId //
-router.get('/reseptionid/:id/:connector', auth, async (req, res) => {
+router.get('/reseptionid/:id', auth, async (req, res) => {
     try {
         const id = req.params.id
-        const connector = req.params.connector
-        const sections = await Section.find({ client: id, connector: connector })
+        const sections = await Section.find({ client: id })
         res.json(sections)
 
     } catch (e) {

@@ -21,7 +21,7 @@ export const ClientAllHistory = () => {
 
     const getClient = useCallback(async () => {
         try {
-            const data = await request(`/api/clients/doctor/${clientId}`, 'GET', null,
+            const data = await request(`/api/clients/reseption/${clientId}`, 'GET', null,
                 {
                     Authorization: `Bearer ${auth.token}`
                 })
@@ -33,12 +33,14 @@ export const ClientAllHistory = () => {
 
     const getSections = useCallback(async () => {
         try {
-            const fetch = await request(`/api/section/doctorhistory/${clientId}`, 'GET', null,
+            const fetch = await request(`/api/section/reseptionid/${clientId}`, 'GET', null,
                 {
                     Authorization: `Bearer ${auth.token}`
                 })
+            console.log(fetch);
             setSections(fetch)
         } catch (e) {
+
         }
     }, [request])
 
@@ -53,86 +55,73 @@ export const ClientAllHistory = () => {
     return (
         <div>
             <div ref={componentRef}>
-                <div className="container p-3" style={{ fontFamily: "times" }}>
-                    <div className="row">
-                        <div className="col-12 p-t3">
-                            <h1 className="text-center" > KASALLIK TARIXI</h1>
-                        </div>
-                        <hr style={{ border: "2px solid black" }} />
-                    </div>
-                    <div className="row">
-                        <div className="col-3">
-                            <img src="https://png.pngitem.com/pimgs/s/463-4634060_crm-my-client-client-icon-hd-png-download.png" alt="client img" style={{ width: "180px", height: "200px" }} />
-                        </div>
-                        <div className="col-6">
-                            <h3>{client.lastname} {client.firstname} {client.fathername}</h3>
-                            <h3><b>ID: </b> {client.id}</h3>
-                            <ul style={{ listStyle: "none" }}>
-                                <li> <b> Tug'ilgan yili</b>: {new Date(client.born).toLocaleDateString()}</li>
-                                <li> <b> Tel: </b>: +{client.phone}</li>
-                            </ul>
 
-                        </div>
-                        <div className="col-3">
-                            <img src="" alt="logo medcenter" style={{ width: "50px", height: "50px" }} />
-                        </div>
-                        <hr style={{ border: "2px solid black" }} />
-                    </div>
-                    {
-                        sections && sections.map((section, key) => {
-                            return (
-                                // o'zgartiriladi
+                <div className="">
+                    <article className="linkk mt-5" >
+                        <h1 style={{ fontWeight: "700" }}>Kasallik tarixi</h1>
+                        <div className="row mt-4" style={{ border: "25px solid hsla(212, 54%, 71%, 0.471)" }}>
+                            <div className="col-7 mt-3">
                                 <div className="row">
-                                    <div className="col-3" style={{ borderRight: "3px solid black" }}>
-                                        <ul style={{ listStyle: "none" }}>
-                                            <li className="pb-3 w-100 text-end">
-                                                <b  >Murojaat bo'limi</b>
-                                            </li>
-                                            <li className="pb-3 w-100 text-end">
-                                                <b  >To'lov summasi</b>
-                                            </li>
-                                            <li className=" pb-3 w-100 text-end">
-                                                <b>Murojaat vaqti</b>
-                                            </li>
-                                            <li className="pb-3 w-100 text-end">
-                                                <b>Qabul turi</b>
-                                            </li>
-                                            <li className=" pb-3 w-100 text-end">
-                                                <b>Doktor xulosasi</b>
-                                            </li>
-                                            <li className=" w-100 text-end">
-                                                <b>Izoh</b>
-                                            </li>
-                                        </ul>
+                                    <p style={{ fontWeight: "700", color: "blue", fontSize: "22px", margin: "10px" }}>Mijoz ma'lumotlari</p>
+                                    <div className="col-4">
+                                        <p style={{ fontWeight: "700", fontSize: "18px", margin: "10px" }}>Familiyasi</p>
+                                        <p style={{ fontWeight: "700", fontSize: "18px", margin: "10px" }} >Ismi</p>
+                                        <p style={{ fontWeight: "700", fontSize: "18px", margin: "10px" }}>Otasining ismi</p>
                                     </div>
-                                    <div className="col-9">
-                                        <ul style={{ listStyle: "none" }}>
-                                            <li className="pb-3 w-100">
-                                                {section.name}
-                                            </li>
-                                            <li className="pb-3 w-100">
-                                                {section.price}
-                                            </li>
-                                            <li className=" pb-3 w-100">
-                                                {new mongoose.Types.ObjectId(section._id).getTimestamp().toLocaleDateString()}
-                                            </li>
-                                            <li className="pb-3 w-100 ">
-                                                {section.bron}
-                                            </li>
-                                            <li className=" pb-3 w-100 ">
-                                                {section.summary === " " ? "Xulosa berilmagan" : section.summary}
-                                            </li>
-                                            <li className=" w-100 ">
-                                                {section.comment === " " ? "Izoh qoldirilmagan" : section.comment}
-                                            </li>
-                                        </ul>
+                                    <div className="col-8">
+                                        <p style={{ fontWeight: "500", fontSize: "18px", margin: "10px" }}>{client.lastname}</p>
+                                        <p style={{ fontWeight: "500", fontSize: "18px", margin: "10px" }} >{client.firstname}</p>
+                                        <p style={{ fontWeight: "500", fontSize: "18px", margin: "10px" }}>{client.fathername}</p>
                                     </div>
-                                    <hr className="mt-2" />
                                 </div>
-                            )
-                        })
-                    }
-
+                            </div>
+                            <div className="col-5 mt-3">
+                                <div className="row">
+                                    <p style={{ fontWeight: "700", color: "blue", fontSize: "20px", margin: "10px 0" }}>Qo'shimcha ma'lumotlar</p>
+                                    <div className="col-4">
+                                        <p style={{ fontWeight: "700", fontSize: "18px", margin: "10px 0" }}>Tug'ilgan yili</p>
+                                        <p style={{ fontWeight: "700", fontSize: "18px", margin: "10px 0" }}>Jinsi</p>
+                                        <p style={{ fontWeight: "700", fontSize: "18px", margin: "10px 0" }}>Telefon raqami</p>
+                                    </div>
+                                    <div className="col-8">
+                                        <p style={{ fontWeight: "500", fontSize: "18px", margin: "10px 0" }}>{client.born && new Date(client.born).toLocaleDateString()}</p>
+                                        <p style={{ fontWeight: "500", fontSize: "18px", margin: "10px 0" }} >{client && client.gender === "man" ? "Erkak" : "Ayol"}</p>
+                                        <p style={{ fontWeight: "500", fontSize: "18px", margin: "10px 0" }} >+{client && client.phone}</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        {
+                            sections && sections.map((section, key) => {
+                                console.log(section);
+                                return (
+                                    <div className="row" style={{ border: "25px solid hsla(212, 54%, 71%, 0.471)", borderTop: "none" }}>
+                                        <div className="row">
+                                            <div className="col-6 fs-5 fw-bold p-2">
+                                                Bo'limi: {section && section.name}
+                                            </div>
+                                            <div className="col-4 fs-5 p-2 text-end">
+                                                Murojaat kuni: <br />
+                                                To'lov:
+                                            </div>
+                                            <div className="col-2 fs-5 p-2 text-end">
+                                                {section && new Date(section.bronDay).toLocaleDateString()}<br />
+                                                {section && section.price}
+                                            </div>
+                                            <hr />
+                                            <div className="col-12">
+                                                <h5>Izoh:</h5>
+                                                <p>{section.comment && section.comment}</p>
+                                            </div>
+                                            <div className="col-12">
+                                                <h5>Xulosa:</h5>
+                                                <p>{section.summary && section.summary}</p>
+                                            </div>
+                                        </div>
+                                    </div>)
+                            })
+                        }
+                    </article>
                 </div>
             </div>
             <div className="container" style={{ position: "fixed", bottom: "0" }} >

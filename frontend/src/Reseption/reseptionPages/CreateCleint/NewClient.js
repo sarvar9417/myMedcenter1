@@ -88,7 +88,6 @@ export const NewClient = () => {
 
 
   const changeHandlar = (event) => {
-    console.log(event.target.value);
     setClient({ ...client, [event.target.name]: event.target.value })
   }
 
@@ -344,7 +343,7 @@ export const NewClient = () => {
             closeMenuOnSelect={false}
             components={animatedComponents}
             isMulti
-            options={options && options}
+            options={options && options }
           />
         </div>
       </div>
@@ -353,7 +352,7 @@ export const NewClient = () => {
           return (
             <div key={key} className="row">
               <div className="col-7" >
-                <label className="text-muted mandatory"></label>
+                <label className="text-muted mandatory"> {}</label>
                 <input
                   disabled
                   defaultValue={section.price}
@@ -361,12 +360,12 @@ export const NewClient = () => {
                   id={key}
                   type="number"
                   name={section.name}
-                  className="form-control"
+                  className="form-control mt-2"
                   placeholder={section.name + " summasi"}
                 />
               </div>
               <div className="col-5">
-                <label className="text-muted mandatory">{ } navbati</label>
+                <label className="text-muted mandatory"style={{fontWeight:"100"}}> navbati</label>
                 <input
                   // onChange={changeHandlar}
                   type="number"

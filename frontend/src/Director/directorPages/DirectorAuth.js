@@ -59,7 +59,7 @@ export const AuthPage = () => {
                                 </div>
                                 <div className="login-right">
                                     <div className="login-right-wrap">
-                                        <h1>Shifokor bo'limi</h1>
+                                        <h1>Direktor bo'limi</h1>
                                         <div className="login-or">
                                             <span className="or-line"></span>
                                             <span className="span-or"></span>

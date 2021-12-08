@@ -1,5 +1,6 @@
 import React, { useContext } from 'react'
 import { useHistory } from 'react-router'
+import { Link } from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext'
 
 export const Header = () => {
@@ -16,6 +17,9 @@ export const Header = () => {
             <ul className="navbar-nav">
                 <li className="nav-item">
                     <a className="nav-link" data-widget="pushmenu"  role="button"><i className="fas fa-bars" /></a>
+                </li>
+                <li className="nav-item">
+                    <Link className="nav-link a aktive" to="/sayt">Bosh sahifa</Link>
                 </li>
             </ul>
             {/* Right navbar links */}

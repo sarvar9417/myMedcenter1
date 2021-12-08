@@ -20,7 +20,6 @@ router.post('/directorresume/register', async (req, res) => {
             lastname,
             fathername,
             section,
-            gender,
             born,
             phone,
         img } = req.body
@@ -30,7 +29,6 @@ router.post('/directorresume/register', async (req, res) => {
             lastname,
             fathername,
             section,
-            gender,
             born,
             phone,
             img

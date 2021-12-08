@@ -8,7 +8,7 @@ const config = require('config')
 const jwt = require('jsonwebtoken')
 
 // /api/auth/register
-router.post('/doctorresume/register', async (req, res) => {
+router.post('/doctorresume/register', auth, async (req, res) => {
     try {
         const { error } = validateDoctorResume(req.body)
         if (error) {
@@ -17,25 +17,28 @@ router.post('/doctorresume/register', async (req, res) => {
                 message: error.message
             })
         }
-        const { firstname,
+        console.log(req.body)
+        const {
+            firstname,
             lastname,
             fathername,
             section,
-            gender,
             born,
-            phone } = req.body
+            phone,
+            image
+        } = req.body
 
         const doctorResume = new DoctorResume({
             firstname,
             lastname,
             fathername,
             section,
-            gender,
             born,
-            phone
+            phone,
+            image
         })
         await doctorResume.save()
-        res.status(201).json({ doctorResume })
+        res.status(201).json( doctorResume)
 
     } catch (e) {
         res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
@@ -43,7 +46,7 @@ router.post('/doctorresume/register', async (req, res) => {
 })
 
 //
-router.post('/register', async (req, res) => {
+router.post('/register', auth, async (req, res) => {
     try {
         const { error } = validateDoctor(req.body)
         if (error) {
@@ -70,7 +73,7 @@ router.post('/register', async (req, res) => {
 
 
 // /api/auth/login
-router.post('/login', async (req, res) => {
+router.post('/login', auth, async (req, res) => {
     try {
         const { error } = validateDoctor(req.body)
         if (error) {
@@ -110,6 +113,47 @@ router.get('/director', auth, async (req, res) => {
     try {
         const doctors = await DoctorResume.find()
         res.json(doctors)
+    } catch (e) {
+        res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
+    }
+})
+
+// /api/section/reseption
+router.get('/login/:id', auth, async (req, res) => {
+    try {
+        const doctor = await Doctor.find({doctorId: req.params.id})
+        res.json(doctor)
+    } catch (e) {
+        res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
+    }
+})
+
+// /api/section/reseption
+router.get('/director/:id', auth, async (req, res) => {
+    try {
+        const id = req.params.id
+        const doctor = await DoctorResume.findById(id)
+        res.json(doctor)
+    } catch (e) {
+        res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
+    }
+})
+
+router.patch('/director/:id', auth, async (req, res) => {
+    try {
+        const id = req.params.id
+        const edit = await DoctorResume.findByIdAndUpdate(id, req.body)
+        res.json(edit)
+    } catch (e) {
+        res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
+    }
+})
+
+router.delete('/director/:id', auth, async (req, res) => {
+    try {
+        const id = req.params.id
+        const del = await DoctorResume.findByIdAndDelete(id)
+        res.json(del)
     } catch (e) {
         res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
     }

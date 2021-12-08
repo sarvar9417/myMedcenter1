@@ -48,6 +48,48 @@ router.get('/', auth, async (req, res) => {
     }
 })
 
+router.get('/:id', auth, async (req, res) => {
+    try {
+        const direction = await Direction.findById(req.params.id)
+        res.json(direction)
+    } catch (e) {
+        res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
+    }
+})
+
+router.patch('/:id', auth, async (req, res) => {
+    try {
+        const id = req.params.id
+        const edit = await Direction.findByIdAndUpdate(id, req.body)
+        res.json(edit)
+
+    } catch (e) {
+        res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
+    }
+})
+
+router.patch('/:id', auth, async (req, res) => {
+    try {
+        const id = req.params.id
+        const edit = await Direction.findByIdAndUpdate(id, req.body)
+        res.json(edit)
+
+    } catch (e) {
+        res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
+    }
+})
+
+router.delete('/:id', auth, async (req, res) => {
+    try {
+        const id = req.params.id
+        const edit = await Direction.findByIdAndDelete(id)
+        res.json(edit)
+
+    } catch (e) {
+        res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
+    }
+})
+
 // // /api/direction/reseption
 // router.get('/reseption/:id', auth, async (req, res) => {
 //     try {
@@ -268,16 +310,7 @@ router.get('/', auth, async (req, res) => {
 
 
 
-// router.patch('/:id', auth, async (req, res) => {
-//     try {
-//         const id = req.params.id
-//         const edit = await Direction.findByIdAndUpdate(id, req.body)
-//         res.json(edit)
 
-//     } catch (e) {
-//         res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
-//     }
-// })
 
 
 

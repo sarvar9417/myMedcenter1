@@ -374,3 +374,7 @@ body {
     top: 0;
     width: 42px;
 }
+
+.main-footer{
+    background-color: rgba(0, 0, 0, 0) !important;
+}

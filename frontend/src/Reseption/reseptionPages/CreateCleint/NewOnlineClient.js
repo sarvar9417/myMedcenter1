@@ -274,7 +274,7 @@ export const NewOnlineClient = () => {
             <div className="row">
                 <div className="col-md-6" >
                     <div className="form-group">
-                        <div className="btn-group" data-toggle="buttons">
+                        <div className="btn-group" >
                             <div className="wrapp">
                                 <input
                                     className="input"
@@ -354,7 +354,7 @@ export const NewOnlineClient = () => {
                                         id={key}
                                         type="number"
                                         name={section.name}
-                                        className="form-control"
+                                        className="form-control mt-2"
                                         placeholder={section.name + " summasi"}
                                     />
                                 </div>

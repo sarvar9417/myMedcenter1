@@ -16,19 +16,14 @@ export const Dashboard = () => {
                     </div>
                 </div>
             </div>
-
-            <div>
-            </div>
             <section className="content">
                 <div className="container-fluid">
                     <BrowserRouter>
                         <DashboardMenu />
                         <DashboardRoutes />
                     </BrowserRouter>
-                    {/* /.row (main row) */}
-                </div>{/* /.container-fluid */}
+                </div>
             </section>
-            {/* /.content */}
         </div>
 
     )

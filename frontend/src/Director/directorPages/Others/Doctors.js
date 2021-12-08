@@ -13,7 +13,6 @@ export const Doctors = () => {
             const fetch = await request('/api/auth/doctor/director', 'GET', null, {
                 Authorization: `Bearer ${auth.token}`
             })
-            console.log(fetch);
             setDoctors(fetch)
         } catch (error) {
 
@@ -29,7 +28,7 @@ export const Doctors = () => {
         <div>
             <div className="row p-3">
                 <div className="col-12 text-end">
-                        <Link to="/director/doctor/adddoctor" className="btn btn-success">
+                        <Link to="/director/adddoctor" className="btn btn-success">
                             Shifokor qo'shish
                         </Link>
                 </div>
@@ -41,7 +40,7 @@ export const Doctors = () => {
                             <div className="col-lg-3 col-md-4 col-sm-6" >
                                 <div className="card">
                                     <div className="card-header" >
-                                        <img className="card-image img-fluid" src={"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQu_2PCY7347M8XJAFZlkuh27CHMKvXd0RjCW8LH8MlFXNW0T062_Tz3p-16Xq_pacupTk&usqp=CAU"} />
+                                        <img className="card-image img-fluid" src={doctor.image} />
                                     </div>
                                     <div className="card-body">
                                         <h5> {doctor.lastname} {doctor.firstname} {doctor.fathername}</h5>
@@ -50,7 +49,7 @@ export const Doctors = () => {
                                         <h6>{doctor.section}</h6>
                                     </div>
                                     <div className="card-footer">
-                                        <Link to={`/director/doctors/edit/${doctor._id}`} className="btn btn-primary">
+                                        <Link to={`/director/editdoctor/${doctor._id}`} className="btn btn-primary">
                                             Tahrirlash
                                         </Link>
                                     </div>

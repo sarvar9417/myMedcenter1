@@ -3,6 +3,13 @@ import { Route, Switch, Redirect } from 'react-router-dom'
 import { Doctors } from './Others/Doctors'
 import { ClientsPages } from './Others/ClientsPages'
 import { Chart } from './Others/Chart'
+import { AddDoctor } from './Others/AddDoctor'
+import { EditDoctor } from './Others/EditDoctor'
+import { Directions } from './Others/Directions'
+import { AddDirection } from './Others/AddDirection'
+import { EditDirection } from './Others/EditDirection'
+import { ClientAllHistory } from '../directorPages/Others/ClientAllHistory'
+import { ClientHistory  } from '../directorPages/Others/ClientHistory'
 export const DashboardRoutes = () => {
     return (
         <div style={{ overflow: "auto" }}>
@@ -15,6 +22,27 @@ export const DashboardRoutes = () => {
                 </Route>
                 <Route path='/director/doctors' >
                     <Doctors />
+                </Route>
+                <Route path='/director/adddoctor' >
+                    <AddDoctor />
+                </Route>
+                <Route path='/director/editdoctor/:id' >
+                    <EditDoctor />
+                </Route>
+                <Route path='/director/directions' >
+                    <Directions />
+                </Route>
+                <Route path='/director/adddirection' >
+                    <AddDirection />
+                </Route>
+                <Route path='/director/directionedit/:id' >
+                    <EditDirection />
+                </Route>
+                <Route path='/director/clientallhistory/:id' >
+                    <ClientAllHistory />
+                </Route>
+                <Route path='/director/clienthistory/:id' >
+                    <ClientHistory />
                 </Route>
                 <Redirect to="/director" />
             </Switch>

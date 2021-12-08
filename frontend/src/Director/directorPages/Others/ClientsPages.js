@@ -205,7 +205,7 @@ export const ClientsPages = () => {
     return (
         <div className="container"  >
 
-            <div className="row mb-3" style={{ minWidth: "1000px" }}>
+            <div className="row mb-3" style={{ minWidth: "1000px" }} >
                 <div className=" col-lg-2 col-md-4 col-sm-4">
                     <DatePicker className="form-control mb-2" selected={startDate} onChange={(date) => { setStartDate(date) }} />
                 </div>
@@ -225,7 +225,7 @@ export const ClientsPages = () => {
                 <div className="col-lg-1 col-md-1 col-sm-2">
                     <button onClick={searchBornDate} className="btn text-white mb-2" style={{ backgroundColor: "#45D3D3" }}><FontAwesomeIcon icon={faSearch} /></button>
                 </div>
-                <div className="col-lg-2 col-md-6 col-sm-6 ">
+                <div className="col-lg-2 col-md-6 col-sm-6 " style={{zIndex:"100 !important"}}>
                     <Select onChange={(event) => sortOnOff(event)} defaultValue={options && options[0]} options={options} />
                 </div>
             </div>
@@ -317,7 +317,7 @@ export const ClientsPages = () => {
                 </table>
             </div>
 
-            <div className="overflow-auto" style={{ maxHeight: "100vh", minWidth: "1000px" }}>
+            <div className="overflow-auto" style={{minHeight:"25vh", maxHeight: "70vh", minWidth: "1000px" }}>
                 <table className=" table-hover"  >
                     <tbody className="" >
                         {sections.map((section, key) => {
@@ -328,10 +328,10 @@ export const ClientsPages = () => {
                                         <tr key={key} >
                                             <td className="no" >{k}</td>
                                             <td className="date" >{new mongoose.Types.ObjectId(client._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(client._id).getTimestamp().toLocaleTimeString()}</td>
-                                            <td className="fish text-uppercase" ><Link style={{ fontWeight: "500" }} to={`/reseption/clientallhistory/${client._id}`} > {client.lastname} {client.firstname} {client.fathername} </Link></td>
+                                            <td className="fish text-uppercase" ><Link style={{ fontWeight: "500" }} to={`/director/clientallhistory/${client._id}`} > {client.lastname} {client.firstname} {client.fathername} </Link></td>
                                             <td className="id" >{client.id}</td>
                                             <td className="phone">+{client.phone}</td>
-                                            <td className="section text-uppercase"> <Link to={`/reseption/clienthistory/${section._id}`} style={{ color: "#00aa00", fontWeight: "600" }} > {section.name} </Link></td>
+                                            <td className="section text-uppercase"> <Link to={`/director/clienthistory/${section._id}`} style={{ color: "#00aa00", fontWeight: "600" }} > {section.name} </Link></td>
                                             <td className="prices text-bold">{section.price}</td>
                                             <td className="prices text-bold text-success">{section.priceCashier}</td>
                                             <td className="prices text-bold text-danger" >{section.price - section.priceCashier}</td>
@@ -345,7 +345,7 @@ export const ClientsPages = () => {
 
                 </table>
             </div>
-            <table className=" table-hover"  >
+            <table className=" table-hover" style={{ minWidth: "1000px" }}  >
                 <tfooter className=" ">
                     <tr className="mt-3">
                         <th className="no" scope="" colSpan="6" >Jami: </th>

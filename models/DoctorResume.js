@@ -1,14 +1,14 @@
-const { Schema, model, Types } = require('mongoose')
+const { Schema, model } = require('mongoose')
 const Joi = require('joi')
 
 const doctorResume = new Schema({
     firstname: { type: String, required: true },
     lastname: { type: String, required: true },
     fathername: { type: String },
-    gender: { type: String, required: true },
     phone: { type: Number },
     born: { type: Date },
-    section: { type: String } 
+    section: { type: String },
+    image: { type: String }
 })
 
 function validateDoctorResume(doctorResume) {
@@ -17,9 +17,9 @@ function validateDoctorResume(doctorResume) {
         lastname: Joi.string(),
         fathername: Joi.string(),
         section: Joi.string(),
-        gender: Joi.string(),
         phone: Joi.number(),
-        born: Joi.date()
+        born: Joi.date(),
+        image: Joi.string()
     })
     return schema.validate(doctorResume)
 }

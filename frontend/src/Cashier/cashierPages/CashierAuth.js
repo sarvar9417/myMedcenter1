@@ -93,14 +93,14 @@ export const AuthPage = () => {
                                             >
                                                 Kirish
                                             </button>
-                                            <button
+                                            {/* <button
                                                 onClick={registerHandler}
                                                 className="btn btn-primary btn-block"
                                                 type="button"
                                                 disabled={loading}
                                             >
                                                 Regitratsiya
-                                            </button>
+                                            </button> */}
                                         </div>
                                         <div className="login-or">
                                             <span className="or-line"></span>
