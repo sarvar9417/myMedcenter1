@@ -22,8 +22,8 @@ export const DirectionTurn = ({ section }) => {
     }, [request, offline, setOffline])
 
     setTimeout(() => {
-        localStorage.clear()
-        window.localStorage.clear()
+        // localStorage.clear()
+        // window.localStorage.clear()
         getOffline()
     }, 5000)
 

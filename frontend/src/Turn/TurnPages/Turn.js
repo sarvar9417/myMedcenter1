@@ -44,7 +44,7 @@ export const Turn = () => {
             notify(error)
             clearError()
         }
-    }, [getDirections, notify, clearError, error, directions])
+    }, [getDirections, notify, clearError, directions])
 
     if (loading) {
         return <Loading />

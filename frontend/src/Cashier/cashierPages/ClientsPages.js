@@ -61,7 +61,6 @@ export const ClientsPages = () => {
 
         }
     }, [request])
-
     useEffect(() => {
         getClients()
         getAllSections()
@@ -175,29 +174,29 @@ export const ClientsPages = () => {
     }
 
     return (
-        <div className="container m-5"  >
+        <div className="container m-5 mx-auto" style={{ minWidth: "1100px" }}  >
 
             <div className="row mb-3">
-                <div className=" col-lg-2 col-md-4 col-sm-4">
+                <div className=" col-2">
                     <DatePicker className="form-control mb-2" selected={startDate} onChange={(date) => { setStartDate(date) }} />
                 </div>
-                <div className="col-lg-2 col-md-4 col-sm-4">
+                <div className="col-2">
                     <DatePicker className="form-control mb-2" selected={endDate} onChange={(date) => setEndDate(date)} />
                 </div>
-                <div className="col-lg-1 col-md-1 col-sm-1  ">
+                <div className="col-1">
                     <button onClick={searchDate} className="btn text-white mb-2" style={{ backgroundColor: "#45D3D3" }}> <FontAwesomeIcon icon={faSearch} /> </button>
                 </div>
-                <div className="col-lg-2 col-md-4 col-sm-6 mb-2">
+                <div className="col-2">
                     <input style={{ marginRight: "5px", width: "115px" }} defaultValue={clientId} onChange={(event) => { setClientId(parseInt(event.target.value)) }} className="form-control pb-2 d-inline-block" type="number" placeholder="ID qidiruvi" />
                     <button onClick={searchId} className="btn text-white" style={{ backgroundColor: "#45D3D3" }}><FontAwesomeIcon icon={faSearch} /></button>
                 </div>
-                <div className="col-lg-2 col-md-4 col-sm-4  ">
+                <div className="col-2">
                     <input className="form-control mb-2" type="date" onChange={(event) => { setBorn(new Date(event.target.value)) }} />
                 </div>
-                <div className="col-lg-1 col-md-1 col-sm-2">
+                <div className="col-1">
                     <button onClick={searchBornDate} className="btn text-white mb-2" style={{ backgroundColor: "#45D3D3" }}><FontAwesomeIcon icon={faSearch} /></button>
                 </div>
-                <div className="col-lg-2 col-md-6 col-sm-6 ">
+                <div className="col-2">
                     <Select onChange={(event) => sortOnOff(event)} defaultValue={options[0]} options={options} />
                 </div>
             </div>
@@ -216,8 +215,8 @@ export const ClientsPages = () => {
                 </div>
 
             </div>
-            <div>
-                <div style={{ minWidth: "1300px" }} >
+            <div style={{ minWidth: "1100px" }}>
+                <div  >
                     <table id="" className="table-striped table-hover" style={{ borderBottom: "1px solid #aaa", marginBottom: "10px" }} >
                         <thead>
                             <tr>
@@ -238,7 +237,7 @@ export const ClientsPages = () => {
                 </div>
             </div>
 
-            <div className="overflow-auto" style={{ height: "59vh", minWidth: "1300px" }}>
+            <div className="overflow-auto" style={{ height: "59vh", minWidth: "1100px" }}>
                 <table className=" table-hover"  >
                     <tbody className="" >
                         {sections.map((section, key) => {
@@ -284,8 +283,8 @@ export const ClientsPages = () => {
                                                 }
                                             </td>
                                             <td className="cek fw-bold"> {section.payment === "to'lanmagan" ? "" : section.price}</td>
-                                            <td className="cek fw-bold text-success"> {section.payment === "to'lanmagan" ? "" :section.priceCashier}</td>
-                                            <td className="cek fw-bold text-warning"> {section.payment === "to'lanmagan" ? "" :section.price - section.priceCashier}</td>
+                                            <td className="cek fw-bold text-success"> {section.payment === "to'lanmagan" ? "" : section.priceCashier}</td>
+                                            <td className="cek fw-bold text-warning"> {section.payment === "to'lanmagan" ? "" : section.price - section.priceCashier}</td>
                                         </tr>
                                     )
                                 }
@@ -298,7 +297,7 @@ export const ClientsPages = () => {
             </div>
 
             <div>
-                <div style={{ minWidth: "1300px" }} >
+                <div style={{ minWidth: "1100px" }} >
                     <table id="" className="table-striped table-hover pt-2" style={{ borderBottom: "1px solid #aaa", marginBottom: "10px" }} >
                         <tfooter>
                             <tr className="mt-4">
@@ -319,10 +318,10 @@ export const ClientsPages = () => {
                 </div>
             </div>
 
-
-
-
-
+            {/* =================================================================== */}
+            {/* =================================================================== */}
+            {/* =================================================================== */}
+            {/* Excel */}
             <div className="d-none" >
                 <table id="reseptionReport" className=" table-hover"  >
                     <thead className=" ">
@@ -354,12 +353,12 @@ export const ClientsPages = () => {
                                             <td className="phone">+{client.phone}</td>
                                             <td className="section text-uppercase">  {section.name} </td>
                                             <td  >
-                                                {section.payment === "to'lanmagan" ? "" :section.price}
+                                                {section.payment === "to'lanmagan" ? "" : section.price}
                                             </td>
                                             <td >
-                                                {section.payment === "to'lanmagan" ? "" :section.priceCashier}
+                                                {section.payment === "to'lanmagan" ? "" : section.priceCashier}
                                             </td>
-                                            <td className="cek fw-bold text-danger"> {section.payment === "to'lanmagan" ? "" :section.price - section.priceCashier}</td>
+                                            <td className="cek fw-bold text-danger"> {section.payment === "to'lanmagan" ? "" : section.price - section.priceCashier}</td>
                                         </tr>
                                     )
                                 }
@@ -371,7 +370,7 @@ export const ClientsPages = () => {
                     <tfooter className=" ">
                         <tr>
                             <th className="no" colSpan="7" scope="" > Jami </th>
-                            <th scope="" className="prices text-center">{paid+unpaid}</th>
+                            <th scope="" className="prices text-center">{paid + unpaid}</th>
                             <th scope="" className="prices text-center">{paid}</th>
                             <th scope="" className="prices text-center">{unpaid}</th>
                         </tr>
