@@ -9,7 +9,6 @@ export const Reseption = () => {
     localStorage.removeItem('cashierData')
     localStorage.removeItem('directorData')
     const { login, token, logout, reseptionId } = useAuth()
-    // const isAuthenticated = true
     const isAuthenticated = !!token
     const reseptionRouter = ReseptionRoutes(isAuthenticated)
     return (

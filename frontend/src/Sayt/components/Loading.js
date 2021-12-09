@@ -1,6 +1,6 @@
 import React from 'react'
 import "react-loader-spinner/dist/loader/css/react-spinner-loader.css";
-import gif from '../gif/4.gif'
+import gif from '../../gif/4.gif'
 export const Loading = () => {
   return (
     <>

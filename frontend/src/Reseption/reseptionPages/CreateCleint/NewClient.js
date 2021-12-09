@@ -179,7 +179,6 @@ export const NewClient = () => {
       const connector = await request("/api/connector/register", "POST", { client }, {
         Authorization: `Bearer ${auth.token}`
       })
-
       createAllSections(client, connector._id)
     } catch (e) {
       notify(e)
@@ -229,7 +228,7 @@ export const NewClient = () => {
   }
 
   return (
-    <div data-aos="flip-right">
+    <div>
       <div className="row" >
         <div className="col-12 mt-3 d-flex justify-content-center align-items-center">
           <h4 className="text-right">Mijozning ma'lumotlarini kiritish</h4>
@@ -238,6 +237,7 @@ export const NewClient = () => {
       <div className="row">
         <div className="col-md-6 mb-2 input_box" >
           <input
+          defaultValue={client.lastname}
             onChange={changeHandlar}
             name="lastname"
             type="text"
@@ -248,6 +248,7 @@ export const NewClient = () => {
         </div>
         <div className="col-md-6 mb-2 input_box" >
           <input
+            defaultValue={client.firstname}
             onChange={changeHandlar}
             name="firstname"
             type="text"
@@ -260,6 +261,7 @@ export const NewClient = () => {
       <div className="row" style={{ padding: "15px 0" }}>
         <div className="col-md-6 mb-2 input_box" >
           <input
+            defaultValue={client.fathername}
             onChange={changeHandlar}
             name="fathername"
             type="text"
@@ -270,6 +272,7 @@ export const NewClient = () => {
         </div>
         <div className="col-md-6 mb-2 input_box" >
           <input
+            defaultValue={new Date(client.born).getFullYear().toString() + '-' + (new Date(client.born).getMonth() < 9 ? "0" + (new Date(client.born).getMonth() + 1).toString() : (new Date(client.born).getMonth() + 1).toString()) + '-' + (new Date(client.born).getDate() < 10 ? "0" + (new Date(client.born).getDate()).toString() : (new Date(client.born).getDate()).toString())}
             onChange={changeDate}
             type="date"
             name="born"
@@ -292,6 +295,7 @@ export const NewClient = () => {
                   name="gender"
                   type="radio"
                   defaultValue="man"
+                  checked={client.gender==="man"? true: false}
                 />
                 <label
                   className={client.gender === "man" ? "label clabel" : "label"}
@@ -300,6 +304,7 @@ export const NewClient = () => {
                   Erkak
                 </label>
                 <input
+                  checked={client.gender === "woman" ? true : false}
                   className="input"
                   type="radio"
                   id="ayol"
@@ -321,6 +326,7 @@ export const NewClient = () => {
         </div>
         <div className="col-md-6 mb-2 input_box" >
           <input
+          defaultValue={client.phone}
             onChange={changeHandlar}
             type="number"
             name="phone"

@@ -209,14 +209,14 @@ export const NewOnlineClient = () => {
     }
 
     return (
-        <div data-aos="flip-right">
+        <div>
             <div className="row">
                 <div className="col-12 mt-3 d-flex justify-content-center align-items-center">
                     <h4 className="text-right">Mijozning ma'lumotlarini kiritish</h4>
                 </div>
             </div>
             <div className="row">
-                <div className="col-md-6 input_box" >
+                <div className="col-md-6 input_box mb-2" >
                     <input
                         defaultValue={client.lastname}
                         onChange={changeHandlar}
@@ -239,7 +239,7 @@ export const NewOnlineClient = () => {
                 </div>
             </div>
             <div className="row" style={{ padding: "15px 0" }}>
-                <div className="col-md-6 input_box" >
+                <div className="col-md-6 input_box mb-2" >
                     <input
                         defaultValue={client.fathername}
                         onChange={changeHandlar}
@@ -345,7 +345,7 @@ export const NewOnlineClient = () => {
                     sections.map((section, key) => {
                         return (
                             <>
-                                <div className="col-md-4 col-sm-6" >
+                                <div className="col-4" >
                                     <label className=""></label>
                                     <input
                                         disabled
@@ -358,8 +358,8 @@ export const NewOnlineClient = () => {
                                         placeholder={section.name + " summasi"}
                                     />
                                 </div>
-                                <div className="col-md-4 col-sm-6">
-                                    <label className=""> Kuni</label>
+                                <div className="col-4">
+                                    <label style={{ fontWeight: "100" }}> Kuni</label>
                                     <input
                                         id={key}
                                         onChange={changeBronDate}
@@ -368,8 +368,8 @@ export const NewOnlineClient = () => {
                                         className="form-control"
                                     />
                                 </div>
-                                <div className="col-md-4 col-sm-6">
-                                    <label className="">Vaqti</label>
+                                <div className="col-4">
+                                    <label style={{ fontWeight: "100" }}>Vaqti</label>
                                     <input
                                         id={key}
                                         value={section.bronTime}

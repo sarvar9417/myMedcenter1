@@ -7,8 +7,8 @@ import { Navbar } from './components/Navbar'
 export const Cashier = () => {
     localStorage.removeItem('doctorData')
     localStorage.removeItem('reseptionData')
+    localStorage.removeItem('directorData')
     const { login, token, logout, cashierId } = useAuth()
-    // const isAuthenticated = true
     const isAuthenticated = !!token
     const cashierRouter = CashierRoutes(isAuthenticated)
     return (
@@ -20,6 +20,3 @@ export const Cashier = () => {
         </AuthContext.Provider>
     )
 }
-
-
-

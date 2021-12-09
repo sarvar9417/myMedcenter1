@@ -207,14 +207,14 @@ export const OldClient = () => {
   }
 
   return (
-    <div data-aos="flip-right">
+    <div>
       <div className="row">
         <div className="col-12 mt-3 d-flex justify-content-center align-items-center">
           <h4 className="text-right">Mijozning ma'lumotlarini kiritish</h4>
         </div>
       </div>
       <div className="row">
-        <div className="col-md-6 input_box" >
+        <div className="col-md-6 input_box mb-2" >
           <input
             onChange={(event) => searchClient(parseInt(event.target.value))}
             name="ID"
@@ -225,7 +225,7 @@ export const OldClient = () => {
           />
           <label className="labels">Mijoznig ID raqami</label>
         </div>
-        <div className="col-md-6 input_box" >
+        <div className="col-md-6 input_box mb-2" >
           <input
             defaultValue={client.phone}
             onChange={changeHandlar}
@@ -241,7 +241,7 @@ export const OldClient = () => {
         </div>
       </div>
       <div className="row" style={{ padding: "15px 0" }}>
-        <div className="col-md-6 input_box">
+        <div className="col-md-6 input_box mb-2">
           <input
             defaultValue={client.lastname}
             disabled
@@ -267,7 +267,7 @@ export const OldClient = () => {
         </div>
       </div>
       <div className="row">
-        <div className="col-md-6 input_box" >
+        <div className="col-md-6 input_box mb-2" >
           <input
             defaultValue={client.fathername}
             disabled
@@ -330,7 +330,7 @@ export const OldClient = () => {
                   id={key}
                   type="number"
                   name={section.name}
-                  className="form-control"
+                  className="form-control mt-2"
                   placeholder={section.name + " summasi"}
                 />
               </div>

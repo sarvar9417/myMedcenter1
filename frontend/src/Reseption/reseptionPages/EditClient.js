@@ -92,13 +92,13 @@ export const EditClient = () => {
     return (
         <div className="container rounded bg-white mt-5 mb-5">
             <div className="row">
-                <div className="col-md-5 border-right offset-3">
+                <div className="col-md-5 offset-3">
                     <div className="p-3 py-5">
                         <div className="d-flex justify-content-between align-items-center mb-3">
                             <h4 className="text-right">Mijozning ma'lumotlarini kiritish</h4>
                         </div>
                         <div className="row mt-2">
-                            <div className="col-md-6 input_box" data-aos="fade-right">
+                            <div className="col-md-6 input_box" >
                                 <input
                                     defaultValue={form.lastname}
                                     onChange={changeHandlar}
@@ -109,7 +109,7 @@ export const EditClient = () => {
                                 />
                                 <label className="labels">Familiya</label>
                             </div>
-                            <div className="col-md-6 input_box" data-aos="fade-left">
+                            <div className="col-md-6 input_box" >
                                 <input
                                     defaultValue={form.firstname}
                                     onChange={changeHandlar}
@@ -121,7 +121,7 @@ export const EditClient = () => {
                             </div>
                         </div>
                         <div className="row mt-3">
-                            <div className="col-md-6 input_box" data-aos="fade-right">
+                            <div className="col-md-6 input_box" >
                                 <input
                                     defaultValue={form.fathername}
                                     onChange={changeHandlar}
@@ -132,7 +132,7 @@ export const EditClient = () => {
                                 />
                                 <label className="labels">Otasining ismi</label>
                             </div>
-                            <div className="col-md-6" data-aos="zoom-out">
+                            <div className="col-md-6" >
                                 <div className="form-group">
                                     {/* <label className="text-muted mandatory d-block">Jinsi</label> */}
                                     <div className="btn-group" data-toggle="buttons">
@@ -171,7 +171,7 @@ export const EditClient = () => {
                             </div>
                         </div>
                         <div className="row mt-3">
-                            <div className="col-md-6 input_box" data-aos="fade-right">
+                            <div className="col-md-6 input_box" >
 
 
                                 <input
@@ -186,9 +186,7 @@ export const EditClient = () => {
                                     Telefon raqami
                                 </label>
                             </div>
-                            <div className="col-md-6 input_box" data-aos="fade-left">
-
-
+                            <div className="col-md-6 input_box" >
                                 <input
                                     onChange={changeDate}
                                     value={new Date(form.born).getFullYear().toString() + '-' + (new Date(form.born).getMonth() < 9 ? "0" + (new Date(form.born).getMonth() + 1).toString() : (new Date(form.born).getMonth() + 1).toString()) + '-' + (new Date(form.born).getDate() < 10 ? "0" + (new Date(form.born).getDate()).toString() : (new Date(form.born).getDate()).toString())}
@@ -203,7 +201,7 @@ export const EditClient = () => {
                             </div>
 
                         </div>
-                        <div className="mt-5 text-center" data-aos="fade-up">
+                        <div className="mt-5 text-center">
                             <button
                                 onClick={checkData}
                                 className="btn btn-primary profile-button"

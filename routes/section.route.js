@@ -94,6 +94,19 @@ router.get('/reseptionid/:id', auth, async (req, res) => {
     }
 })
 
+// /api/section/reseption/clientId //
+router.get('/reseptionid/:id/:connector', auth, async (req, res) => {
+    try {
+        const id = req.params.id
+        const connector = req.params.connector
+        const sections = await Section.find({ client: id, connector: connector })
+        res.json(sections)
+
+    } catch (e) {
+        res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
+    }
+})
+
 router.put('/reseption/:id', auth, async (req, res) => {
     try {
         const id = req.params.id
@@ -159,8 +172,6 @@ router.patch('/cashier/:id', auth, async (req, res) => {
 // ===================================================================================
 // ===================================================================================
 // DOCTOR routes
-
-
 
 // Get online sections
 router.get('/doctoronline/:section', auth, async (req, res) => {
@@ -258,8 +269,6 @@ router.put('/doctordone/:id', auth, async (req, res) => {
         res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
     }
 })
-
-
 
 // END DOCTOR SECTION
 // ===================================================================================

@@ -69,7 +69,7 @@ export const OldOnlineClient = () => {
         fathername: '',
         gender: '',
         phone: '',
-        id: 0,
+        id: "",
         born: ''
     })
 
@@ -285,8 +285,6 @@ export const OldOnlineClient = () => {
 
             <div className="row" >
                 <div className="col-md-12" >
-                    <label className="labels">qayta tanlaganda narx va vaqt o'chib ketadi
-                    </label>
                     <Select
                         onChange={(event) => changeSections(event)}
                         closeMenuOnSelect={false}
@@ -301,7 +299,7 @@ export const OldOnlineClient = () => {
                     sections.map((section, key) => {
                         return (
                             <>
-                                <div className="col-md-4 col-sm-6" >
+                                <div className="col-md-4 col-sm-6 mt-2" >
                                     <label className=""></label>
                                     <input
                                         disabled
@@ -315,7 +313,7 @@ export const OldOnlineClient = () => {
                                     />
                                 </div>
                                 <div className="col-md-4 col-sm-6">
-                                    <label className=""> Kelish vaqti
+                                    <label style={{fontWeight:"100"}} > Kuni
                                     </label>
                                     <input
                                         id={key}
@@ -326,7 +324,7 @@ export const OldOnlineClient = () => {
                                     />
                                 </div>
                                 <div className="col-md-4 col-sm-6">
-                                    <label className=""></label>
+                                    <label style={{ fontWeight: "100" }}>Vaqti</label>
                                     <input
                                         id={key}
                                         value={section.bronTime}

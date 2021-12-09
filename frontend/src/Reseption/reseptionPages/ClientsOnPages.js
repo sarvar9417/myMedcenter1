@@ -137,7 +137,7 @@ export const ClientsOnPages = () => {
         sortSections.map((section) => {
             positionUpdate(section._id, "kelgan")
         })
-        history.push(`/reseption/reciept/${client._id}`)
+        history.push(`/reseption/reciept/${client._id}/${sortSections[0].connector}`)
     }
 
 
@@ -256,29 +256,28 @@ export const ClientsOnPages = () => {
     }
 
     return (
-        <div className="container m-5" onLoad={dontCome} >
-
+        <div className="container m-5 text-center mx-auto" style={{minWidth:"1100px"}} onLoad={dontCome}>
             <div className="row mb-3">
-                <div className=" col-lg-2 col-md-4 col-sm-4">
+                <div className="col-2">
                     <DatePicker className="form-control mb-2" selected={startDate} onChange={(date) => { setStartDate(date) }} />
                 </div>
-                <div className="col-lg-2 col-md-4 col-sm-4">
+                <div className="col-2">
                     <DatePicker className="form-control mb-2" selected={endDate} onChange={(date) => setEndDate(date)} />
                 </div>
-                <div className="col-lg-1 col-md-1 col-sm-1  ">
+                <div className="col-1">
                     <button onClick={searchDate} className="btn text-white mb-2" style={{ backgroundColor: "#45D3D3" }}> <FontAwesomeIcon icon={faSearch} /> </button>
                 </div>
-                <div className="col-lg-2 col-md-4 col-sm-6 mb-2">
+                <div className="col-2">
                     <input style={{ marginRight: "5px", width: "115px" }} defaultValue={clientId} onChange={(event) => { setClientId(parseInt(event.target.value)) }} className="form-control pb-2 d-inline-block" type="number" placeholder="ID qidiruvi" />
                     <button onClick={searchId} className="btn text-white" style={{ backgroundColor: "#45D3D3" }}><FontAwesomeIcon icon={faSearch} /></button>
                 </div>
-                <div className="col-lg-2 col-md-4 col-sm-4  ">
+                <div className="col-2">
                     <input className="form-control mb-2" type="date" onChange={(event) => { setBorn(new Date(event.target.value)) }} />
                 </div>
-                <div className="col-lg-1 col-md-1 col-sm-2">
+                <div className="col-1">
                     <button onClick={searchBornDate} className="btn text-white mb-2" style={{ backgroundColor: "#45D3D3" }}><FontAwesomeIcon icon={faSearch} /></button>
                 </div>
-                <div className="col-lg-2 col-md-6 col-sm-6 p-0 ">
+                <div className="col-2">
                     <Select onChange={(event) => sort(event)} defaultValue={options[0]} options={options} />
                 </div>
             </div>
@@ -298,7 +297,7 @@ export const ClientsOnPages = () => {
             </div>
 
             <div>
-                <div style={{ minWidth: "1300px" }} >
+                <div style={{ minWidth: "1100px" }} >
                     <table id="" className="table-striped table-hover" style={{ borderBottom: "1px solid #aaa", marginBottom: "10px" }} >
                         <thead>
                             <tr>
@@ -317,7 +316,7 @@ export const ClientsOnPages = () => {
                     </table>
                 </div>
             </div>
-            <div className="overflow-auto" style={{ height: "70vh", minWidth: "1300px" }}>
+            <div className="overflow-auto" style={{ height: "60vh", minWidth: "1100px" }}>
                 <table className="table-hover"  >
                     <thead className="d-none">
                         <tr>
@@ -380,7 +379,7 @@ export const ClientsOnPages = () => {
                                                     {
                                                         section.position === "kutilmoqda" ?
                                                             <>
-                                                                <button onClick={() => { getSections(client) }} className="btn come mx-1" to={`/reseption/reciept/${client._id}`} >Qabul qilish</button>
+                                                                <button onClick={() => { getSections(client) }} className="btn come mx-1" >Qabul qilish</button>
                                                                 <button onClick={() => positionUpdate(section._id, "kelmagan")} className="btn dontcome" >Rad etish</button>
                                                             </> :
                                                             section.position

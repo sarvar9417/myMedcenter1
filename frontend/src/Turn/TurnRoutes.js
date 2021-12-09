@@ -4,7 +4,7 @@ import { Turn } from './TurnPages/Turn'
 
 export const TurnRoutes = () => {
     return (
-        <div style={{}} >
+        <div >
             <Switch >
                 <Route path="/turn" exact >
                     <Turn />
