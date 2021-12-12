@@ -1,9 +1,10 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
-import { useHistory, useLocation, useParams } from 'react-router-dom'
-import { useHttp } from '../hooks/http.hook';
+import { useHistory } from 'react-router-dom'
+import { useParams } from 'react-router'
+import { useHttp } from '../hooks/http.hook'
 import { faSearch } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import Modal from 'react-modal';
+import Modal from 'react-modal'
 import './cashier.css'
 import { AuthContext } from '../context/AuthContext'
 import { toast } from "react-toastify"
@@ -15,26 +16,26 @@ const customStyles = {
         right: 'auto',
         bottom: 'auto',
         marginRight: '-50%',
-        transform: 'translate(-50%, -50%)',
+        transform: 'translate(-50%, -50%)'
     },
 }
 
 toast.configure()
-export const EditCheckCashier = () => {
+export const CheckHistory = () => {
     const auth = useContext(AuthContext)
     const history = useHistory()
     const notify = (e) => {
         toast.error(e)
     }
-    
+
     const [modalIsOpen, setIsOpen] = useState(false)
 
     function openModal() {
-        setIsOpen(true);
+        setIsOpen(true)
     }
 
     function closeModal() {
-        setIsOpen(false);
+        setIsOpen(false)
     }
 
     let allPrice = 0
@@ -46,11 +47,10 @@ export const EditCheckCashier = () => {
     const [clientId, setClientId] = useState(useParams().id)
     const [clientid, setClientid] = useState()
     const [allSections, setAllSections] = useState([])
-    const [sections, setSections] = useState([useLocation().state])
-    const [client, setClient] = useState()
+    const [sections, setSections] = useState([])
+    const [client, setClient] = useState([])
     const { loading, request } = useHttp()
 
- 
     const getClient = useCallback(async () => {
         try {
             const fetch = await request(`/api/clients/cashier/${clientId}`, 'GET', null, {
@@ -63,6 +63,17 @@ export const EditCheckCashier = () => {
         }
     }, [request, clientId])
 
+
+    const getAllSections = useCallback(async () => {
+        try {
+            const fetch = await request(`/api/section/cashier/${clientId}`, 'GET', null, {
+                Authorization: `Bearer ${auth.token}`
+            })
+            setSections(fetch)
+        } catch (e) {
+
+        }
+    }, [request, clientId])
 
     const inputPriceCashier = (event, key) => {
         document.getElementById(`checkbox${key}`).checked = false
@@ -84,6 +95,14 @@ export const EditCheckCashier = () => {
         }
     }
 
+    const inputCommentCashier = (event, key) => {
+        setSections(
+            Object.values({
+                ...sections,
+                [key]: { ...sections[key], commentCashier: event.target.value },
+            }))
+    }
+
     const changePayment = (key) => {
         document.getElementById(`checkbox${key}`).checked = false
         if (sections[key].payment === "kutilmoqda" || sections[key].payment === "to'langan") {
@@ -97,18 +116,10 @@ export const EditCheckCashier = () => {
             setSections(
                 Object.values({
                     ...sections,
-                    [key]: { ...sections[key], payment: "kutilmoqda", priceCashier: 0, },
+                    [key]: { ...sections[key], payment: "kutilmoqda", priceCashier: 0 },
                 })
             )
         }
-    }
-
-    const inputCommentCashier = (event, key) => {
-        setSections(
-            Object.values({
-                ...sections,
-                [key]: { ...sections[key], commentCashier: event.target.value },
-            }))
     }
 
     const checkbox = (event, key) => {
@@ -116,13 +127,13 @@ export const EditCheckCashier = () => {
             setSections(
                 Object.values({
                     ...sections,
-                    [key]: { ...sections[key], priceCashier: sections[key].price, payment: "to'langan", commentCashier: " "  },
+                    [key]: { ...sections[key], priceCashier: sections[key].price, payment: "to'langan" },
                 }))
         } else {
             setSections(
                 Object.values({
                     ...sections,
-                    [key]: { ...sections[key], priceCashier: 0, payment: "kutilmoqda" },
+                    [key]: { ...sections[key], priceCashier: 0, payment: "kutilmoqda", commentCashier: " " },
                 }))
         }
     }
@@ -137,23 +148,13 @@ export const EditCheckCashier = () => {
         }
     }, [request])
 
+    // const [printPage, setPrintPage] = useState(false)
+
     const checkPrices = () => {
-        let k = 0
-        sections.map(section => {
-            if (section.price !== section.priceCashier &&  section.commentCashier.length < 6) {
-                k++
-                return notify("Iltimos mijoz to'lovni bajarolmagani sababini to'liq ko'rsating.")
-            }
-        })
-        if (!k) {
             openModal()
-        }
     }
 
     const setPayments = () => {
-        sections.map((section) => {
-            patchPayments(section)
-        })
         history.push({
             pathname: `/cashier/reciept/${clientId}`,
             state: sections
@@ -176,18 +177,16 @@ export const EditCheckCashier = () => {
     }
 
     useEffect(() => {
-        if (!client) {
-            getClient()
-    
-        }
-    }, [ getClient])
+        getAllSections()
+        getClient()
+    }, [getAllSections, getClient])
     return (
         <>
-            <div style={{minWidth:"700px", margin: "30px auto", maxWidth: "1000px", padding: "20px 10px", border: "1px solid #999", borderRadius: "5px" }}>
+            <div className="m-3" style={{ maxWidth: "1000px", padding: "20px 10px", border: "1px solid #999", borderRadius: "5px" }}>
                 <div className="row" style={{ justifyContent: "space-between" }}>
-                    <div className="col-sm-6 input_box" >
+                    <div className="col-sm-6 col-lg-4 input_box" >
                         <input
-                            defaultValue={client && client.id}
+                            defaultValue={client.id}
                             name='ID'
                             type="number"
                             className="form-control inp w-75 d-inline-block mr-3 mb-2"
@@ -197,10 +196,10 @@ export const EditCheckCashier = () => {
                         <label className="labels">Mijoznig ID raqami</label>
                         <button onClick={changeHandlar} className="btn text-white" style={{ backgroundColor: "#45D3D3", marginLeft: "5px" }}><FontAwesomeIcon icon={faSearch} /></button>
                     </div>
-                    <div className="col-sm-6  input_box" >
+                    <div className="col-sm-6 col-lg-4 input_box" >
                         <input
-                            value={client && client.lastname + " " + client.firstname + " " + client.fathername}
-                            disabled    
+                            value={client.lastname + " " + client.firstname + " " + client.fathername}
+                            disabled
                             name='FIO'
                             type="text"
                             className="form-control inp"
@@ -210,19 +209,17 @@ export const EditCheckCashier = () => {
                         <label className="labels" style={{ top: "-7px", fontSize: "12px", fontWeight: "500" }}>F.I.O</label>
                     </div>
                 </div>
-                <table className="w-100 mt-3" >
+                <table className="w-100 mt-3">
                     <thead>
                         <tr style={{ borderBottom: "1px solid #999" }} >
                             <th style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>№</th>
                             <th style={{ width: "35%", textAlign: "center", padding: "10px 0" }}>Bo'limlar</th>
                             <th style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>Hisob</th>
-                            <th style={{ width: "25%", textAlign: "center", padding: "10px 0" }}>To'lov</th>
-                            <th style={{ width: "10%", textAlign: "center", padding: "10px 0" }}>Holati</th>
-                            <th style={{ width: "10%", textAlign: "center", padding: "10px 0" }}>Sabab</th>
+                            <th style={{ width: "25%", textAlign: "center", padding: "10px 0" }}>To'langan</th>
+                            <th style={{ width: "10%", textAlign: "center", padding: "10px 0" }}>To'lanmagan</th>
                         </tr>
                     </thead>
-                    <tbody style={{ borderBottom: "1px solid #999" }} >
-
+                    <tbody style={{ borderBottom: "1px solid #999" }}>
                         {
                             sections.map((section, key) => {
                                 allPrice = allPrice + section.price
@@ -238,32 +235,11 @@ export const EditCheckCashier = () => {
                                             {section.name}
                                         </td>
                                         <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{section.price}</td>
-                                        <td style={{ width: "25%", padding: "10px 0" }}>
-                                            <input  onChange={event => inputPriceCashier(event, key)} value={section.priceCashier} type="number" className="form-control" style={{ width: "80%", margin: "auto", display: "inline" }} />
-                                            <input id={`checkbox${key}`} onChange={event => checkbox(event, key)} type="checkbox" className="check" style={{ position: "absolute" }} />
-                                        </td>
-                                        <td style={{ width: "10%", textAlign: "center", padding: "10px 0", color: "red" }}>
-                                            <div className="wrapp" style={{ justifyContent: "center" }}>
-                                                {
-                                                    payment.map((pay) => {
-                                                        if ((pay === "kutilmoqda" && section.payment === "kutilmoqda") ||
-                                                            (pay === "to'langan" && section.payment === "to'langan")) {
-                                                            return <button onClick={() => changePayment(key)} className="payment rlabel">
-                                                                x
-                                                            </button>
-                                                        }
-
-                                                        if ((pay === "to'lanmagan" && section.payment === "to'lanmagan")) {
-                                                            return <button onClick={() => changePayment(key)} className="payment rlabel rclabel">
-                                                                x
-                                                            </button>
-                                                        }
-                                                    })
-                                                }
-                                            </div>
+                                        <td style={{ width: "25%", padding: "10px 0", textAlign: "center" }}>
+                                            {section.priceCashier}
                                         </td>
                                         <td style={{ textAlign: "center", padding: "10px 0", color: "green" }}>
-                                            {section.price !== section.priceCashier ? <textarea defaultValue={section.commentCashier} onChange={(event) => inputCommentCashier(event, key)} key={key} placeholder="To'lov bajarilmagan holatda sababini ko'rsating" className="addDirection" minLength="6" ></textarea> : "To'langan"}
+                                            {section.price - section.priceCashier}
                                         </td>
                                     </tr>
                                 )
@@ -312,7 +288,7 @@ export const EditCheckCashier = () => {
                     </div>
                     <div className="row">
                         <div className="col-12 text-center">
-                            <button className="btn btn-success" onClick={checkPrices}>To'lovni tasdiqlash</button>
+                            <button className="btn btn-success" onClick={checkPrices}>Chekni chop etish</button>
                         </div>
                     </div>
                 </div>
@@ -328,7 +304,7 @@ export const EditCheckCashier = () => {
                     contentLabel="Example Modal"
                 >
                     <div className="text-center fs-4 fw-bold text-secondary">
-                        <span className="text-dark">Mijoz: </span>  {client && client.lastname} {client && client.firstname} {client && client.fathername}
+                        <span className="text-dark">Mijoz: </span>  {client.lastname} {client.firstname} {client.fathername}
                     </div>
                     <table className="w-100 mt-3">
                         <thead>
@@ -357,6 +333,8 @@ export const EditCheckCashier = () => {
                                             <td style={{ width: "10%", textAlign: "center", padding: "10px 0", color: "red" }}>
                                                 {section.payment !== "to'lanmagan" ? section.price - section.priceCashier : 0}
                                             </td>
+
+
                                         </tr>
                                     )
                                 })
@@ -403,9 +381,9 @@ export const EditCheckCashier = () => {
                         </div>
                         <hr />
                     </div>
-                    <div className="row m-1">
+                    <div className="row ">
                         <div className="col-12 text-center">
-                            <button onClick={setPayments} className="btn btn-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
+                            <button onClick={setPayments} className="btn btn-success" style={{ marginRight: "30px" }}>Chop etish</button>
                             <button onClick={closeModal} className="btn btn-danger" >Qaytish</button>
                         </div>
                     </div>

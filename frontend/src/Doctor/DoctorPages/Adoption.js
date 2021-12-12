@@ -89,12 +89,12 @@ export const Adoption = () => {
     ]
     const changeComment = () => {
         let s = ""
-        for (let i = 0; i < comments.length-1; i++) {
+        for (let i = 0; i < comments.length - 1; i++) {
             let n = document.getElementsByClassName("comment")[i].value
             s = s + comments[i] + n
-            
+
         }
-        s = s + comments[comments.length-1]
+        s = s + comments[comments.length - 1]
         setSection({ ...section, comment: s })
     }
 
@@ -178,70 +178,98 @@ export const Adoption = () => {
                 <div className="forms">
                     <h2 style={{ color: "#14A479" }}>Mijoz ma'lumotlari</h2>
                     <div className="row mt-5">
-                        <div className="col-md-2 col-sm-4">
-                            <label style={{ fontSize: "20px", marginRight: "20%" }}>
-                                ID:
-                            </label>
+                        <div className="col-lg-6">
+                            <div className="row">
+                                <div className="col-md-4 col-sm-4">
+                                    <label style={{ fontSize: "20px", marginRight: "20%" }}>
+                                        ID:
+                                    </label>
+                                </div>
+                                <div className="col-md-8 col-sm-8">
+                                    <h3 className="w-100 px-4" style={{ border: "none", background: "#E1FFF7", outline: "none", fontSize: "20px", padding: "5px", fontWeight: "600" }}>
+                                        {client.id}
+                                    </h3>
+                                </div>
+                                <div className="col-md-4 col-sm-4">
+                                    <label style={{ fontSize: "20px", marginRight: "16.5%" }}>
+                                        F.I.O:
+                                    </label>
+                                </div>
+                                <div className="col-md-8 col-sm-8">
+                                    <h3 className="w-100 px-4" style={{ border: "none", background: "#E1FFF7", outline: "none", fontSize: "20px", padding: "5px", fontWeight: "600" }}>
+                                        {client.firstname} {client.lastname} {client.fathername}
+                                    </h3>
+                                </div>
+                                <div className="col-md-4 col-sm-4">
+                                    <label style={{ fontSize: "20px", marginRight: "4%" }}>
+                                        Tug'ilgan yili:
+                                    </label>
+                                </div>
+                                <div className="col-md-8 col-sm-8">
+                                    <h3 className="w-100 px-4" style={{ border: "none", background: "#E1FFF7", outline: "none", fontSize: "20px", padding: "5px", fontWeight: "600" }}>
+                                        {new Date(client.born).toLocaleDateString()}
+                                    </h3>
+                                </div>
+                                <div className="col-md-4 col-sm-4">
+                                    <label style={{ fontSize: "20px", marginRight: "13%" }}>
+                                        Phone:
+                                    </label>
+                                </div>
+                                <div className="col-md-8 col-sm-8">
+                                    <h3 className="w-100 px-4" style={{ border: "none", background: "#E1FFF7", outline: "none", fontSize: "20px", padding: "5px", fontWeight: "600" }}>
+                                        +{client.phone}
+                                    </h3>
+                                </div>
+                            </div>
                         </div>
-                        <div className="col-md-4 col-sm-8">
-                            <h3 className="w-100 px-4" style={{ border: "none", background: "#E1FFF7", outline: "none", fontSize: "20px", padding: "5px", fontWeight: "600" }}>
-                                {client.id}
-                            </h3>
+                        <div className="col-lg-6">
+                            <div className="row">
+                                <div className="col-md-4 col-sm-4">
+                                    <label style={{ fontSize: "20px", marginRight: "15%" }}>
+                                        Maqsad:
+                                    </label>
+                                </div>
+                                <div className="col-md-8 col-sm-8">
+                                    <h3 className="w-100 px-4" style={{ border: "none", background: "#E1FFF7", outline: "none", fontSize: "20px", padding: "5px", fontWeight: "600" }}>
+                                        {section && section.subname}
+                                    </h3>
+                                </div>
+                                <div className="col-md-4 col-sm-4">
+                                    <label style={{ fontSize: "20px", marginRight: "15%" }}>
+                                        Navbati:
+                                    </label>
+                                </div>
+                                <div className="col-md-8 col-sm-8">
+                                    <h3 className="w-100 px-4" style={{ border: "none", background: "#E1FFF7", outline: "none", fontSize: "20px", padding: "5px", fontWeight: "600" }}>
+                                        {section && (section.turn ? section.turn : section.bronTime)}
+                                    </h3>
+                                </div>
+                                <div className="col-md-4 col-sm-4">
+                                    <label style={{ fontSize: "20px", marginRight: "15%" }}>
+                                        To'lov summasi:
+                                    </label>
+                                </div>
+                                <div className="col-md-8 col-sm-8">
+                                    <h3 className="w-100 px-4" style={{ border: "none", background: "#E1FFF7", outline: "none", fontSize: "20px", padding: "5px", fontWeight: "600" }}>
+                                        {section && section.price} so'm
+                                    </h3>
+                                </div>
+                                <div className="col-md-4 col-sm-4">
+                                    <label style={{ fontSize: "20px", marginRight: "15%" }}>
+                                        To'lovlangan summa:
+                                    </label>
+                                </div>
+                                <div className="col-md-8 col-sm-8">
+                                    <h3 className="w-100 px-4" style={{ border: "none", background: "#E1FFF7", outline: "none", fontSize: "20px", padding: "5px", fontWeight: "600" }}>
+                                        {section && section.priceCashier} so'm
+                                    </h3>
+                                </div>
+                            </div>
                         </div>
-                        <div className="col-md-2 col-sm-4">
-                            <label style={{ fontSize: "20px", marginRight: "16.5%" }}>
-                                F.I.O:
-                            </label>
-                        </div>
-                        <div className="col-md-4 col-sm-8">
-                            <h3 className="w-100 px-4" style={{ border: "none", background: "#E1FFF7", outline: "none", fontSize: "20px", padding: "5px", fontWeight: "600" }}>
-                                {client.firstname} {client.lastname} {client.fathername}
-                            </h3>
-                        </div>
-                        <div className="col-md-2 col-sm-4">
-                            <label style={{ fontSize: "20px", marginRight: "4%" }}>
-                                Tug'ilgan yili:
-                            </label>
-                        </div>
-                        <div className="col-md-4 col-sm-8">
-                            <h3 className="w-100 px-4" style={{ border: "none", background: "#E1FFF7", outline: "none", fontSize: "20px", padding: "5px", fontWeight: "600" }}>
-                                {new Date(client.born).toLocaleDateString()}
-                            </h3>
-                        </div>
-                        <div className="col-md-2 col-sm-4">
-                            <label style={{ fontSize: "20px", marginRight: "13%" }}>
-                                Phone:
-                            </label>
-                        </div>
-                        <div className="col-md-4 col-sm-8">
-                            <h3 className="w-100 px-4" style={{ border: "none", background: "#E1FFF7", outline: "none", fontSize: "20px", padding: "5px", fontWeight: "600" }}>
-                                +{client.phone}
-                            </h3>
-                        </div>
-                        <div className="col-md-2 col-sm-4">
-                            <label style={{ fontSize: "20px", marginRight: "15%" }}>
-                                Navbati:
-                            </label>
-                        </div>
-                        <div className="col-md-4 col-sm-8">
-                            <h3 className="w-100 px-4" style={{ border: "none", background: "#E1FFF7", outline: "none", fontSize: "20px", padding: "5px", fontWeight: "600" }}>
-                                {section && (section.turn ? section.turn : section.bronTime)}
-                            </h3>
-                        </div>
-                        <div className="col-md-2 col-sm-4">
-                            <label style={{ fontSize: "20px", marginRight: "15%" }}>
-                                To'lov(holati):
-                            </label>
-                        </div>
-                        <div className="col-md-4 col-sm-8">
-                            <h3 className="w-100 px-4" style={{ border: "none", background: "#E1FFF7", outline: "none", fontSize: "20px", padding: "5px", fontWeight: "600" }}>
-                                {section && section.price} so'm ({section && section.payment})
-                            </h3>
-                        </div>
+
                     </div>
                 </div>
                 <div className="tt " style={{ fontFamily: "times" }}>
-
                     <h1 className="mt-5" style={{ marginBottom: "50px", textAlign: "center" }}>MedicalCenter  Navoi</h1>
                     <h5>{new Date().toLocaleDateString()}</h5>
                     <h5>Bemor: <span className="fs-4">{client.firstname} {client.lastname} {client.fathername}</span></h5>
@@ -263,23 +291,23 @@ export const Adoption = () => {
                     </p>
                     <p>
                         There are many variations of passages of Lorem Ipsum available,
-                        but the majority have suffered alteration in some form, 
+                        but the majority have suffered alteration in some form,
                         <input onChange={changeSummary} type="text" style={{ width: "150px" }} className="input summary" />
                         ,or randomised words which don't look even slightly believable.
                         <input onChange={changeSummary} type="text" style={{ width: "150px" }} className="input summary" />
                         to use a passage of Lorem Ipsum, you need to be sure there isn't anything
-                        embarrassing hidden in the middle of text. 
+                        embarrassing hidden in the middle of text.
                         <input onChange={changeSummary} type="text" style={{ width: "150px" }} className="input summary" />
                         generators on the Internet tend to repeat predefined chunks as necessary,
                         making this the first true generator on the Internet. It uses a dictionary of
                         <input onChange={changeSummary} type="text" style={{ width: "150px" }} className="input summary" />
-                        words, combined with a handful of model sentence structures, 
+                        words, combined with a handful of model sentence structures,
                         <input onChange={changeSummary} type="text" style={{ width: "150px" }} className="input summary" />
                         Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition,
                         injected humour, or non-characteristic words etc.
                     </p>
                     <br />
-    
+
                     <h5>Doctor: <span className="fs-4">{auth.doctor.lastname} {auth.doctor.firstname[0]}</span></h5>
                     <div className="row mt-5 mb-5">
                         <div className="col-2">
@@ -320,7 +348,7 @@ export const Adoption = () => {
             </div>
 
             {/* Modal oynaning ochilishi */}
-            <div style={{fontFamily:"times"}}>
+            <div style={{ fontFamily: "times" }}>
                 <Modal
                     isOpen={modalIsOpen2}
                     onRequestClose={closeModal2}

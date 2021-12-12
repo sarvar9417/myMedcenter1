@@ -67,10 +67,15 @@ export const Turn = () => {
             </div>
             <div className="row mb-4" style={{ overflowX: "hidden" }}>
                 {directions && directions.map((direction, index) => {
-                    return (
-                        <div className="col-lg-3 col-md-4 col-sm-6 mb-2" key={index}>
-                            <DirectionTurn section={direction.value} />
-                        </div>)
+                    if (
+                        (index === 0) ||
+                        (index > 0 && directions[index - 1].section !== directions[index].section)
+                    ) {
+                        return (
+                            <div className="col-lg-3 col-md-4 col-sm-6 mb-2" key={index}>
+                                <DirectionTurn section={direction.section} />
+                            </div>)
+                    }
                 })}
             </div>
             <div className="row mb-4" style={{ overflowX: "hidden" }}>

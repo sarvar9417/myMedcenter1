@@ -5,9 +5,9 @@ import { useAuth } from './hooks/auth.hook'
 import { AuthContext } from './context/AuthContext'
 import { Navbar } from './components/Navbar'
 export const Reseption = () => {
+    localStorage.removeItem('directorData')
     localStorage.removeItem('doctorData')
     localStorage.removeItem('cashierData')
-    localStorage.removeItem('directorData')
     const { login, token, logout, reseptionId } = useAuth()
     const isAuthenticated = !!token
     const reseptionRouter = ReseptionRoutes(isAuthenticated)

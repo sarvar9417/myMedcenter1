@@ -3,6 +3,7 @@ import { Switch, Redirect, Route } from 'react-router-dom'
 import { Cashier } from './Cashier/Cashier'
 import { Director } from './Director/Director'
 import { Doctor } from './Doctor/Doctor'
+import { RegistorDirector } from './RegistorDirector'
 import { Reseption } from './Reseption/Reseption'
 import { Sayt } from './Sayt/sayt'
 import { Turn } from './Turn/Turn'
@@ -24,6 +25,9 @@ export const useRoutes = () => {
             </Route>
             <Route path="/turn" >
                 <Turn />
+            </Route>
+            <Route path="/registerdirector" >
+                <RegistorDirector />
             </Route>
             <Route path="/" >
                 <Sayt />

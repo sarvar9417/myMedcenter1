@@ -5,7 +5,8 @@ const direction = new Schema({
     value: { type: String, required: true },
     price: { type: Number, required: true },
     label: { type: String },
-    subvalue: { type: String }
+    section: { type: String },
+    subsection: { type: String }
 })
 
 function validateDirection(direction) {
@@ -13,7 +14,8 @@ function validateDirection(direction) {
         value: Joi.string(),
         price: Joi.number(),
         label: Joi.string(),
-        subvalue: Joi.string()
+        section: Joi.string(),
+        subsection: Joi.string()
 
     })
     return schema.validate(direction)

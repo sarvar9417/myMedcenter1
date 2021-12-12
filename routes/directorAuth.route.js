@@ -22,7 +22,7 @@ router.post('/directorresume/register', async (req, res) => {
             section,
             born,
             phone,
-        img } = req.body
+        image } = req.body
 
         const directorResume = new DirectorResume({
             firstname,
@@ -31,10 +31,10 @@ router.post('/directorresume/register', async (req, res) => {
             section,
             born,
             phone,
-            img
+            image
         })
         await directorResume.save()
-        res.status(201).json({ directorResume })
+        res.status(201).json( directorResume )
 
     } catch (e) {
         res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
@@ -52,7 +52,6 @@ router.post('/register', async (req, res) => {
             })
         }
         const { login, password, directorId } = req.body
-
         const candidate = await Director.findOne({ login })
         if (candidate) {
             return res.status(400).json({ message: 'Bunday foydalanuvchi tizimda avvaldan mavjud' })

@@ -17,7 +17,7 @@ export const Navbar = () => {
     const logoutHandler = (event) => {
         event.preventDefault()
         auth.logout()
-        history.push('/doctor')
+        history.push('/sayt')
     }
 
     const [show, setShow] = useState(true)
@@ -36,17 +36,11 @@ export const Navbar = () => {
                         <li className="nav-item" >
                             <Link className="nav-link a" to="/doctor/clients">Mijozlar</Link>
                         </li>
-                        {/* <li className="nav-item">
-                            <Link className="nav-link" to="/reseption/cost">Xarajat</Link>
-                        </li>
-                        <li className="nav-item">
-                            <Link className="nav-link" to="/reseption/costs">Xarajatlar</Link>
-                        </li> */}
-                        
+
                     </ul>
                     <li className="nav-item ll" >
-                            <span style={{ backgroundColor: "#EA5353" }} className="nav-link btn text-white" href="" onClick={logoutHandler} >Chiqish</span>
-                        </li>
+                        <span style={{ backgroundColor: "#EA5353" }} className="nav-link btn text-white" href="" onClick={logoutHandler} >Chiqish</span>
+                    </li>
                 </div>
             </div>
         </nav>

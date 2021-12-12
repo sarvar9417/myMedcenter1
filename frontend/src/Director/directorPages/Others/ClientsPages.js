@@ -64,7 +64,7 @@ export const ClientsPages = () => {
             })
             setAllClients(fetch)
         } catch (e) {
-
+            notify(e)
         }
     }, [request, auth])
 
@@ -80,6 +80,9 @@ export const ClientsPages = () => {
         }
     }, [request, auth])
 
+    const notify = (e) => {
+        toast.error(e);
+    }
     useEffect(() => {
         if (error) {
             notify(error)
@@ -88,13 +91,17 @@ export const ClientsPages = () => {
         if (!options) {
             getOptions()
         }
-        getClients()
-        getAllSections()
+        if (AllSections.length === 0 ) {
+            getAllSections()
+            
+        }
+        if (AllClients.length === 0 ) {
+            getClients()
+            
+        }
     }, [getClients, getAllSections, getOptions])
 
-    const notify = (e) => {
-        toast.error(e);
-    };
+    
 
     const searchDate = () => {
         let c = []
@@ -205,27 +212,27 @@ export const ClientsPages = () => {
     return (
         <div className="container"  >
 
-            <div className="row mb-3" style={{ minWidth: "1000px" }} >
-                <div className=" col-lg-2 col-md-4 col-sm-4">
+            <div className="row mb-3" style={{ minWidth: "1100px" }} >
+                <div className=" col-2">
                     <DatePicker className="form-control mb-2" selected={startDate} onChange={(date) => { setStartDate(date) }} />
                 </div>
-                <div className="col-lg-2 col-md-4 col-sm-4">
+                <div className="col-2">
                     <DatePicker className="form-control mb-2" selected={endDate} onChange={(date) => setEndDate(date)} />
                 </div>
-                <div className="col-lg-1 col-md-1 col-sm-1  ">
+                <div className="col-1  ">
                     <button onClick={searchDate} className="btn text-white mb-2" style={{ backgroundColor: "#45D3D3" }}> <FontAwesomeIcon icon={faSearch} /> </button>
                 </div>
-                <div className="col-lg-2 col-md-4 col-sm-6 mb-2">
+                <div className="col-2">
                     <input style={{ marginRight: "5px", width: "115px" }} defaultValue={clientId} onChange={(event) => { setClientId(parseInt(event.target.value)) }} className="form-control pb-2 d-inline-block" type="number" placeholder="ID qidiruvi" />
                     <button onClick={searchId} className="btn text-white" style={{ backgroundColor: "#45D3D3" }}><FontAwesomeIcon icon={faSearch} /></button>
                 </div>
-                <div className="col-lg-2 col-md-4 col-sm-4  ">
+                <div className="col-2  ">
                     <input className="form-control mb-2" type="date" onChange={(event) => { setBorn(new Date(event.target.value)) }} />
                 </div>
-                <div className="col-lg-1 col-md-1 col-sm-2">
+                <div className="col-1">
                     <button onClick={searchBornDate} className="btn text-white mb-2" style={{ backgroundColor: "#45D3D3" }}><FontAwesomeIcon icon={faSearch} /></button>
                 </div>
-                <div className="col-lg-2 col-md-6 col-sm-6 " style={{zIndex:"100 !important"}}>
+                <div className="col-2 " style={{zIndex:"100 !important"}}>
                     <Select onChange={(event) => sortOnOff(event)} defaultValue={options && options[0]} options={options} />
                 </div>
             </div>
@@ -280,8 +287,8 @@ export const ClientsPages = () => {
                         </tr>
                     </thead>
                     <tbody className="" >
-                        {sections.map((section, key) => {
-                            return AllClients.map(client => {
+                        {sections && sections.map((section, key) => {
+                            return ( AllClients.map(client => {
                                 if (client._id === section.client) {
                                     paid = paid + section.priceCashier
                                     unpaid = unpaid + (section.price - section.priceCashier)
@@ -300,7 +307,7 @@ export const ClientsPages = () => {
                                         </tr>
                                     )
                                 }
-                            })
+                            }))
 
                         }
                         )}

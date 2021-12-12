@@ -82,14 +82,16 @@ export const OldClient = () => {
     event.map((section) => {
       let turn = 0
       turns.map((sec) => {
-        if (checkTurn(sec, section.value)) {
+        if (checkTurn(sec, section.section)) {
           turn++
         }
       })
       s.push({
-        name: section.value,
+        name: section.section,
+        subname: section.subsection,
         price: section.price,
         priceCashier: 0,
+        commentCashier: " ",
         comment: " ",
         summary: " ",
         done: "tasdiqlanmagan",

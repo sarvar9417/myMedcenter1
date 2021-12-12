@@ -3,7 +3,7 @@ import { Loader } from '../components/Loader'
 import { useHttp } from '../hooks/http.hook'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPenAlt, faSearch, faSort, faPrint, faClock, faCheck, faSyncAlt, faTimesCircle } from '@fortawesome/free-solid-svg-icons'
-import { Link } from 'react-router-dom'
+import { Link, useHistory } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import DatePicker from "react-datepicker"
 import { AuthContext } from '../context/AuthContext'
@@ -24,6 +24,8 @@ export const ClientsPages = () => {
         { value: "to'langan", label: "To'langan" },
         { value: "to'lanmagan", label: "Rad etilgan" }
     ]
+
+    const history = useHistory()
 
     let paid = 0
     let unpaid = 0
@@ -169,12 +171,19 @@ export const ClientsPages = () => {
 
     }
 
+    const edit = (id, section)=>{
+        history.push({
+            pathname: `/cashier/payedit/${id}`,
+            state: section
+        })
+    }
+
     if (loading) {
         return <Loader />
     }
 
     return (
-        <div className="container m-5 mx-auto" style={{ minWidth: "1100px" }}  >
+        <div className="container m-5 mx-auto" style={{ minWidth: "1250px" }}  >
 
             <div className="row mb-3">
                 <div className=" col-2">
@@ -249,12 +258,12 @@ export const ClientsPages = () => {
                                     return (
                                         <tr key={key} >
                                             <td className="no" >{k}</td>
-                                            <td className="date" >{new mongoose.Types.ObjectId(client._id).getTimestamp().toLocaleDateString()}</td>
+                                            <td className="date" >{new Date(section.bronDay).toLocaleDateString()}</td>
                                             <td className="fish text-uppercase" ><Link style={{ fontWeight: "500" }} to={`/cashier/pay/${client._id}/${section.connector}`} > {client.lastname} {client.firstname} {client.fathername} </Link></td>
                                             <td className="id" >{client.id}</td>
                                             <td className="phone">+{client.phone}</td>
                                             <td className="section text-uppercase fw-bold text-success">  {section.name}</td>
-                                            <td className="edit"> <Link to={`/cashier/payedit/${client._id}/${section.connector}`} > <FontAwesomeIcon icon={faPenAlt} className="text-dark" /> </Link>  </td>
+                                            <td className="edit"> {section.payment === "to'langan" || section.payment === "to'lanmagan" ? "" : <button className="btn" onClick={() => edit(client._id, section)} > <FontAwesomeIcon icon={faPenAlt} className="text-dark" /> </button>}   </td>
                                             <td className={
                                                 payment.map((pay) => {
                                                     if (pay === "to'langan" && section.payment === "to'langan") {
@@ -282,9 +291,9 @@ export const ClientsPages = () => {
                                                     })
                                                 }
                                             </td>
-                                            <td className="cek fw-bold"> {section.payment === "to'lanmagan" ? "" : section.price}</td>
-                                            <td className="cek fw-bold text-success"> {section.payment === "to'lanmagan" ? "" : section.priceCashier}</td>
-                                            <td className="cek fw-bold text-warning"> {section.payment === "to'lanmagan" ? "" : section.price - section.priceCashier}</td>
+                                            <td className="cek fw-bold"> {section.payment === "to'lanmagan" ? 0 : section.price}</td>
+                                            <td className="cek fw-bold text-success"> {section.payment === "to'lanmagan" ? 0 : section.priceCashier}</td>
+                                            <td className="cek fw-bold text-warning"> {section.payment === "to'lanmagan" ? 0 : section.price - section.priceCashier}</td>
                                         </tr>
                                     )
                                 }

@@ -1,51 +1,23 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
-import Modal from 'react-modal'
 import { toast } from "react-toastify"
 import { AuthContext } from '../../context/AuthContext'
 import makeAnimated from "react-select/animated"
 import { useHttp } from '../../hooks/http.hook'
 import Select from "react-select"
 import { CheckDoctorData } from './CheckDoctorData'
+import { Loader } from '../../components/Loader'
 
 // const mongoose = require("mongoose")
 const animatedComponents = makeAnimated()
 
-const customStyles = {
-  content: {
-    top: '10%',
-    left: '30%',
-    right: 'auto',
-    bottom: 'auto',
-    marginRight: '-50%',
-    transdoctor: 'translate(-50%, -50%)',
-  },
-}
-
 export const EditDoctor = () => {
   const auth = useContext(AuthContext)
-  const { request } = useHttp()
+  const { request, loading, error, clearError } = useHttp()
   const history = useHistory()
   // Modal oyna funksiyalari 
-  const [modalIsOpen1, setIsOpen1] = useState(false)
-
-  function openModal1() {
-    setIsOpen1(true)
-  }
-
-  function closeModal1() {
-    setIsOpen1(false)
-  }
-
-  const [modalIsOpen2, setIsOpen2] = useState(false)
-
-  function openModal2() {
-    setIsOpen2(true)
-  }
-
-  function closeModal2() {
-    setIsOpen2(false)
-  }
+  const [modal1, setModal1] = useState(false)
+  const [modal2, setModal2] = useState(false)
 
   //Doctor ma'lumotlari
   const doctorId = useParams().id
@@ -85,7 +57,22 @@ export const EditDoctor = () => {
       const data = await request("/api/direction/", "GET", null, {
         Authorization: `Bearer ${auth.token}`
       })
-      setOptions(data)
+      let s = []
+      data.map((section) => {
+        let k = 0
+        s.map((m) => {
+          if (m.label == section.section) {
+            k++
+          }
+        })
+        if (!k) {
+          s.push({
+            label: section.section,
+            value: section.section,
+          })
+        }
+      })
+      setOptions(s)
     } catch (e) {
       notify(e)
     }
@@ -101,7 +88,6 @@ export const EditDoctor = () => {
   }
 
   const changeSection = (event) => {
-    console.log(event.value)
     setDoctor({ ...doctor, section: event.value })
   }
 
@@ -109,7 +95,8 @@ export const EditDoctor = () => {
     if (CheckDoctorData(doctor)) {
       return notify(CheckDoctorData(doctor))
     }
-    openModal1()
+    window.scrollTo({ top: 0 })
+    setModal1(true)
   }
 
   const [load, setLoad] = useState(false)
@@ -155,11 +142,18 @@ export const EditDoctor = () => {
     if (!options) {
       getOptions()
     }
-
+    if (error) {
+      notify(error)
+      clearError()
+    }
     if (doctor.firstname === "") {
       getDoctor()
     }
-  }, [])
+  }, [error, clearError])
+
+  if (loading) {
+    return <Loader />
+  }
 
   return (
     <div>
@@ -168,13 +162,7 @@ export const EditDoctor = () => {
           <article className="linkk mt-5" >
             <h1 style={{ fontWeight: "700" }}>MedCenter </h1>
             <div className="row mt-4" style={{ border: "25px solid hsla(212, 54%, 71%, 0.471)" }}>
-              <div className="row pt-3">
-                <div className="col-4">
-                  <input style={{ width: "150px" }} name="file" onChange={uploadImage} type="file" className="doctor-control" />
-                  <img width="200px" src={doctor.image} alt={doctor.image} style={{ maxWidth: "200px", margin: "10px", borderRadius: "10px" }} />
 
-                </div>
-              </div>
               <div className="col-md-6 mt-3">
                 <div className="row">
                   <p style={{ fontWeight: "700", color: "blue", fontSize: "22px", margin: "10px" }}>Asosiy ma'lumotlar</p>
@@ -201,22 +189,30 @@ export const EditDoctor = () => {
                   <div className="col-8">
                     <p style={{ fontWeight: "500", fontSize: "18px", margin: "10px 0" }}> <input value={new Date(doctor.born).getFullYear().toString() + '-' + (new Date(doctor.born).getMonth() < 9 ? "0" + (new Date(doctor.born).getMonth() + 1).toString() : (new Date(doctor.born).getMonth() + 1).toString()) + '-' + (new Date(doctor.born).getDate() < 10 ? "0" + (new Date(doctor.born).getDate()).toString() : (new Date(doctor.born).getDate()).toString())} onChange={changeDate} type="date" className="addDoctor" /><div className="clr"></div></p>
                     <p style={{ fontWeight: "500", fontSize: "18px", margin: "10px 0" }}><input defaultValue={doctor.phone} onChange={changeHandlar} name="phone" type="number" className="addDoctor pt-3" /><div className="clr"></div></p>
-                    <p style={{ fontWeight: "500", fontSize: "18px", margin: "10px 0" }}><Select
-                      defaultValue={doctor.section}
-                      className="mt-3"
-                      onChange={changeSection}
-                      closeMenuOnSelect={false}
-                      components={animatedComponents}
-                      options={options && options}
-                      name="section"
-                    /></p>
+                    <p style={{ fontWeight: "500", fontSize: "18px", margin: "10px 0" }}>
+                      <Select
+                        defaultValue={doctor.section}
+                        className="mt-3"
+                        onChange={changeSection}
+                        closeMenuOnSelect={false}
+                        components={animatedComponents}
+                        options={options && options}
+                        name="section"
+                      /></p>
                   </div>
                 </div>
               </div>
+              <div className="row pt-3">
+                <div className="col-4">
+                  <input style={{ width: "150px" }} name="file" onChange={uploadImage} type="file" className="doctor-control" />
+                  <img width="200px" src={doctor.image} alt={doctor.image} style={{ maxWidth: "200px", margin: "10px", borderRadius: "10px" }} />
+
+                </div>
+              </div>
             </div>
-            <div className="text-end pt-4 px-4">
-              <button onClick={checkData} className="btn btn-success mx-5">O'zgartirishni  saqlash </button>
-              <button onClick={openModal2} className="btn btn-danger"> Shifokorni o'chirish </button>
+            <div className="text-end pt-4 px-4 ">
+              <button onClick={checkData} className="btn button-success mb-2 text-end">O'zgartirishni  saqlash </button>
+              <button onClick={() => setModal2(true)} className="btn button-danger ms-5 mb-2"> Shifokorni o'chirish </button>
             </div>
           </article>
         </div>
@@ -225,71 +221,55 @@ export const EditDoctor = () => {
 
 
       {/* Modal oynaning ochilishi */}
-      <div>
-        <Modal
-          isOpen={modalIsOpen1}
-          onRequestClose={closeModal1}
-          style={customStyles}
-          contentLabel="Example Modal"
-        >
-          <div className="">
-            <div className="" >
-              <div className="card">
-                <div className="card-header" >
-                  <img width="300px" className="card-image img-fluid w-100" src={doctor.image} />
-                </div>
-                <div className="card-body">
-                  <h5>F.I.Sh: {doctor.lastname} {doctor.firstname} {doctor.fathername}</h5>
-                  <p> Tu'gilgan yili: {new Date(doctor.born).toLocaleDateString()}</p>
-                  <p>tel: +{doctor.phone}</p>
-                  <h6>Ixtisosligi: {doctor.section}</h6>
-                </div>
-
+      <div className={modal1 ? "modal" : "d-none"}>
+        <div className="modal-card">
+          <div className="" >
+            <div className="card" style={{ maxWidth: "400px" }} >
+              <div className="card-header" >
+                <img width="400px" className="card-image img-fluid" src={doctor.image} />
+              </div>
+              <div className="card-body">
+                <h5>F.I.Sh: {doctor.lastname} {doctor.firstname} {doctor.fathername}</h5>
+                <p> Tu'gilgan yili: {new Date(doctor.born).toLocaleDateString()}</p>
+                <p>tel: +{doctor.phone}</p>
+                <h6>Ixtisosligi: {doctor.section}</h6>
+              </div>
+              <div className="card-footer text-center">
+                <button onClick={createHandler} className="btn button-success mb-2" style={{ marginRight: "30px" }}>Tasdiqlash</button>
+                <button onClick={() => setModal1(false)} className="btn button-danger mb-2" >Qaytish</button>
               </div>
             </div>
           </div>
-          <div className="row m-1">
-            <div className="col-12 text-center">
-              <button onClick={createHandler} className="btn btn-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
-              <button onClick={closeModal1} className="btn btn-danger" >Qaytish</button>
-            </div>
-          </div>
+        </div>
 
-        </Modal>
+
       </div>
 
       {/* Modal oynaning ochilishi */}
-      <div>
-        <Modal
-          isOpen={modalIsOpen2}
-          onRequestClose={closeModal2}
-          style={customStyles}
-          contentLabel="Example Modal"
-        >
+      <div className={modal2 ? "modal" : "d-none"}>
+        <div className="modal-card">
           <div className="">
-            <div className="" >
-              <div className="card">
+            <div className="p-4" >
+              <div className="card " style={{ maxWidth: "400px" }}>
                 <div className="card-header" >
-                  <img width="300px" className="card-image img-fluid w-100" src={doctor.image} />
+                  <img width="400px" className="card-image img-fluid " src={doctor.image} />
                 </div>
-                <div className="card-body">
+                <div className="card-body p-3">
                   <h5>F.I.Sh: {doctor.lastname} {doctor.firstname} {doctor.fathername}</h5>
                   <p> Tu'gilgan yili: {new Date(doctor.born).toLocaleDateString()}</p>
                   <p>tel: +{doctor.phone}</p>
                   <h6>Ixtisosligi: {doctor.section}</h6>
                 </div>
 
+                <div className="card-footer text-center">
+                  <button onClick={Delete} className="btn button-success mb-2" style={{ marginRight: "30px" }}>O'chirishni tasdiqlang</button>
+                  <button onClick={() => setModal2(false)} className="btn button-danger mb-2 " >Qaytish</button>
+                </div>
               </div>
             </div>
           </div>
-          <div className="row m-1">
-            <div className="col-12 text-center">
-              <button onClick={Delete} className="btn btn-success" style={{ marginRight: "30px" }}>O'chirishni tasdiqlang</button>
-              <button onClick={closeModal2} className="btn btn-danger" >Qaytish</button>
-            </div>
-          </div>
+        </div>
 
-        </Modal>
       </div>
 
     </div>

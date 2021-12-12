@@ -4,6 +4,7 @@ import { Footer } from './Footer'
 import { Header } from './Header'
 import { Menu } from './Menu'
 
+
 export const Admin = () => {
     return (
         <div class="hold-transition sidebar-mini layout-fixed">

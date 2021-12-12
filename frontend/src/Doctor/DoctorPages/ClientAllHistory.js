@@ -93,32 +93,36 @@ export const ClientAllHistory = () => {
                         </div>
                         {
                             sections && sections.map((section, key) => {
-                                console.log(section);
-                                return (
-                                    <div className="row" style={{ border: "25px solid hsla(212, 54%, 71%, 0.471)", borderTop: "none" }}>
-                                        <div className="row">
-                                            <div className="col-6 fs-5 fw-bold p-2">
-                                                Bo'limi: {section && section.name}
+                                if (section.payment !== "to'lanmagan") {
+
+
+                                    return (
+                                        <div className="row" style={{ border: "25px solid hsla(212, 54%, 71%, 0.471)", borderTop: "none" }}>
+                                            <div className="row">
+                                                <div className="col-6 fs-5 fw-bold p-2">
+                                                    Bo'limi: {section && section.name} <br/>
+                                                    Maqsad: {section && section.subname}
+                                                </div>
+                                                <div className="col-4 fs-5 p-2 text-end">
+                                                    Murojaat kuni: <br />
+                                                    To'lov:
+                                                </div>
+                                                <div className="col-2 fs-5 p-2 text-end">
+                                                    {section && new Date(section.bronDay).toLocaleDateString()}<br />
+                                                    {section && section.price}
+                                                </div>
+                                                <hr />
+                                                <div className="col-12">
+                                                    <h5>Izoh:</h5>
+                                                    <p>{section.comment && section.comment}</p>
+                                                </div>
+                                                <div className="col-12">
+                                                    <h5>Xulosa:</h5>
+                                                    <p>{section.summary && section.summary}</p>
+                                                </div>
                                             </div>
-                                            <div className="col-4 fs-5 p-2 text-end">
-                                                Murojaat kuni: <br />
-                                                To'lov:
-                                            </div>
-                                            <div className="col-2 fs-5 p-2 text-end">
-                                                {section && new Date(section.bronDay).toLocaleDateString()}<br />
-                                                {section && section.price}
-                                            </div>
-                                            <hr />
-                                            <div className="col-12">
-                                                <h5>Izoh:</h5>
-                                                <p>{section.comment && section.comment}</p>
-                                            </div>
-                                            <div className="col-12">
-                                                <h5>Xulosa:</h5>
-                                                <p>{section.summary && section.summary}</p>
-                                            </div>
-                                        </div>
-                                    </div>)
+                                        </div>)
+                                }
                             })
                         }
                     </article>

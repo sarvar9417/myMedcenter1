@@ -1,13 +1,12 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { Link, useHistory } from 'react-router-dom'
+import Modal from 'react-modal'
 import { toast } from "react-toastify"
-import { AuthContext } from '../../context/AuthContext'
 import makeAnimated from "react-select/animated"
-import { useHttp } from '../../hooks/http.hook'
+import { useHttp } from './Director/hooks/http.hook'
 import Select from "react-select"
-import { CheckDoctorData } from './CheckDoctorData'
-import { Loader } from '../../components/Loader'
-
+import { CheckDoctorData } from './Director/directorPages/Others/CheckDoctorData'
+import './Director/directorPages/Others/chart.css'
 // const mongoose = require("mongoose")
 const animatedComponents = makeAnimated()
 
@@ -22,44 +21,31 @@ const customStyles = {
   },
 }
 
-export const AddDoctor = () => {
-  const auth = useContext(AuthContext)
-  const { request, error, clearError, loading } = useHttp()
+export const RegistorDirector = () => {
+  const { request, error, clearError } = useHttp()
   const history = useHistory()
   // Modal oyna funksiyalari
   let allPrice = 0
-  const [modal, setModal] = useState(false)
+  const [modalIsOpen, setIsOpen] = useState(false)
+
+  function openModal() {
+    setIsOpen(true)
+  }
+
+  function closeModal() {
+    setIsOpen(false)
+  }
 
   // Bo'limlar
-  const [options, setOptions] = useState()
-  const getOptions = useCallback(async () => {
-    try {
-      const data = await request("/api/direction/", "GET", null, {
-        Authorization: `Bearer ${auth.token}`
-      })
-      let s = []
-      data.map((section) => {
-        let k = 0
-        s.map((m) => {
-          if (m.label == section.section) {
-            k++
-          }
-        })
-        if (!k) {
-          s.push({
-            label: section.section,
-            value: section.section,
-          })
-        }
-      })
-      setOptions(s)
-    } catch (e) {
-      notify(e)
+  const options = [
+    {
+      value: "Kardiolog",
+      label: "Kardiolog"
     }
-  }, [auth, request, setOptions])
+  ]
 
-  //Doctor ma'lumotlari
-  const [doctor, setDoctor] = useState({
+  //Director ma'lumotlari
+  const [director, setDirector] = useState({
     firstname: "",
     lastname: "",
     fathername: "",
@@ -72,34 +58,30 @@ export const AddDoctor = () => {
   const [loginPassword, setLoginPassword] = useState({
     login: "",
     password: "",
-    doctorId: ""
+    directorId: ""
   })
 
   const changeHandlar = (event) => {
-    setDoctor({ ...doctor, [event.target.name]: event.target.value })
+    setDirector({ ...director, [event.target.name]: event.target.value })
   }
 
   const changeLogin = (event) => {
     setLoginPassword({ ...loginPassword, [event.target.name]: event.target.value })
   }
 
-
-
   const changeDate = (event) => {
-    setDoctor({ ...doctor, born: new Date(event.target.value) })
+    setDirector({ ...director, born: new Date(event.target.value) })
   }
 
   const changeSection = (event) => {
-    console.log(event.value)
-    setDoctor({ ...doctor, section: event.value })
+    setDirector({ ...director, section: event.value })
   }
 
   const checkData = () => {
-    if (CheckDoctorData(doctor)) {
-      return notify(CheckDoctorData(doctor))
+    if (CheckDoctorData(director)) {
+      return notify(CheckDoctorData(director))
     }
-    window.scrollTo({top:0})
-    setModal(true)
+    openModal()
   }
 
   const [load, setLoad] = useState(false)
@@ -111,55 +93,43 @@ export const AddDoctor = () => {
     setLoad(true)
     const res = await fetch("https://api.cloudinary.com/v1_1/academik/image/upload", { method: 'POST', body: data })
     const file = await res.json()
-    setDoctor({ ...doctor, image: file.secure_url })
+    setDirector({ ...director, image: file.secure_url })
     setLoad(false)
   }
 
   const createHandler = async () => {
     try {
-      const data = await request("/api/auth/doctor/doctorresume/register", "POST", { ...doctor }, {
-        Authorization: `Bearer ${auth.token}`
-      })
-      console.log(data);
+      const data = await request("/api/auth/director/directorresume/register", "POST", { ...director })
       createLogin(data._id)
     } catch (e) {
       notify(e)
     }
   }
-
-  const createLogin = async (id) => {
+console.log(loginPassword)
+  const createLogin =useCallback( async (id) => {
     try {
-      console.log(id);
-      const data = await request("/api/auth/doctor/register", "POST", {
+      const data = await request("/api/auth/director/register", "POST", {
         login: loginPassword.login,
         password: loginPassword.password,
-        doctorId: id
-      }, {
-        Authorization: `Bearer ${auth.token}`
+        directorId: id
       })
-      history.push("/director/doctors")
+      console.log(data)
+      history.push("/director")
     } catch (e) {
       notify(e)
     }
-  }
+  }, [request, history, loginPassword])
 
   const notify = (e) => {
     toast.error(e)
   }
 
   useEffect(() => {
-    if (!options) {
-      getOptions()
-    }
     if (error) {
       notify(error)
       clearError()
     }
   }, [error, clearError])
-
-  if (loading ) {
-    return <Loader/>
-  }
 
   return (
     <div>
@@ -169,10 +139,6 @@ export const AddDoctor = () => {
             <h1 style={{ fontWeight: "700" }}>MedCenter </h1>
             <div className="row mt-4" style={{ border: "25px solid hsla(212, 54%, 71%, 0.471)" }}>
               <div className="row pt-3">
-                <div className="col-md-4 text-center" >
-                  <input style={{ width: "157px" }} name="file" onChange={uploadImage} type="file" className="form-control" />
-                  <img width="200px" src={doctor.image} alt={doctor.image} style={{ maxWidth: "200px", margin: "10px", borderRadius: "10px" }} />
-                </div>
                 <div className="col-md-8 text-center">
                   <p style={{ fontWeight: "500", fontSize: "18px", margin: "10px" }}>Login: <input onChange={changeLogin} name="login" className="addDoctor" /> <div className="clr"></div>  </p>
                   <p style={{ fontWeight: "500", fontSize: "18px", margin: "10px" }} >Parol: <input onChange={changeLogin} name="password" className="addDoctor" /> <div className="clr"></div></p>
@@ -215,10 +181,13 @@ export const AddDoctor = () => {
                   </div>
                 </div>
               </div>
-
+              <div className="col-md-4 text-center" >
+                <input style={{ width: "157px" }} name="file" onChange={uploadImage} type="file" className="form-control" />
+                <img width="200px" src={director.image} alt={director.image} style={{ maxWidth: "200px", margin: "10px", borderRadius: "10px" }} />
+              </div>
             </div>
             <div className="text-end pt-4 px-4">
-              <button onClick={checkData} className="btn btn-success"> Qo'shish </button>
+              <button onClick={createHandler} className="btn btn-success"> Yaratish </button>
             </div>
           </article>
         </div>
@@ -226,28 +195,6 @@ export const AddDoctor = () => {
 
 
 
-      {/* Modal oynaning ochilishi */}
-      <div className={modal ? "modal" : "d-none"}>
-        <div className="modal-card">
-          <div className="" >
-            <div className="card" style={{ maxWidth: "400px" }} >
-              <div className="card-header" >
-                <img width="400px" className="card-image img-fluid" src={doctor.image} />
-              </div>
-              <div className="card-body">
-                <h5>F.I.Sh: {doctor.lastname} {doctor.firstname} {doctor.fathername}</h5>
-                <p> Tu'gilgan yili: {new Date(doctor.born).toLocaleDateString()}</p>
-                <p>tel: +{doctor.phone}</p>
-                <h6>Ixtisosligi: {doctor.section}</h6>
-              </div>
-              <div className="card-footer text-center">
-                <button onClick={createHandler} className="btn button-success mb-2" style={{ marginRight: "30px" }}>Tasdiqlash</button>
-                <button onClick={() => setModal(false)} className="btn button-danger mb-2" >Qaytish</button>
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
     </div>
   )
 }

@@ -4,8 +4,8 @@ import { AuthContext } from '../../context/AuthContext'
 import { useHttp } from '../../hooks/http.hook'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrashAlt, faEdit } from '@fortawesome/free-solid-svg-icons'
-import Modal from 'react-modal'
 import { toast } from "react-toastify"
+import {Loader} from '../../components/Loader'
 
 
 const customStyles = {
@@ -19,25 +19,18 @@ const customStyles = {
     },
 }
 
+toast.configure()
 export const Directions = () => {
     const auth = useContext(AuthContext)
-    const { request } = useHttp()
-    const [directions, setDirections] = useState([])
+    const { request, loading, error, clearError } = useHttp()
+    const [directions, setDirections] = useState()
     const [remove, setRemove] = useState()
     const history = useHistory()
 
 
 
     // Modal oyna funksiyalari
-    const [modalIsOpen, setIsOpen] = useState(false)
-
-    function openModal() {
-        setIsOpen(true)
-    }
-
-    function closeModal() {
-        setIsOpen(false)
-    }
+    const [modal, setModal] = useState(false)
 
     const getAllDirections = useCallback(async () => {
         try {
@@ -50,6 +43,7 @@ export const Directions = () => {
         }
     }, [request, auth, setDirections])
 
+   
     const Delete = async (id) => {
         try {
             const data = await request(`/api/direction/${id}`, "DELETE", null, {
@@ -64,12 +58,19 @@ export const Directions = () => {
     const notify = (e) => {
         toast.error(e)
     }
-
     useEffect(() => {
-        if (directions.length === 0) {
+        if (!directions) {
             getAllDirections()
         }
-    }, [getAllDirections])
+        if (error) {
+            notify(error)
+            clearError()
+        }
+    }, [getAllDirections, notify, clearError])
+
+    if (loading) {
+        return <Loader />
+    }
     return (
         <div>
             <div className="row">
@@ -77,7 +78,7 @@ export const Directions = () => {
                     <div className="card">
                         <div className="card-body">
                             <div className="text-end p-3">
-                                <Link to="/director/adddirection" className="btn btn-success">Bo'lim yaratish</Link>
+                                <Link to="/director/adddirection" className="btn button-success">Bo'lim yaratish</Link>
                             </div>
                             <div className="table-responsive">
                                 <table className="datatable table table-hover table-center mb-0">
@@ -97,13 +98,13 @@ export const Directions = () => {
                                                     <tr>
                                                         <td className="text-center">
                                                             <span className="table-avatar">
-                                                                <span href="profile.html">{direction.label}</span>
+                                                                <span href="profile.html">{direction.section}</span>
                                                             </span>
                                                         </td>
                                                         <td className="text-center">{direction.price} sum</td>
-                                                        <td className="text-center">{direction.subvalue}</td>
-                                                        <td className="text-center"> <Link to={`/director/directionedit/${direction._id}`} className="btn btn-success text-white px-3" ><FontAwesomeIcon icon={faEdit}></FontAwesomeIcon> </Link></td>
-                                                        <td className="text-center"> <button onClick={() => { setRemove(direction); openModal() }} className="btn btn-danger text-white px-3" ><FontAwesomeIcon icon={faTrashAlt}></FontAwesomeIcon> </button></td>
+                                                        <td className="text-center">{direction.subsection}</td>
+                                                        <td className="text-center"> <Link to={`/director/directionedit/${direction._id}`} className="btn button-success  px-3" ><FontAwesomeIcon icon={faEdit}></FontAwesomeIcon> </Link></td>
+                                                        <td className="text-center"> <button onClick={() => { setRemove(direction); window.scrollTo({top:0}) ; setModal(true) }} className="btn button-danger px-3" ><FontAwesomeIcon icon={faTrashAlt}></FontAwesomeIcon> </button></td>
                                                     </tr>)
                                             })
                                         }
@@ -117,13 +118,8 @@ export const Directions = () => {
             </div>
 
 
-            <div>
-                <Modal
-                    isOpen={modalIsOpen}
-                    onRequestClose={closeModal}
-                    style={customStyles}
-                    contentLabel="Example Modal"
-                >
+            <div className={modal ? "modal" : "d-none"}>
+                <div className="modal-card">
 
                     <div className="card">
                         <div className="card-body">
@@ -140,11 +136,11 @@ export const Directions = () => {
                                         <tr>
                                             <td className="text-center">
                                                 <span className="table-avatar">
-                                                    <span href="profile.html">{remove && remove.label}</span>
+                                                    <span href="profile.html">{remove && remove.section}</span>
                                                 </span>
                                             </td>
                                             <td className="text-center">{remove && remove.price} sum</td>
-                                            <td className="text-center">{remove && remove.subvalue}</td>
+                                            <td className="text-center">{remove && remove.subsection}</td>
                                         </tr>
 
 
@@ -152,16 +148,17 @@ export const Directions = () => {
                                 </table>
                             </div>
                         </div>
-                    </div>
-
-                    <div className="row m-1">
-                        <div className="col-12 text-center">
-                            <button onClick={() => { Delete(remove._id) }} className="btn btn-success" style={{ marginRight: "30px" }}>Xizmatni o'chirish</button>
-                            <button onClick={closeModal} className="btn btn-danger" >Qaytish</button>
+                        <div className="card-footer">
+                            <div className=" text-center">
+                                <button onClick={() => { Delete(remove._id) }} className="btn button-success" style={{ marginRight: "30px" }}>Xizmatni o'chirish</button>
+                                <button onClick={() => setModal(false)} className="btn button-danger" >Qaytish</button>
+                            </div>
                         </div>
                     </div>
 
-                </Modal>
+                    
+
+                </div>
             </div>
 
         </div>

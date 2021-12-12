@@ -178,66 +178,95 @@ export const EditAdoption = () => {
                 <div className="forms">
                     <h2 style={{ color: "#14A479" }}>Mijoz ma'lumotlari</h2>
                     <div className="row mt-5">
-                        <div className="col-md-2 col-sm-4">
-                            <label style={{ fontSize: "20px", marginRight: "20%" }}>
-                                ID:
-                            </label>
+                        <div className="col-lg-6">
+                            <div className="row">
+                                <div className="col-md-4 col-sm-4">
+                                    <label style={{ fontSize: "20px", marginRight: "20%" }}>
+                                        ID:
+                                    </label>
+                                </div>
+                                <div className="col-md-8 col-sm-8">
+                                    <h3 className="w-100 px-4" style={{ border: "none", background: "#E1FFF7", outline: "none", fontSize: "20px", padding: "5px", fontWeight: "600" }}>
+                                        {client.id}
+                                    </h3>
+                                </div>
+                                <div className="col-md-4 col-sm-4">
+                                    <label style={{ fontSize: "20px", marginRight: "16.5%" }}>
+                                        F.I.O:
+                                    </label>
+                                </div>
+                                <div className="col-md-8 col-sm-8">
+                                    <h3 className="w-100 px-4" style={{ border: "none", background: "#E1FFF7", outline: "none", fontSize: "20px", padding: "5px", fontWeight: "600" }}>
+                                        {client.firstname} {client.lastname} {client.fathername}
+                                    </h3>
+                                </div>
+                                <div className="col-md-4 col-sm-4">
+                                    <label style={{ fontSize: "20px", marginRight: "4%" }}>
+                                        Tug'ilgan yili:
+                                    </label>
+                                </div>
+                                <div className="col-md-8 col-sm-8">
+                                    <h3 className="w-100 px-4" style={{ border: "none", background: "#E1FFF7", outline: "none", fontSize: "20px", padding: "5px", fontWeight: "600" }}>
+                                        {new Date(client.born).toLocaleDateString()}
+                                    </h3>
+                                </div>
+                                <div className="col-md-4 col-sm-4">
+                                    <label style={{ fontSize: "20px", marginRight: "13%" }}>
+                                        Phone:
+                                    </label>
+                                </div>
+                                <div className="col-md-8 col-sm-8">
+                                    <h3 className="w-100 px-4" style={{ border: "none", background: "#E1FFF7", outline: "none", fontSize: "20px", padding: "5px", fontWeight: "600" }}>
+                                        +{client.phone}
+                                    </h3>
+                                </div>
+                            </div>
                         </div>
-                        <div className="col-md-4 col-sm-8">
-                            <h3 className="w-100 px-4" style={{ border: "none", background: "#E1FFF7", outline: "none", fontSize: "20px", padding: "5px", fontWeight: "600" }}>
-                                {client.id}
-                            </h3>
+                        <div className="col-lg-6">
+                            <div className="row">
+                                <div className="col-md-4 col-sm-4">
+                                    <label style={{ fontSize: "20px", marginRight: "15%" }}>
+                                        Maqsad:
+                                    </label>
+                                </div>
+                                <div className="col-md-8 col-sm-8">
+                                    <h3 className="w-100 px-4" style={{ border: "none", background: "#E1FFF7", outline: "none", fontSize: "20px", padding: "5px", fontWeight: "600" }}>
+                                        {section && section.subname}
+                                    </h3>
+                                </div>
+                                <div className="col-md-4 col-sm-4">
+                                    <label style={{ fontSize: "20px", marginRight: "15%" }}>
+                                        Navbati:
+                                    </label>
+                                </div>
+                                <div className="col-md-8 col-sm-8">
+                                    <h3 className="w-100 px-4" style={{ border: "none", background: "#E1FFF7", outline: "none", fontSize: "20px", padding: "5px", fontWeight: "600" }}>
+                                        {section && (section.turn ? section.turn : section.bronTime)}
+                                    </h3>
+                                </div>
+                                <div className="col-md-4 col-sm-4">
+                                    <label style={{ fontSize: "20px", marginRight: "15%" }}>
+                                        To'lov summasi:
+                                    </label>
+                                </div>
+                                <div className="col-md-8 col-sm-8">
+                                    <h3 className="w-100 px-4" style={{ border: "none", background: "#E1FFF7", outline: "none", fontSize: "20px", padding: "5px", fontWeight: "600" }}>
+                                        {section && section.price} so'm
+                                    </h3>
+                                </div>
+                                <div className="col-md-4 col-sm-4">
+                                    <label style={{ fontSize: "20px", marginRight: "15%" }}>
+                                        To'lovlangan summa:
+                                    </label>
+                                </div>
+                                <div className="col-md-8 col-sm-8">
+                                    <h3 className="w-100 px-4" style={{ border: "none", background: "#E1FFF7", outline: "none", fontSize: "20px", padding: "5px", fontWeight: "600" }}>
+                                        {section && section.priceCashier} so'm
+                                    </h3>
+                                </div>
+                            </div>
                         </div>
-                        <div className="col-md-2 col-sm-4">
-                            <label style={{ fontSize: "20px", marginRight: "16.5%" }}>
-                                F.I.O:
-                            </label>
-                        </div>
-                        <div className="col-md-4 col-sm-8">
-                            <h3 className="w-100 px-4" style={{ border: "none", background: "#E1FFF7", outline: "none", fontSize: "20px", padding: "5px", fontWeight: "600" }}>
-                                {client.firstname} {client.lastname} {client.fathername}
-                            </h3>
-                        </div>
-                        <div className="col-md-2 col-sm-4">
-                            <label style={{ fontSize: "20px", marginRight: "4%" }}>
-                                Tug'ilgan yili:
-                            </label>
-                        </div>
-                        <div className="col-md-4 col-sm-8">
-                            <h3 className="w-100 px-4" style={{ border: "none", background: "#E1FFF7", outline: "none", fontSize: "20px", padding: "5px", fontWeight: "600" }}>
-                                {new Date(client.born).toLocaleDateString()}
-                            </h3>
-                        </div>
-                        <div className="col-md-2 col-sm-4">
-                            <label style={{ fontSize: "20px", marginRight: "13%" }}>
-                                Phone:
-                            </label>
-                        </div>
-                        <div className="col-md-4 col-sm-8">
-                            <h3 className="w-100 px-4" style={{ border: "none", background: "#E1FFF7", outline: "none", fontSize: "20px", padding: "5px", fontWeight: "600" }}>
-                                +{client.phone}
-                            </h3>
-                        </div>
-                        <div className="col-md-2 col-sm-4">
-                            <label style={{ fontSize: "20px", marginRight: "15%" }}>
-                                Navbati:
-                            </label>
-                        </div>
-                        <div className="col-md-4 col-sm-8">
-                            <h3 className="w-100 px-4" style={{ border: "none", background: "#E1FFF7", outline: "none", fontSize: "20px", padding: "5px", fontWeight: "600" }}>
-                                {section && (section.turn ? section.turn : section.bronTime)}
-                            </h3>
-                        </div>
-                        <div className="col-md-2 col-sm-4">
-                            <label style={{ fontSize: "20px", marginRight: "15%" }}>
-                                To'lov(holati):
-                            </label>
-                        </div>
-                        <div className="col-md-4 col-sm-8">
-                            <h3 className="w-100 px-4" style={{ border: "none", background: "#E1FFF7", outline: "none", fontSize: "20px", padding: "5px", fontWeight: "600" }}>
-                                {section && section.price} so'm ({section && section.payment})
-                            </h3>
-                        </div>
+
                     </div>
                 </div>
                 <div className="tt " style={{ fontFamily: "times" }}>

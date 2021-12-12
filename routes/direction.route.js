@@ -22,14 +22,16 @@ router.post('/register', auth, async (req, res) => {
             value,
             price,
             label,
-            subvalue
+            section, 
+            subsection
 
         } = req.body
         const direction = new Direction({
             value,
             price,
             label,
-            subvalue
+            section,
+            subsection
         })
         await direction.save()
         res.status(201).send(direction)
@@ -44,7 +46,7 @@ router.post('/register', auth, async (req, res) => {
 // /api/direction
 router.get('/', async (req, res) => {
     try {
-        const direction = await Direction.find().sort({ _id: -1 })
+        const direction = await Direction.find().sort({ section: 1 })
         res.json(direction)
     } catch (e) {
         res.status(500).json({ message: 'Serverda xatolik yuz berdi' })

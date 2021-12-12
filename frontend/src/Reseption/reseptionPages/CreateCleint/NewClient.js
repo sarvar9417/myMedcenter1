@@ -100,14 +100,16 @@ export const NewClient = () => {
     event.map((section) => {
       let turn = 0
       turns.map((sec) => {
-        if (checkTurn(sec, section.value)) {
+        if (checkTurn(sec, section.section)) {
           turn++
         }
       })
       s.push({
-        name: section.value,
+        name: section.section,
+        subname: section.subsection,
         price: section.price,
         priceCashier: 0,
+        commentCashier: " ",
         comment: " ",
         summary: " ",
         done: "tasdiqlanmagan",
@@ -403,7 +405,7 @@ export const NewClient = () => {
           <div className="text-center fs-4 fw-bold text-secondary">
             <span className="text-dark">Mijoz: </span>  {client.lastname} {client.firstname} {client.fathername}
           </div>
-          <table className="w-100 mt-3">
+          <table className="w-100 mt-3" style={{overflow:"auto"}}>
             <thead>
               <tr style={{ borderBottom: "1px solid #999" }} >
                 <th style={{ width: "10%", textAlign: "center", padding: "10px 0" }}>№</th>
@@ -443,8 +445,8 @@ export const NewClient = () => {
           </div>
           <div className="row m-1">
             <div className="col-12 text-center">
-              <button onClick={createHandler} className="btn btn-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
-              <button onClick={closeModal} className="btn btn-danger" >Qaytish</button>
+              <button onClick={createHandler} className="btn button-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
+              <button onClick={closeModal} className="btn button-danger" >Qaytish</button>
             </div>
           </div>
 

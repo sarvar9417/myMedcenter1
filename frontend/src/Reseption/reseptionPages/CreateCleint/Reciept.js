@@ -14,7 +14,7 @@ export const Reciept = () => {
     })
     const clientId = useParams().id
     const connectorId = useParams().connector
-    const today = (new Date().getDate().toString() + "." + (new Date().getMonth() + 1).toString() + "." + new Date().getFullYear().toString() + " " + new Date().getHours().toString() + ":" + new Date().getMinutes().toString() + ":" + new Date().getSeconds().toString())
+    const today = (new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString())
     const [sections, setSections] = useState([])
     let price = 0
     let k = 0
@@ -121,7 +121,7 @@ export const Reciept = () => {
                                                     price = price + (section.price - section.priceCashier)
                                                     return (<tr>
                                                         <td style={{ fontSize: "10pt", fontFamily: "times" }}>{k}</td>
-                                                        <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.name}</td>
+                                                        <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-start px-2">{section.name} {section.subname}</td>
                                                         <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.bron === 'offline' ? section.turn : section.bronTime}</td>
                                                         <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.price - section.priceCashier}</td>
                                                     </tr>
@@ -203,7 +203,7 @@ export const Reciept = () => {
                                                     l++
                                                     return (<tr>
                                                         <td style={{ fontSize: "10pt", fontFamily: "times" }}>{l}</td>
-                                                        <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.name}</td>
+                                                        <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-start px-2">{section.name} {section.subname}</td>
                                                         <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.bron === 'offline' ? section.turn : section.bronTime}</td>
                                                         <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{ section.price- section.priceCashier}</td>
                                                     </tr>

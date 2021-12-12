@@ -1,6 +1,5 @@
 import React, { useContext } from 'react'
-import { useHistory } from 'react-router'
-import { Link } from 'react-router-dom'
+    import { Link, useHistory } from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext'
 
 export const Header = () => {
@@ -9,7 +8,7 @@ export const Header = () => {
     const logoutHandler = (event) => {
         event.preventDefault()
         auth.logout()
-        history.push('/director')
+        history.push('/sayt')
     }
     return (
         <nav className="main-header navbar navbar-expand">

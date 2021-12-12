@@ -15,7 +15,7 @@ export const Menu = () => {
                 {/* Sidebar user panel (optional) */}
                 <div className="user-panel mt-3 pb-3 mb-3 ">
                     <div className="image  w-100">
-                        <img src={auth.director && auth.director.img} className="img-circle d-inline-block" alt="User Image" />
+                        <img src={auth.director && auth.director.image} className="img-circle d-inline-block" alt="User Image" />
                     </div>
                     <br/>
                     <div className="info">

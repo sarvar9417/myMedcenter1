@@ -95,14 +95,16 @@ export const OldOnlineClient = () => {
         event.map((section) => {
             let turn = 0
             turns.map((sec) => {
-                if (checkTurn(sec, section.value)) {
+                if (checkTurn(sec, section.section)) {
                     turn++
                 }
             })
             s.push({
-                name: section.value,
+                name: section.section,
+                subname: section.subsection,
                 priceCashier: 0,
                 price: section.price,
+                commentCashier: " ",
                 comment: " ",
                 summary: " ",
                 done: "tasdiqlanmagan",

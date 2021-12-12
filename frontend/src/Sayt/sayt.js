@@ -20,6 +20,8 @@ export const Sayt = () => {
         AOS.init({
             duration: 2000
         })
+        
+        
     }, [])
 
     if (loader) {

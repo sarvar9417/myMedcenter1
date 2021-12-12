@@ -3,7 +3,7 @@ import { useHttp } from '../hooks/http.hook'
 import 'react-toastify/dist/ReactToastify.css'
 import { AuthContext } from '../context/AuthContext'
 import { toast } from 'react-toastify'
-// import Reseption from './icons/reseption.png'
+import Doctor from './doctor.png'
 
 toast.configure()
 export const AuthPage = () => {
@@ -54,8 +54,8 @@ export const AuthPage = () => {
                     <div className="login-wrapp">
                         <div className="container">
                             <div className=" loginbox ">
-                                <div className="login-left">
-                                    {/* <img className="w-100" src={Reseption} alt="Logo" /> */}
+                                <div className="login-left d-none d-md-block text-center">
+                                    <img className="w-50" style={{marginTop:"30%"}} src={Doctor} alt="Logo" />
                                 </div>
                                 <div className="login-right">
                                     <div className="login-right-wrap">
@@ -93,14 +93,14 @@ export const AuthPage = () => {
                                             >
                                                 Kirish
                                             </button>
-                                            <button
+                                            {/* <button
                                                 onClick={registerHandler}
                                                 className="btn btn-primary btn-block"
                                                 type="button"
                                                 disabled={loading}
                                             >
                                                 Regitratsiya
-                                            </button>
+                                            </button> */}
                                         </div>
                                         <div className="login-or">
                                             <span className="or-line"></span>

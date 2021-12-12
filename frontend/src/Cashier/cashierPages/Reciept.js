@@ -15,7 +15,7 @@ export const Reciept = () => {
     const clientId = useParams().id
     const today = (new Date().getDate().toString() + "." + (new Date().getMonth() + 1).toString() + "." + new Date().getFullYear().toString() + " " + new Date().getHours().toString() + ":" + new Date().getMinutes().toString() + ":" + new Date().getSeconds().toString())
     const sections = useLocation().state
-
+    
     let unpaid = 0
     let paid = 0
     let price = 0
@@ -105,7 +105,7 @@ export const Reciept = () => {
                                                 price = price + (section.price - section.priceCashier)
                                                 return (<tr>
                                                     <td style={{ fontSize: "10pt", fontFamily: "times" }}>{k}</td>
-                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.name}</td>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.name} {section.subname}</td>
                                                     <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.bron === 'offline' ? section.turn : section.bronTime}</td>
                                                     <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.payment === "to'lanmagan" ? "Rad etilgan" : section.price}</td>
                                                     <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.payment === "to'lanmagan" ? "Rad etilgan" : section.priceCashier}</td>
@@ -185,11 +185,10 @@ export const Reciept = () => {
                                     </thead>
                                     <tbody>
                                         {
-                                            sections.map((section) => {
-                                                l++
+                                            sections.map((section, index) => {
                                                 return (<tr>
-                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }}>{k}</td>
-                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.name}</td>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }}>{index+1}</td>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.name} {section.subname}</td>
                                                     <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.bron === 'offline' ? section.turn : section.bronTime}</td>
                                                     <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.payment === "to'lanmagan" ? "Rad etilgan" : section.price}</td>
                                                     <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.payment === "to'lanmagan" ? "Rad etilgan" : section.priceCashier}</td>
@@ -220,9 +219,9 @@ export const Reciept = () => {
                     </div>
                 </div>
             </div>
-            <div className="container m-5" style={{ position: "fixed", bottom: "0" }} >
+            <div className="" style={{ position: "fixed", bottom: "20px", width:"100%" }} >
                 <div className="row">
-                    <div className="offset-lg-5 col-lg-2 text-center">
+                    <div className=" col-12 text-center">
                         <button onClick={handlePrint} className="btn btn-primary px-5" >
                             Print
                         </button>

@@ -54,8 +54,8 @@ export const AuthPage = () => {
                     <div className="login-wrapp">
                         <div className="container">
                             <div className=" loginbox ">
-                                <div className="login-left">
-                                    <img className="w-50" src={cashier} alt="Logo" />
+                                <div className="login-left d-none d-md-block text-center" >
+                                    <img className="w-50" style={{ marginTop: "30%" }} src={cashier} alt="Logo" />
                                 </div>
                                 <div className="login-right">
                                     <div className="login-right-wrap">

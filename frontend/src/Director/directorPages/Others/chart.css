@@ -1,9 +1,9 @@
-.recharts-responsive-container{
+.recharts-responsive-container {
     height: 300px !important;
 }
 
 
-.addDoctor{
+.addDoctor {
     border: none;
     background-color: #FAFBFC;
     border-bottom: 1px solid #aaa;
@@ -24,6 +24,35 @@
     background-color: rgba(255, 255, 255, 0);
 }
 
-.clr{
+.clr {
     clear: both;
+}
+
+.button-success {
+    background-color: rgba(15, 183, 107, 0.12);
+    color: #28AE48;
+}
+
+.button-danger {
+    background-color: rgba(230, 125, 125, 0.24);
+    color: red;
+}
+
+.modal {
+    display: block;
+    position: absolute;
+    width: 100%;
+    min-height: 100vh;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.452);
+    overflow: auto;
+    z-index: 100000000000000;
+    text-align: center;
+}
+
+.modal-card {
+    text-align: left;
+    max-width: 80%;
+    display: inline-block;
+    margin: 100px auto;
 }

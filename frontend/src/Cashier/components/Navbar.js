@@ -20,11 +20,16 @@ export const Navbar = () => {
         history.push('/cashier')
     }
 
+    const goBack = ()=>{
+        history.push('/sayt')
+        window.location.reload()
+    }
+
     const [show, setShow] = useState(true)
     return (
         <nav className="navbar navbar-expand-lg navbar-light shadow fixed-top bg-light" data-aos="fade-down" data-aos-duration="1000" >
             <div className="container" >
-                <Link className="navbar-brand" to="/sayt">Logo</Link>
+                <button className="navbar-brand btn" onClick={goBack}>Logo</button>
                 <button onClick={() => setShow(!show)} className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-label="Toggle navigation">
                     <FontAwesomeIcon icon={faBars} className="navbar-icon" />
                 </button>

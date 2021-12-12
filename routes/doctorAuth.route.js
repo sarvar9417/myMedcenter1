@@ -8,7 +8,7 @@ const config = require('config')
 const jwt = require('jsonwebtoken')
 
 // /api/auth/register
-router.post('/doctorresume/register', auth, async (req, res) => {
+router.post('/doctorresume/register',  async (req, res) => {
     try {
         const { error } = validateDoctorResume(req.body)
         if (error) {
@@ -46,7 +46,7 @@ router.post('/doctorresume/register', auth, async (req, res) => {
 })
 
 //
-router.post('/register', auth, async (req, res) => {
+router.post('/register',  async (req, res) => {
     try {
         const { error } = validateDoctor(req.body)
         if (error) {
@@ -73,7 +73,7 @@ router.post('/register', auth, async (req, res) => {
 
 
 // /api/auth/login
-router.post('/login', auth, async (req, res) => {
+router.post('/login', async (req, res) => {
     try {
         const { error } = validateDoctor(req.body)
         if (error) {

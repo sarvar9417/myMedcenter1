@@ -182,7 +182,7 @@ export const ClientsPages = () => {
     }
 
     return (
-        <div className="container m-5 mx-auto" style={{minWidth:"1100px"}}  >
+        <div className="container m-5 mx-auto" style={{minWidth:"1250px"}}  >
             <div className="row mb-3">
                 <div className=" col-2">
                     <DatePicker className="form-control mb-2" selected={startDate} onChange={(date) => { setStartDate(date) }} />

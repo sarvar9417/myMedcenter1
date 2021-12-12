@@ -1,5 +1,6 @@
 import React from 'react'
 import { CheckCashier } from './CheckCashier'
+import { CheckHistory } from './CheckHistory'
 
 export const CreateCheck = () => {
     return (
@@ -11,7 +12,7 @@ export const CreateCheck = () => {
                             To'lov qilinmagan bo'limlar
                         </button>
                         <button className="nav-link" id="nav-profile-tab" data-bs-toggle="tab" data-bs-target="#nav-profile" type="button" role="tab" aria-controls="nav-profile" aria-selected="false">
-                            Avval xizmat ko'rsatilgan mijoz
+                            To'lovlar tarixi
                         </button>
                     </div>
                     <div className="tab-content" id="nav-tabContent">
@@ -19,7 +20,7 @@ export const CreateCheck = () => {
                             <CheckCashier />
                         </div>
                         <div className="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-                            {/* <OldClient /> */}
+                            <CheckHistory/>
                         </div>
                     </div>
                 </div>

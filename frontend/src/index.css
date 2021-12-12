@@ -1,9 +1,10 @@
 @import url("https://fonts.googleapis.com/css?family=Montserrat:400,500,600,700,800,900");
 @import url("https://cdn.linearicons.com/free/1.0.0/icon-font.min.css");
 
-*{
+* {
     box-sizing: border-box;
 }
+
 .wrapp h1,
 .wrapp h3 {
     text-decoration: none;
@@ -375,6 +376,6 @@ body {
     width: 42px;
 }
 
-.main-footer{
+.main-footer {
     background-color: rgba(0, 0, 0, 0) !important;
 }

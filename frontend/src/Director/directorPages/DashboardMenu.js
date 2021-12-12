@@ -3,14 +3,15 @@ import { Link } from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext'
 import { useHttp } from '../hooks/http.hook'
 import { AddDoctor } from './Others/AddDoctor'
+import { toast } from "react-toastify"
+import { Loader } from '../components/Loader'
 
-const mongoose = require('mongoose')
 
 export const DashboardMenu = () => {
-    const [client, setClient]= useState(0)
+    const [client, setClient] = useState(0)
     let price = 0
     const auth = useContext(AuthContext)
-    const { request } = useHttp()
+    const { request, error, loading, clearError } = useHttp()
 
     const [clients, setClients] = useState([])
     const [directions, setDirections] = useState(0)
@@ -57,7 +58,7 @@ export const DashboardMenu = () => {
             })
             let i = 0
             let price = 0
-             fetch.map((section) => {
+            fetch.map((section) => {
                 if (
                     new Date(section.bronDay).toLocaleDateString() === new Date().toLocaleDateString()
                 ) {
@@ -73,6 +74,9 @@ export const DashboardMenu = () => {
         }
     }, [request, auth, setSections, setPriceToday])
 
+    const notify = (e) => {
+        toast.error(e)
+    }
     useEffect(() => {
         if (sections.length === 0) {
             getAllSections()
@@ -80,8 +84,11 @@ export const DashboardMenu = () => {
             getAllDirections()
             getAllDoctors()
         }
+        if (error) {
+            notify()
+            clearError()
+        }
     }, [getAllClients, getAllSections, sections, getAllDirections, getAllDoctors])
-
 
     return (
         <div >
@@ -90,10 +97,10 @@ export const DashboardMenu = () => {
                     {/* small box */}
                     <Link to={`/director`} className="small-box bg-info">
                         <div className="inner">
-                            <h3>{ client } <span className="float-end"> </span></h3>
+                            <h3>{client} <span className="float-end"> </span></h3>
                             <p>Xizmatlar    {new Date().toLocaleDateString()}</p>
                         </div>
-                        
+
                         <div className="icon">
                             <i className="ion ion-bag" />
                         </div>
@@ -128,9 +135,7 @@ export const DashboardMenu = () => {
                         <a href="#" className="small-box-footer"> <i className="fas fa-arrow-circle-right" /></a>
                     </Link>
                 </div>
-                {/* ./col */}
                 <div className="col-lg-3 col-6">
-                    {/* small box */}
                     <Link to="/director/directions" className="small-box bg-danger">
                         <div className="inner">
                             <h3>{directions && directions}</h3>
@@ -142,9 +147,8 @@ export const DashboardMenu = () => {
                         <a href="#" className="small-box-footer"> <i className="fas fa-arrow-circle-right" /></a>
                     </Link>
                 </div>
-                {/* ./col */}
             </div>
-            <hr/>
+            <hr />
         </div>
     )
 }

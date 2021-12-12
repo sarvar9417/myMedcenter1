@@ -5,6 +5,7 @@ import { toast } from "react-toastify"
 import { AuthContext } from '../../context/AuthContext'
 import { useHttp } from '../../hooks/http.hook'
 import { CheckDirection } from './CheckDirection'
+import { Loader } from '../../components/Loader'
 
 
 const customStyles = {
@@ -17,28 +18,20 @@ const customStyles = {
     transform: 'translate(-50%, -50%)',
   },
 }
-
+toast.configure()
 export const EditDirection = () => {
   const auth = useContext(AuthContext)
-  const { request } = useHttp()
+  const { request, loading, error, clearError } = useHttp()
   const history = useHistory()
   // Modal oyna funksiyalari
-  const [modalIsOpen, setIsOpen] = useState(false)
-
-  function openModal() {
-    setIsOpen(true)
-  }
-
-  function closeModal() {
-    setIsOpen(false)
-  }
+  const [modal, setModal] = useState(false)
 
   //Direction ma'lumotlari
   const [direction, setDirection] = useState({
     value: "",
     price: "",
-    subvalue: " ",
-    label: ""
+    section: "",
+    subsection: ""
   })
   const directionId = useParams().id
 
@@ -50,20 +43,30 @@ export const EditDirection = () => {
       setDirection({
         value: data.value,
         price: data.price,
-        subvalue: data.subvalue,
-        label: data.label
+        section: data.section,
+        subsection: data.subsection
       })
     } catch (e) {
       notify(e)
     }
   }, [request, directionId, auth, setDirection])
 
-  const changeValue = (event) => {
-    setDirection({ ...direction, value: event.target.value, label: event.target.value })
+  const changeSection = (event) => {
+    setDirection({
+      ...direction,
+      section: event.target.value,
+      value: event.target.value + " " + direction.subsection,
+      label: event.target.value + " " + direction.subsection
+    })
   }
 
-  const changeSubValue = (event) => {
-    setDirection({ ...direction, subvalue: event.target.value })
+  const changeSubsection = (event) => {
+    setDirection({
+      ...direction,
+      subsection: event.target.value,
+      value: direction.section + " " + event.target.value,
+      label: direction.section + " " + event.target.value
+    })
   }
 
   const changePrice = (event) => {
@@ -74,7 +77,8 @@ export const EditDirection = () => {
     if (CheckDirection(direction)) {
       return notify(CheckDirection(direction))
     }
-    openModal()
+    window.scrollTo({top:0})
+    setModal(true)
   }
 
   const createHandler = async () => {
@@ -100,7 +104,16 @@ export const EditDirection = () => {
     if (direction.value === "") {
       getDirection()
     }
-  }, [getDirection])
+    if (error) {
+      notify(error)
+      clearError()
+    }
+
+  }, [getDirection, notify, clearError])
+
+  if (loading) {
+    return <Loader/>
+  }
 
   return (
     <div>
@@ -122,12 +135,12 @@ export const EditDirection = () => {
                     <tr>
                       <td className="text-center">
                         <span className="table-avatar">
-                          <span href="profile.html"> <input defaultValue={direction.value} onChange={changeValue} name="lastname" className="addDirection" /> </span>
+                          <span href="profile.html"> <input defaultValue={direction.section} onChange={changeSection} name="" className="addDirection" /> </span>
                         </span>
                       </td>
-                      <td className="text-center"><input defaultValue={direction.price} onChange={changePrice} name="lastname" className="addDirection" /> sum</td>
-                      <td className="text-center"><input defaultValue={direction.subvalue} onChange={changeSubValue} name="lastname" className="addDirection" /></td>
-                      <td className="text-center"><button onClick={checkDirection} className="btn btn-success" >Saqlash</button> </td>
+                      <td className="text-center"><input defaultValue={direction.price} onChange={changePrice} name="" className="addDirection" /> sum</td>
+                      <td className="text-center"><input defaultValue={direction.subsection} onChange={changeSubsection} name="" className="addDirection" /></td>
+                      <td className="text-center"><button onClick={checkDirection} className="btn button-success" >Saqlash</button> </td>
                     </tr>
                   </tbody>
                 </table>
@@ -140,13 +153,8 @@ export const EditDirection = () => {
 
 
       {/* Modal oynaning ochilishi */}
-      <div>
-        <Modal
-          isOpen={modalIsOpen}
-          onRequestClose={closeModal}
-          style={customStyles}
-          contentLabel="Example Modal"
-        >
+      <div className={modal ? "modal" : "d-none"}>
+        <div className="modal-card">
 
           <div className="card">
             <div className="card-body">
@@ -163,27 +171,25 @@ export const EditDirection = () => {
                     <tr>
                       <td className="text-center">
                         <span className="table-avatar">
-                          <span href="profile.html"> {direction.value} </span>
+                          <span href="profile.html"> {direction.section} </span>
                         </span>
                       </td>
                       <td className="text-center">{direction.price} sum</td>
-                      <td className="text-center">{direction.subvalue}</td>
+                      <td className="text-center">{direction.subsection}</td>
                     </tr>
 
                   </tbody>
                 </table>
               </div>
             </div>
-          </div>
-
-          <div className="row m-1">
-            <div className="col-12 text-center">
-              <button onClick={createHandler} className="btn btn-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
-              <button onClick={closeModal} className="btn btn-danger" >Qaytish</button>
+            <div className="card-footer">
+              <div className=" text-center">
+                <button onClick={createHandler} className="btn button-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
+                <button onClick={() => setModal(false)} className="btn button-danger" >Qaytish</button>
+              </div>
             </div>
           </div>
-
-        </Modal>
+        </div>
       </div>
 
     </div >
