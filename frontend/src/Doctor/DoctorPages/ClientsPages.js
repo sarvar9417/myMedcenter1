@@ -20,9 +20,8 @@ export const ClientsPages = () => {
     const payment = ["kelgan", "kelmagan", "chaqirilmagan"]
     const options = [
         { value: 'all', label: 'Barchasi' },
-        { value: 'kutilmoqda', label: "Kutilayotgan" },
-        { value: "to'langan", label: "To'langan" },
-        { value: "to'lanmagan", label: "Rad etilgan" }
+        { value: 'chaqirilmagan', label: "Chaqirilmagan" },
+        { value: "kelgan", label: "Chaqirilgan" }
     ]
 
     let paid = 0
@@ -90,7 +89,7 @@ export const ClientsPages = () => {
             setSections(c)
         } else {
             AllSections.map((section) => {
-                if (section.payment === event.value && setSortDate(section))
+                if (section.checkup === event.value && setSortDate(section))
                     c.push(section)
             })
             setSections(c)

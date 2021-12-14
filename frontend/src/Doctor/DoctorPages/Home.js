@@ -93,10 +93,10 @@ export const Home = () => {
         <>
             <div className="cc mb-5">
                 <div className="row text-white" style={{ backgroundColor: "#45D3D3" }}>
-                    <div className="col-md-4" >
+                    <div className="d-lg-block col-4  d-none " >
                         <h3 className="p-3">{new Date().toLocaleDateString()}</h3>
                     </div>
-                    <div className="col-md-3" style={{ textAlign: "center" }}>
+                    <div className="d-md-block col-md-6 col-lg-4 d-none" style={{ textAlign: "center" }}>
                         <h3 className="p-3">{auth.doctor ? auth.doctor.section : ""}: {auth.doctor && auth.doctor.lastname} {auth.doctor && auth.doctor.firstname[0]}</h3>
                     </div>
                     <div className="col-md-4" style={{ textAlign: "right" }}>

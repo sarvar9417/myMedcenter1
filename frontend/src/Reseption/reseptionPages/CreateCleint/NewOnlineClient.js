@@ -39,15 +39,7 @@ export const NewOnlineClient = () => {
 
     // Modal oyna funksiyalari
     let allPrice = 0
-    const [modalIsOpen, setIsOpen] = useState(false)
-
-    function openModal() {
-        setIsOpen(true)
-    }
-
-    function closeModal() {
-        setIsOpen(false)
-    }
+    const [modal, setModal] = useState(false)
 
     // Bo'limlar
     const [options, setOptions] = useState()
@@ -146,7 +138,8 @@ export const NewOnlineClient = () => {
         if (CheckClentData(client)) {
             return notify(CheckClentData(client))
         }
-        openModal()
+        window.scrollTo({top:0})
+        setModal(true)
     }
 
     const createHandler = async () => {
@@ -400,13 +393,9 @@ export const NewOnlineClient = () => {
 
 
             {/* Modal oynaning ochilishi */}
-            <div>
-                <Modal
-                    isOpen={modalIsOpen}
-                    onRequestClose={closeModal}
-                    style={customStyles}
-                    contentLabel="Example Modal"
-                >
+            <div className={modal ? "modal" : "d-none"}>
+                <div className="modal-card">
+                    <div className="card p-4" style={{ fontFamily: "times" }}>
                     <div className="text-center fs-4 fw-bold text-secondary">
                         <span className="text-dark">Mijoz: </span>  {client.lastname} {client.firstname} {client.fathername}
                     </div>
@@ -454,13 +443,14 @@ export const NewOnlineClient = () => {
                     </div>
                     <div className="row m-1">
             `            <div className="col-12 text-center">
-                            <button onClick={createHandler} className="btn btn-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
-                            <button onClick={closeModal} className="btn btn-danger" >Qaytish</button>
+                            <button onClick={createHandler} className="btn button-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
+                            <button onClick={()=>setModal(false)} className="btn button-danger" >Qaytish</button>
                         </div>
                     </div>
 
-                </Modal>
-            </div>`
+                </div>
+                </div>
+            </div>
         </div>
     )
 }

@@ -90,7 +90,6 @@ export const AddDoctor = () => {
   }
 
   const changeSection = (event) => {
-    console.log(event.value)
     setDoctor({ ...doctor, section: event.value })
   }
 
@@ -120,7 +119,6 @@ export const AddDoctor = () => {
       const data = await request("/api/auth/doctor/doctorresume/register", "POST", { ...doctor }, {
         Authorization: `Bearer ${auth.token}`
       })
-      console.log(data);
       createLogin(data._id)
     } catch (e) {
       notify(e)
@@ -129,7 +127,6 @@ export const AddDoctor = () => {
 
   const createLogin = async (id) => {
     try {
-      console.log(id);
       const data = await request("/api/auth/doctor/register", "POST", {
         login: loginPassword.login,
         password: loginPassword.password,

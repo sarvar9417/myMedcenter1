@@ -37,15 +37,7 @@ export const OldOnlineClient = () => {
 
     // Modal oyna funksiyalari
     let allPrice = 0
-    const [modalIsOpen, setIsOpen] = useState(false)
-
-    function openModal() {
-        setIsOpen(true)
-    }
-
-    function closeModal() {
-        setIsOpen(false)
-    }
+    const [modal, setModal] = useState(false)
 
     // Bo'limlar
     const [options, setOptions] = useState()
@@ -144,7 +136,7 @@ export const OldOnlineClient = () => {
 
     const createConnector = async () => {
         try {
-            const connector = await request("/api/connector/register", "POST", { client:client._id }, {
+            const connector = await request("/api/connector/register", "POST", { client: client._id }, {
                 Authorization: `Bearer ${auth.token}`
             })
             createAllSections(connector._id)
@@ -315,7 +307,7 @@ export const OldOnlineClient = () => {
                                     />
                                 </div>
                                 <div className="col-md-4 col-sm-6">
-                                    <label style={{fontWeight:"100"}} > Kuni
+                                    <label style={{ fontWeight: "100" }} > Kuni
                                     </label>
                                     <input
                                         id={key}
@@ -346,7 +338,7 @@ export const OldOnlineClient = () => {
             </div>
             <div className="mt-5 text-center">
                 <button
-                    onClick={openModal}
+                    onClick={()=>setModal(true)}
                     className="btn btn-primary profile-button"
                 >
                     Saqlash
@@ -354,66 +346,63 @@ export const OldOnlineClient = () => {
             </div>
 
             {/* Modal oynaning ochilishi */}
-            <div>
-                <Modal
-                    isOpen={modalIsOpen}
-                    onRequestClose={closeModal}
-                    style={customStyles}
-                    contentLabel="Example Modal"
-                >
-                    <div className="text-center fs-4 fw-bold text-secondary">
-                        <span className="text-dark">Mijoz: </span>  {client.lastname} {client.firstname} {client.fathername}
-                    </div>
-                    <table className="w-100 mt-3">
-                        <thead>
-                            <tr style={{ borderBottom: "1px solid #999" }} >
-                                <th style={{ width: "10%", textAlign: "center", padding: "10px 0" }}>№</th>
-                                <th style={{ width: "30%", textAlign: "center", padding: "10px 0" }}>Bo'limlar</th>
-                                <th style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>Hisob</th>
-                                <th style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>Kuni</th>
-                                <th style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>Soati</th>
-                            </tr>
-                        </thead>
-                        <tbody style={{ borderBottom: "1px solid #999" }}>
-
-                            {
-                                sections.map((section, key) => {
-                                    allPrice = allPrice + section.price
-                                    return (
-                                        <tr key={key}>
-                                            <td style={{ width: "10%", textAlign: "center", padding: "10px 0" }}>{key + 1}</td>
-                                            <td style={{ width: "30%", textAlign: "center", padding: "10px 0" }}>
-                                                {section.name}
-                                            </td>
-                                            <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{section.price}</td>
-                                            <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{new Date(section.bronDay).toLocaleDateString()}</td>
-                                            <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{section.bronTime}</td>
-                                        </tr>
-                                    )
-                                })
-                            }
-
-                        </tbody>
-                    </table>
-
-                    <div className="row m-1 mt-3">
-                        <div className="col-6">
-                            <div className="fw-bold text-primary">Jami to'lov:</div>
+            <div className={modal ? "modal" : "d-none"}>
+                <div className="modal-card">
+                    <div className="card p-4" style={{ fontFamily: "times" }}>
+                        <div className="text-center fs-4 fw-bold text-secondary">
+                            <span className="text-dark">Mijoz: </span>  {client.lastname} {client.firstname} {client.fathername}
                         </div>
-                        <div className="col-6">
-                            <div className="fw-bold  text-end ">{allPrice}</div>
+                        <table className="w-100 mt-3">
+                            <thead>
+                                <tr style={{ borderBottom: "1px solid #999" }} >
+                                    <th style={{ width: "10%", textAlign: "center", padding: "10px 0" }}>№</th>
+                                    <th style={{ width: "30%", textAlign: "center", padding: "10px 0" }}>Bo'limlar</th>
+                                    <th style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>Hisob</th>
+                                    <th style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>Kuni</th>
+                                    <th style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>Soati</th>
+                                </tr>
+                            </thead>
+                            <tbody style={{ borderBottom: "1px solid #999" }}>
+
+                                {
+                                    sections.map((section, key) => {
+                                        allPrice = allPrice + section.price
+                                        return (
+                                            <tr key={key}>
+                                                <td style={{ width: "10%", textAlign: "center", padding: "10px 0" }}>{key + 1}</td>
+                                                <td style={{ width: "30%", textAlign: "center", padding: "10px 0" }}>
+                                                    {section.name}
+                                                </td>
+                                                <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{section.price}</td>
+                                                <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{new Date(section.bronDay).toLocaleDateString()}</td>
+                                                <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{section.bronTime}</td>
+                                            </tr>
+                                        )
+                                    })
+                                }
+
+                            </tbody>
+                        </table>
+
+                        <div className="row m-1 mt-3">
+                            <div className="col-6">
+                                <div className="fw-bold text-primary">Jami to'lov:</div>
+                            </div>
+                            <div className="col-6">
+                                <div className="fw-bold  text-end ">{allPrice}</div>
+                            </div>
+                            <hr />
+
                         </div>
-                        <hr />
+                        <div className="row m-1">
+                            <div className="col-12 text-center">
+                                <button onClick={createConnector} className="btn button-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
+                                <button onClick={()=>setModal(false)} className="btn button-danger" >Qaytish</button>
+                            </div>
+                        </div>
 
                     </div>
-                    <div className="row m-1">
-                        <div className="col-12 text-center">
-                            <button onClick={createConnector} className="btn btn-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
-                            <button onClick={closeModal} className="btn btn-danger" >Qaytish</button>
-                        </div>
-                    </div>
-
-                </Modal>
+                </div>
             </div>
         </>
     )

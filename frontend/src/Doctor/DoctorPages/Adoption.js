@@ -32,25 +32,8 @@ export const Adoption = () => {
     })
 
     //Modal oyna
-    const [modalIsOpen1, setIsOpen1] = useState(false)
-    const [modalIsOpen2, setIsOpen2] = useState(false)
-
-    function openModal1() {
-        setIsOpen1(true);
-    }
-
-    function closeModal1() {
-        setIsOpen1(false);
-    }
-
-    function openModal2() {
-        setIsOpen2(true);
-    }
-
-    function closeModal2() {
-        setIsOpen2(false);
-    }
-
+    const [modal1, setModal1] = useState(false)
+    const [modal2, setModal2] = useState(false)
 
     const getSection = useCallback(async () => {
         try {
@@ -123,7 +106,8 @@ export const Adoption = () => {
 
     const checkUp = (event) => {
         setSection({ ...section, [event.target.name]: event.target.id })
-        openModal1()
+        window.scrollTo({ top: 0 })
+        setModal1(true)
     }
 
     const dontCome = useCallback(async () => {
@@ -310,11 +294,9 @@ export const Adoption = () => {
 
                     <h5>Doctor: <span className="fs-4">{auth.doctor.lastname} {auth.doctor.firstname[0]}</span></h5>
                     <div className="row mt-5 mb-5">
-                        <div className="col-2">
-                            <button id="kelmagan" name="checkup" onClick={checkUp} className="btn btn-danger">Mijoz kelmadi</button>
-                        </div>
-                        <div className="col-2">
-                            <button className="btn" onClick={openModal2} style={{ color: "#fff", backgroundColor: "#14A479" }}>Tasdiqlash</button>
+                        <div className="col-12">
+                            <button id="kelmagan" name="checkup" onClick={checkUp} className="btn btn-danger me-5">Mijoz kelmadi</button>
+                            <button className="btn" onClick={() => { window.scrollTo({ top: 0 }); setModal2(true) }} style={{ color: "#fff", backgroundColor: "#14A479" }}>Tasdiqlash</button>
                         </div>
                     </div>
                 </div>
@@ -325,60 +307,52 @@ export const Adoption = () => {
 
 
             {/* Modal oynaning ochilishi */}
-            <div>
-                <Modal
-                    isOpen={modalIsOpen1}
-                    onRequestClose={closeModal1}
-                    style={customStyles}
-                    contentLabel="Example Modal"
-                >
-                    <div className="row m-1">
-                        <div className="col-12 text-center mb-4 ">
-                            <h4>Mijoz kelmaganini tasdiqlaysizmi?</h4>
+            <div className={modal1 ? "modal" : "d-none"}>
+                <div className="modal-card">
+                    <div className="card p-4" style={{ fontFamily: "times" }}>
+                        <div className="row m-1">
+                            <div className="col-12 text-center mb-4 ">
+                                <h4>Mijoz kelmaganini tasdiqlaysizmi?</h4>
+                            </div>
+                        </div>
+                        <div className="row m-1">
+                            <div className="col-12 text-center">
+                                <button onClick={dontCome} className="btn button-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
+                                <button onClick={() => setModal1(false)} className="btn button-danger" >Qaytish</button>
+                            </div>
                         </div>
                     </div>
-                    <div className="row m-1">
-                        <div className="col-12 text-center">
-                            <button onClick={dontCome} className="btn btn-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
-                            <button onClick={closeModal1} className="btn btn-danger" >Qaytish</button>
-                        </div>
-                    </div>
-
-                </Modal>
+                </div>
             </div>
 
             {/* Modal oynaning ochilishi */}
-            <div style={{ fontFamily: "times" }}>
-                <Modal
-                    isOpen={modalIsOpen2}
-                    onRequestClose={closeModal2}
-                    style={customStyles}
-                    contentLabel="Example Modal"
-                >
-                    <div className="row m-1">
-                        <div className="col-12 ">
-                            <h5>
-                                Izoh:<br />
-                                {section && section.comment}
-                            </h5>
+            <div className={modal2 ? "modal" : "d-none"}>
+                <div className="modal-card">
+                    <div className="card p-4" style={{ fontFamily: "times" }}>
+                        <div className="row m-1">
+                            <div className="col-12 ">
+                                <h5>
+                                    Izoh:<br />
+                                    {section && section.comment}
+                                </h5>
+                            </div>
+                        </div>
+                        <div className="row m-1">
+                            <div className="col-12 ">
+                                <h5 >
+                                    Xulosa: <br />
+                                    {section && section.summary}
+                                </h5>
+                            </div>
+                        </div>
+                        <div className="row m-1">
+                            <div className="col-12 text-center">
+                                <button onClick={doneCome} className="btn button-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
+                                <button onClick={() => setModal2(false)} className="btn button-danger" >Qaytish</button>
+                            </div>
                         </div>
                     </div>
-                    <div className="row m-1">
-                        <div className="col-12 ">
-                            <h5 >
-                                Xulosa: <br />
-                                {section && section.summary}
-                            </h5>
-                        </div>
-                    </div>
-                    <div className="row m-1">
-                        <div className="col-12 text-center">
-                            <button onClick={doneCome} className="btn btn-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
-                            <button onClick={closeModal2} className="btn btn-danger" >Qaytish</button>
-                        </div>
-                    </div>
-
-                </Modal>
+                </div>
             </div>
 
         </div >

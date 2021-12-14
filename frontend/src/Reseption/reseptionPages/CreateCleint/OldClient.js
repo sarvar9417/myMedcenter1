@@ -38,15 +38,7 @@ export const OldClient = () => {
 
   // Modal oyna funksiyalari
   let allPrice = 0
-  const [modalIsOpen, setIsOpen] = useState(false)
-
-  function openModal() {
-    setIsOpen(true)
-  }
-
-  function closeModal() {
-    setIsOpen(false)
-  }
+  const [modal, setModal] = useState(false)
 
   // Bo'limlar
   const [options, setOptions] = useState()
@@ -353,7 +345,7 @@ export const OldClient = () => {
 
       <div className="mt-5 text-center" >
         <button
-          onClick={openModal}
+          onClick={()=>setModal(true)}
           className="btn btn-primary profile-button"
         >
           Saqlash
@@ -363,13 +355,9 @@ export const OldClient = () => {
       
 
       {/* Modal oynaning ochilishi */}
-      <div>
-        <Modal
-          isOpen={modalIsOpen}
-          onRequestClose={closeModal}
-          style={customStyles}
-          contentLabel="Example Modal"
-        >
+      <div className={modal ? "modal" : "d-none"}>
+        <div className="modal-card">
+          <div className="card p-4" style={{ fontFamily: "times" }}>
           <div className="text-center fs-4 fw-bold text-secondary">
             <span className="text-dark">Mijoz: </span>  {client.lastname} {client.firstname} {client.fathername}
           </div>
@@ -413,12 +401,13 @@ export const OldClient = () => {
           </div>
           <div className="row m-1">
             <div className="col-12 text-center">
-              <button onClick={createConnector} className="btn btn-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
-              <button onClick={closeModal} className="btn btn-danger" >Qaytish</button>
+              <button onClick={createConnector} className="btn button-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
+              <button onClick={()=>setModal(false)} className="btn button-danger" >Qaytish</button>
             </div>
           </div>
 
-        </Modal>
+        </div>
+        </div>
       </div>
 
       

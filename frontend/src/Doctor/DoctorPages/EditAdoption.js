@@ -32,25 +32,7 @@ export const EditAdoption = () => {
     })
 
     //Modal oyna
-    const [modalIsOpen1, setIsOpen1] = useState(false)
-    const [modalIsOpen2, setIsOpen2] = useState(false)
-
-    function openModal1() {
-        setIsOpen1(true);
-    }
-
-    function closeModal1() {
-        setIsOpen1(false);
-    }
-
-    function openModal2() {
-        setIsOpen2(true);
-    }
-
-    function closeModal2() {
-        setIsOpen2(false);
-    }
-
+    const [modal, setModal] = useState(false)
 
     const getSection = useCallback(async () => {
         try {
@@ -93,7 +75,7 @@ export const EditAdoption = () => {
         // for (let i = 0; i < comments.length-1; i++) {
         //     let n = document.getElementsByClassName("comment")[i].value
         //     s = s + comments[i] + n
-            
+
         // }
         // s = s + comments[comments.length-1]
         setSection({ ...section, [event.target.name]: event.target.value })
@@ -121,10 +103,10 @@ export const EditAdoption = () => {
         setSection({ ...section, [event.target.name]: event.target.value })
     }
 
-    const checkUp = (event) => {
-        setSection({ ...section, [event.target.name]: event.target.id })
-        openModal1()
-    }
+    // const checkUp = (event) => {
+    //     setSection({ ...section, [event.target.name]: event.target.id })
+    //     openModal1()
+    // }
 
     const dontCome = useCallback(async () => {
         try {
@@ -275,18 +257,16 @@ export const EditAdoption = () => {
                     <h5>{new Date().toLocaleDateString()}</h5>
                     <h5>Bemor: <span className="fs-4">{client.firstname} {client.lastname} {client.fathername}</span></h5>
                     <textarea name="comment" onChange={changeComment} style={{ height: "200px" }} className="form-control" defaultValue={section && section.comment}></textarea>
-                    <br/>
-                    <textarea name="summary" onChange={changeSummary} style={{ height: "200px" }} className="form-control" defaultValue={section && section.summary}></textarea>
-                    
                     <br />
-    
+                    <textarea name="summary" onChange={changeSummary} style={{ height: "200px" }} className="form-control" defaultValue={section && section.summary}></textarea>
+
+                    <br />
+
                     <h5>Doctor: <span className="fs-4">{auth.doctor.lastname} {auth.doctor.firstname[0]}</span></h5>
                     <div className="row mt-5 mb-5">
-                        <div className="col-2">
-                            <button id="kelmagan" name="checkup" onClick={checkUp} className="btn btn-danger">Mijoz kelmadi</button>
-                        </div>
-                        <div className="col-2">
-                            <button className="btn" onClick={openModal2} style={{ color: "#fff", backgroundColor: "#14A479" }}>Tasdiqlash</button>
+                        <div className="col-12">
+                            {/* <button id="kelmagan" name="checkup" onClick={checkUp} className="btn btn-danger">Mijoz kelmadi</button> */}
+                            <button className="btn" onClick={()=>{window.scrollTo({top:0}); setModal(true)}} style={{ color: "#fff", backgroundColor: "#14A479" }}>Tasdiqlash</button>
                         </div>
                     </div>
                 </div>
@@ -296,7 +276,7 @@ export const EditAdoption = () => {
 
 
 
-            {/* Modal oynaning ochilishi */}
+            {/* Modal oynaning ochilishi
             <div>
                 <Modal
                     isOpen={modalIsOpen1}
@@ -317,40 +297,36 @@ export const EditAdoption = () => {
                     </div>
 
                 </Modal>
-            </div>
+            </div> */}
 
             {/* Modal oynaning ochilishi */}
-            <div style={{fontFamily:"times"}}>
-                <Modal
-                    isOpen={modalIsOpen2}
-                    onRequestClose={closeModal2}
-                    style={customStyles}
-                    contentLabel="Example Modal"
-                >
-                    <div className="row m-1">
-                        <div className="col-12 ">
-                            <h5>
-                                Izoh:<br />
-                                {section && section.comment}
-                            </h5>
+            <div className={modal ? "modal" : "d-none"}>
+                <div className="modal-card">
+                    <div className="card p-4" style={{ fontFamily: "times" }}>
+                        <div className="row m-1">
+                            <div className="col-12 ">
+                                <h5>
+                                    Izoh:<br />
+                                    {section && section.comment}
+                                </h5>
+                            </div>
+                        </div>
+                        <div className="row m-1">
+                            <div className="col-12 ">
+                                <h5 >
+                                    Xulosa: <br />
+                                    {section && section.summary}
+                                </h5>
+                            </div>
+                        </div>
+                        <div className="row m-1">
+                            <div className="col-12 text-center">
+                                <button onClick={doneCome} className="btn btn-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
+                                <button onClick={()=>setModal(false)} className="btn btn-danger" >Qaytish</button>
+                            </div>
                         </div>
                     </div>
-                    <div className="row m-1">
-                        <div className="col-12 ">
-                            <h5 >
-                                Xulosa: <br />
-                                {section && section.summary}
-                            </h5>
-                        </div>
-                    </div>
-                    <div className="row m-1">
-                        <div className="col-12 text-center">
-                            <button onClick={doneCome} className="btn btn-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
-                            <button onClick={closeModal2} className="btn btn-danger" >Qaytish</button>
-                        </div>
-                    </div>
-
-                </Modal>
+                </div>
             </div>
 
         </div >

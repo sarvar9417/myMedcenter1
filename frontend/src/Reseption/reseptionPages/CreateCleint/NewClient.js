@@ -30,15 +30,7 @@ export const NewClient = () => {
 
   // Modal oyna funksiyalari
   let allPrice = 0
-  const [modalIsOpen, setIsOpen] = useState(false)
-
-  function openModal() {
-    setIsOpen(true)
-  }
-
-  function closeModal() {
-    setIsOpen(false)
-  }
+  const [modal, setModal] = useState(false)
 
   //Avtorizatsiyani olish
   const auth = useContext(AuthContext)
@@ -161,7 +153,8 @@ export const NewClient = () => {
     if (CheckClentData(client)) {
       return notify(CheckClentData(client))
     }
-    openModal()
+    window.scrollTo({ top: 0 })
+    setModal(true)
   }
 
 
@@ -239,7 +232,7 @@ export const NewClient = () => {
       <div className="row">
         <div className="col-md-6 mb-2 input_box" >
           <input
-          defaultValue={client.lastname}
+            defaultValue={client.lastname}
             onChange={changeHandlar}
             name="lastname"
             type="text"
@@ -297,7 +290,7 @@ export const NewClient = () => {
                   name="gender"
                   type="radio"
                   defaultValue="man"
-                  checked={client.gender==="man"? true: false}
+                  checked={client.gender === "man" ? true : false}
                 />
                 <label
                   className={client.gender === "man" ? "label clabel" : "label"}
@@ -328,7 +321,7 @@ export const NewClient = () => {
         </div>
         <div className="col-md-6 mb-2 input_box" >
           <input
-          defaultValue={client.phone}
+            defaultValue={client.phone}
             onChange={changeHandlar}
             type="number"
             name="phone"
@@ -351,7 +344,7 @@ export const NewClient = () => {
             closeMenuOnSelect={false}
             components={animatedComponents}
             isMulti
-            options={options && options }
+            options={options && options}
           />
         </div>
       </div>
@@ -360,7 +353,7 @@ export const NewClient = () => {
           return (
             <div key={key} className="row">
               <div className="col-7" >
-                <label className="text-muted mandatory"> {}</label>
+                <label className="text-muted mandatory"> { }</label>
                 <input
                   disabled
                   defaultValue={section.price}
@@ -373,7 +366,7 @@ export const NewClient = () => {
                 />
               </div>
               <div className="col-5">
-                <label className="text-muted mandatory"style={{fontWeight:"100"}}> navbati</label>
+                <label className="text-muted mandatory" style={{ fontWeight: "100" }}> navbati</label>
                 <input
                   // onChange={changeHandlar}
                   type="number"
@@ -395,62 +388,59 @@ export const NewClient = () => {
       </div>
 
       {/* Modal oynaning ochilishi */}
-      <div>
-        <Modal
-          isOpen={modalIsOpen}
-          onRequestClose={closeModal}
-          style={customStyles}
-          contentLabel="Example Modal"
-        >
-          <div className="text-center fs-4 fw-bold text-secondary">
-            <span className="text-dark">Mijoz: </span>  {client.lastname} {client.firstname} {client.fathername}
-          </div>
-          <table className="w-100 mt-3" style={{overflow:"auto"}}>
-            <thead>
-              <tr style={{ borderBottom: "1px solid #999" }} >
-                <th style={{ width: "10%", textAlign: "center", padding: "10px 0" }}>№</th>
-                <th style={{ width: "30%", textAlign: "center", padding: "10px 0" }}>Bo'limlar</th>
-                <th style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>Hisob</th>
-              </tr>
-            </thead>
-            <tbody style={{ borderBottom: "1px solid #999" }}>
-
-              {
-                sections.map((section, key) => {
-                  allPrice = allPrice + section.price
-                  return (
-                    <tr key={key}>
-                      <td style={{ width: "10%", textAlign: "center", padding: "10px 0" }}>{key + 1}</td>
-                      <td style={{ width: "30%", textAlign: "center", padding: "10px 0" }}>
-                        {section.name}
-                      </td>
-                      <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{section.price}</td>
-                    </tr>
-                  )
-                })
-              }
-
-            </tbody>
-          </table>
-
-          <div className="row m-1 mt-3">
-            <div className="col-6">
-              <div className="fw-bold text-primary">Jami to'lov:</div>
+      <div className={modal ? "modal" : "d-none"}>
+        <div className="modal-card">
+          <div className="card p-4" style={{ fontFamily: "times" }}>
+            <div className="text-center fs-4 fw-bold text-secondary">
+              <span className="text-dark">Mijoz: </span>  {client.lastname} {client.firstname} {client.fathername}
             </div>
-            <div className="col-6">
-              <div className="fw-bold  text-end ">{allPrice}</div>
+            <table className="w-100 mt-3" style={{ overflow: "auto" }}>
+              <thead>
+                <tr style={{ borderBottom: "1px solid #999" }} >
+                  <th style={{ width: "10%", textAlign: "center", padding: "10px 0" }}>№</th>
+                  <th style={{ width: "30%", textAlign: "center", padding: "10px 0" }}>Bo'limlar</th>
+                  <th style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>Hisob</th>
+                </tr>
+              </thead>
+              <tbody style={{ borderBottom: "1px solid #999" }}>
+
+                {
+                  sections.map((section, key) => {
+                    allPrice = allPrice + section.price
+                    return (
+                      <tr key={key}>
+                        <td style={{ width: "10%", textAlign: "center", padding: "10px 0" }}>{key + 1}</td>
+                        <td style={{ width: "30%", textAlign: "center", padding: "10px 0" }}>
+                          {section.name} {section.subname}
+                        </td>
+                        <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{section.price}</td>
+                      </tr>
+                    )
+                  })
+                }
+
+              </tbody>
+            </table>
+
+            <div className="row m-1 mt-3">
+              <div className="col-6">
+                <div className="fw-bold text-primary">Jami to'lov:</div>
+              </div>
+              <div className="col-6">
+                <div className="fw-bold  text-end ">{allPrice}</div>
+              </div>
+              <hr />
+
             </div>
-            <hr />
+            <div className="row m-1">
+              <div className="col-12 text-center">
+                <button onClick={createHandler} className="btn button-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
+                <button onClick={() => setModal(false)} className="btn button-danger" >Qaytish</button>
+              </div>
+            </div>
 
           </div>
-          <div className="row m-1">
-            <div className="col-12 text-center">
-              <button onClick={createHandler} className="btn button-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
-              <button onClick={closeModal} className="btn button-danger" >Qaytish</button>
-            </div>
-          </div>
-
-        </Modal>
+        </div>
       </div>
     </div>
   )

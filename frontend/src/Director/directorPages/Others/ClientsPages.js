@@ -236,7 +236,7 @@ export const ClientsPages = () => {
                     <Select onChange={(event) => sortOnOff(event)} defaultValue={options && options[0]} options={options} />
                 </div>
             </div>
-            <div className="row" style={{ minWidth: "1000px" }}>
+            <div className="row" style={{ minWidth: "1100px" }}>
                 <div className="offset-10 col-1 text-end">
                     <ReactHTMLTableToExcel
                         className="btn text-white mb-2 btn-success"
@@ -252,7 +252,7 @@ export const ClientsPages = () => {
 
             </div>
             <div>
-                <div style={{ minWidth: "1000px" }} >
+                <div style={{ minWidth: "1100px" }} >
                     <table id="" className="table-striped table-hover" style={{ borderBottom: "1px solid #aaa", marginBottom: "10px" }} >
                         <thead>
                             <tr>
@@ -264,7 +264,8 @@ export const ClientsPages = () => {
                                 <th scope="" className="section text-center">Bo'limi <FontAwesomeIcon icon={faSort} /></th>
                                 <th scope="" className="prices text-center">To'lov <FontAwesomeIcon icon={faSort} /></th>
                                 <th scope="" className="prices text-center">To'langan <FontAwesomeIcon icon={faSort} /></th>
-                                <th scope="" style={{ width: "150px !important" }} className=" text-center">To'lanmagan <FontAwesomeIcon icon={faSort} /></th>
+                                <th scope=""  className=" text-center">To'lanmagan <FontAwesomeIcon icon={faSort} /></th>
+                                <th scope=""  className=" text-center">To'lov izohi</th>
                             </tr>
                         </thead>
                     </table>
@@ -284,14 +285,17 @@ export const ClientsPages = () => {
                             <th scope="" className="prices text-center">To'lov <FontAwesomeIcon icon={faSort} /></th>
                             <th scope="" className="prices text-center">To'langan <FontAwesomeIcon icon={faSort} /></th>
                             <th scope="" className="prices text-center">To'lanmagan <FontAwesomeIcon icon={faSort} /></th>
+                            <th scope="" className="prices text-center">To'lov izohi <FontAwesomeIcon icon={faSort} /></th>
                         </tr>
                     </thead>
                     <tbody className="" >
                         {sections && sections.map((section, key) => {
                             return ( AllClients.map(client => {
                                 if (client._id === section.client) {
-                                    paid = paid + section.priceCashier
-                                    unpaid = unpaid + (section.price - section.priceCashier)
+                                    if (section.payment !=="to'lanmagan") {
+                                        paid = paid + section.priceCashier
+                                        unpaid = unpaid + (section.price - section.priceCashier)
+                                    } 
                                     kk++
                                     return (
                                         <tr key={key} >
@@ -301,9 +305,10 @@ export const ClientsPages = () => {
                                             <td className="id" >{client.id}</td>
                                             <td className="phone">+{client.phone}</td>
                                             <td > {section.name} </td>
-                                            <td > {section.price} </td>
-                                            <td > {section.priceCashier} </td>
-                                            <td > {section.price - section.priceCashier} </td>
+                                            <td > {section.payment === "to'lanmagan" ? "Rad etilgan":section.price} </td>
+                                            <td > {section.payment === "to'lanmagan" ? "":section.priceCashier} </td>
+                                            <td > {section.payment === "to'lanmagan" ? "" : section.price - section.priceCashier} </td>
+                                            <td > {section.commentCashier} </td>
                                         </tr>
                                     )
                                 }
@@ -324,7 +329,7 @@ export const ClientsPages = () => {
                 </table>
             </div>
 
-            <div className="overflow-auto" style={{minHeight:"25vh", maxHeight: "70vh", minWidth: "1000px" }}>
+            <div className="overflow-auto" style={{minHeight:"25vh", maxHeight: "70vh", minWidth: "1100px" }}>
                 <table className=" table-hover"  >
                     <tbody className="" >
                         {sections.map((section, key) => {
@@ -339,9 +344,10 @@ export const ClientsPages = () => {
                                             <td className="id" >{client.id}</td>
                                             <td className="phone">+{client.phone}</td>
                                             <td className="section text-uppercase"> <Link to={`/director/clienthistory/${section._id}`} style={{ color: "#00aa00", fontWeight: "600" }} > {section.name} </Link></td>
-                                            <td className="prices text-bold">{section.price}</td>
-                                            <td className="prices text-bold text-success">{section.priceCashier}</td>
-                                            <td className="prices text-bold text-danger" >{section.price - section.priceCashier}</td>
+                                            <td className="prices text-bold">{section.payment === "to'lanmagan"? "Rad etilgan":section.price}</td>
+                                            <td className="prices text-bold text-success">{section.payment === "to'lanmagan" ? "" : section.priceCashier}</td>
+                                            <td className="prices text-bold text-danger" >{section.payment === "to'lanmagan" ? "" : section.price - section.priceCashier}</td>
+                                            <td className="prices text-bold text-danger" >{ section.commentCashier}</td>
                                         </tr>
                                     )
                                 }
@@ -352,7 +358,7 @@ export const ClientsPages = () => {
 
                 </table>
             </div>
-            <table className=" table-hover" style={{ minWidth: "1000px" }}  >
+            <table className=" table-hover" style={{ minWidth: "1100px" }}  >
                 <tfooter className=" ">
                     <tr className="mt-3">
                         <th className="no" scope="" colSpan="6" >Jami: </th>
