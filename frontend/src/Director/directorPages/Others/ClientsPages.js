@@ -114,6 +114,7 @@ export const ClientsPages = () => {
     }
 
     const sortOnOff = (event) => {
+        console.log(event.value);
         position = event.value
         let c = []
         if (event.value === "all") {
@@ -125,7 +126,7 @@ export const ClientsPages = () => {
             setSections(c)
         } else {
             AllSections.map((section) => {
-                if (section.name === event.value && setSortDate(section))
+                if (section.name === event.section && setSortDate(section))
                     c.push(section)
             })
             setSections(c)
