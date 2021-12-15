@@ -1,7 +1,7 @@
 import React from 'react'
 import { DashboardMenu } from './DashboardMenu'
 import { DashboardRoutes } from './DashboardRoutes'
-import { BrowserRouter } from 'react-router-dom'
+// import { BrowserRouter } from 'react-router-dom'
 
 
 export const Dashboard = () => {
@@ -18,10 +18,10 @@ export const Dashboard = () => {
             </div>
             <section className="content">
                 <div className="container-fluid">
-                    <BrowserRouter>
+                    {/* <BrowserRouter> */}
                         <DashboardMenu />
                         <DashboardRoutes />
-                    </BrowserRouter>
+                    {/* </BrowserRouter> */}
                 </div>
             </section>
         </div>

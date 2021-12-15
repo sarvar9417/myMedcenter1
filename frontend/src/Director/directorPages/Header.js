@@ -7,8 +7,13 @@ export const Header = () => {
     const auth =  useContext(AuthContext)
     const logoutHandler = (event) => {
         event.preventDefault()
-        auth.logout()
         history.push('/sayt')
+        auth.logout()
+        
+    }
+    const goBack = () => {
+        history.push('/sayt')
+        window.location.reload()
     }
     return (
         <nav className="main-header navbar navbar-expand">
@@ -18,7 +23,10 @@ export const Header = () => {
                     <a className="nav-link" data-widget="pushmenu"  role="button"><i className="fas fa-bars" /></a>
                 </li>
                 <li className="nav-item">
-                    <Link className="nav-link a aktive" to="/sayt">Bosh sahifa</Link>
+                    <button className="btn nav-link a aktive" onClick={goBack} >Bosh sahifa</button>
+                </li>
+                <li className="nav-item">
+                    <Link className="btn nav-link a aktive" to="/director/logo" >Logotip</Link>
                 </li>
             </ul>
             {/* Right navbar links */}

@@ -17,7 +17,7 @@ export const Reciept = () => {
     const sections = useLocation().state
     
     let unpaid = 0
-    let paid = 0
+    let paid = 0 
     let price = 0
     let k = 0
     let l = 0

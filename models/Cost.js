@@ -3,14 +3,15 @@ const Joi = require('joi')
 
 const cost = new Schema({
     price: { type: Number, required: true },
-    comment: { type: String, required: true }
-
+    comment: { type: String },
+    name: { type: String, required: true }
 })
 
 function validateCost(cost) {
     const schema = Joi.object({
         price: Joi.number().required(),
-        comment: Joi.string().required(),
+        comment: Joi.string(),
+        name: Joi.string().required(),
     })
     return schema.validate(cost)
 }

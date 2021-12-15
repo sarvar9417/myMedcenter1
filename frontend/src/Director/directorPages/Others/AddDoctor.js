@@ -11,17 +11,7 @@ import { Loader } from '../../components/Loader'
 // const mongoose = require("mongoose")
 const animatedComponents = makeAnimated()
 
-const customStyles = {
-  content: {
-    top: '50%',
-    left: '50%',
-    right: 'auto',
-    bottom: 'auto',
-    marginRight: '-50%',
-    transform: 'translate(-50%, -50%)',
-  },
-}
-
+toast.configure()
 export const AddDoctor = () => {
   const auth = useContext(AuthContext)
   const { request, error, clearError, loading } = useHttp()

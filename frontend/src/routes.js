@@ -1,6 +1,7 @@
 import React from 'react'
 import { Switch, Redirect, Route } from 'react-router-dom'
 import { Cashier } from './Cashier/Cashier'
+import { ClientHistory } from './Client/ClientHistory'
 import { Director } from './Director/Director'
 import { Doctor } from './Doctor/Doctor'
 import { RegistorDirector } from './RegistorDirector'
@@ -28,6 +29,9 @@ export const useRoutes = () => {
             </Route>
             <Route path="/registerdirector" >
                 <RegistorDirector />
+            </Route>
+            <Route path="/clienthistorys/:id" >
+                <ClientHistory />
             </Route>
             <Route path="/" >
                 <Sayt />

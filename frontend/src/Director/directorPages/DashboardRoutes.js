@@ -10,6 +10,7 @@ import { AddDirection } from './Others/AddDirection'
 import { EditDirection } from './Others/EditDirection'
 import { ClientAllHistory } from '../directorPages/Others/ClientAllHistory'
 import { ClientHistory  } from '../directorPages/Others/ClientHistory'
+import { AddLogo } from './Others/AddLogo'
 export const DashboardRoutes = () => {
     return (
         <div style={{ overflow: "auto" }}>
@@ -43,6 +44,9 @@ export const DashboardRoutes = () => {
                 </Route>
                 <Route path='/director/clienthistory/:id' >
                     <ClientHistory />
+                </Route>
+                <Route path='/director/logo' >
+                    <AddLogo />
                 </Route>
                 <Redirect to="/director" />
             </Switch>

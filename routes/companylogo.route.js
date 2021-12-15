@@ -1,32 +1,33 @@
 const { Router } = require('express')
 const router = Router()
-const { Cost, validateCost } = require('../models/Cost')
+const auth = require('../middleware/auth.middleware')
+const { CompanyLogo, validateCompanyLogo } = require('../models/CompanyLogo')
 
-// /api/auth/cost/register
+// /api/companyLogo/register
 router.post('/register', async (req, res) => {
     try {
-        const { error } = validateCost(req.body)
+        const { error } = validateCompanyLogo(req.body)
         if (error) {
             return res.status(400).json({
                 error: error,
                 message: error.message
             })
         }
-        const { price, comment, name } = req.body
-        const cost = new Cost({ price, comment, name })
-        await cost.save()
-        res.status(201).json({ message: "Xarajat qo'shildi" })
+        const { logo } = req.body
+        const companyLogo = new CompanyLogo({ URL })
+        await companyLogo.save()
+        res.status(201).json({ message: "Logo yaratildi" })
 
     } catch (e) {
         res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
     }
 })
 
-// /api/auth/cost/
-router.get('/', async (req, res) => {
+// /api/auth/companyLogo/
+router.get('/', auth, async (req, res) => {
     try {
-        const costs = await Cost.find({}).sort({ _id: -1 })
-        res.json(costs);
+        const companyLogos = await CompanyLogo.find({}).sort({ _id: -1 })
+        res.json(companyLogos);
 
     } catch (e) {
         res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
@@ -36,8 +37,8 @@ router.get('/', async (req, res) => {
 router.get('/:id', async (req, res) => {
     try {
 
-        const cost = await Cost.findById(req.params.id)
-        res.json(cost);
+        const companyLogo = await CompanyLogo.findById(req.params.id)
+        res.json(companyLogo);
 
     } catch (e) {
         res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
@@ -47,7 +48,7 @@ router.get('/:id', async (req, res) => {
 router.patch('/:id', async (req, res) => {
     try {
         const id = req.params.id
-        const edit = await Cost.findByIdAndUpdate(id, req.body)
+        const edit = await CompanyLogo.findByIdAndUpdate(id, req.body)
         res.json(edit);
 
     } catch (e) {

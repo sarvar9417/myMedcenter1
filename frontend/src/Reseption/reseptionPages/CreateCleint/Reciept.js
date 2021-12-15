@@ -4,14 +4,20 @@ import { useReactToPrint } from 'react-to-print'
 import { Loader } from '../../components/Loader'
 import { AuthContext } from '../../context/AuthContext'
 import { useHttp } from '../../hooks/http.hook'
+import QRCode from 'qrcode'
+import { toast } from 'react-toastify'
 
+toast.configure()
 export const Reciept = () => {
     //Avtorizatsiyani olish
     const auth = useContext(AuthContext)
+    const { loading, request, error, clearError } = useHttp()
     const componentRef = useRef()
     const handlePrint = useReactToPrint({
         content: () => componentRef.current,
     })
+
+    const [qr, setQr] = useState()
     const clientId = useParams().id
     const connectorId = useParams().connector
     const today = (new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString())
@@ -20,7 +26,6 @@ export const Reciept = () => {
     let k = 0
     let l = 0
     const [client, setClient] = useState('')
-    const { loading, request } = useHttp()
 
     const getSections = useCallback(async () => {
         try {
@@ -49,14 +54,41 @@ export const Reciept = () => {
         }
 
     }, [getSections, sections])
+    const [logo, setLogo] = useState()
 
+    const getLogo = useCallback(async () => {
+        try {
+            const data = await request("/api/companylogo/", "GET", null, {
+                Authorization: `Bearer ${auth.token}`
+            })
+            setLogo(data[0])
+        } catch (e) {
+            notify(e)
+        }
+    }, [auth, request, setLogo])
+
+    const notify = (e) => {
+        toast.error(e)
+    }
+
+    const uri = 'http://192.168.1.1'
     useEffect(() => {
-
+        QRCode.toDataURL(`${uri}/api/historys/${clientId}`)
+            .then(data => {
+                setQr(data)
+            })
         if (client === '') {
             getClient()
         }
+        if (error) {
+            notify(error)
+            clearError()
+        }
+        if (!logo) {
+            getLogo()
+        }
 
-    }, [getClient, client])
+    }, [getClient, client, notify, clearError])
 
     if (loading) {
         return <Loader />
@@ -77,15 +109,16 @@ export const Reciept = () => {
                                             <li style={{ fontSize: "10pt", fontFamily: "times" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }}>Manzil:</strong> Navoiy shahar Zarapetyan ko'chasi</li>
                                             <li style={{ fontSize: "10pt", fontFamily: "times" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }}>Bank:</strong> AKB "TURONBANK" Navoiy filiali</li>
                                             <li style={{ fontSize: "10pt", fontFamily: "times" }}> <strong style={{ fontSize: "10pt", fontFamily: "times" }}>MFO:</strong> 00200</li>
+                                            <li style={{ fontFamily: "times" }}> <h5 style={{ textAlign: "", fontSize: "10pt" }}> {today}</h5> </li>
+                                            <li style={{ textAlign: "", fontSize: "10pt" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }}>INN:</strong> 123456789</li>
+                                            <li style={{ textAlign: "", fontSize: "10pt" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }}>Hisob raqam:</strong> 1234567890123456</li>
+                                            <li style={{ textAlign: "", fontSize: "10pt" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }}>Telefon raqam:</strong> +998 (93) 196 94 34</li>
                                         </ul>
                                     </td>
-                                    <td className="">
-                                        <ul className="list-unstyled text-right m-3">
-                                            <li style={{ fontFamily: "times" }}> <h5 style={{ textAlign: "right", fontSize: "10pt" }}> {today}</h5> </li>
-                                            <li style={{ textAlign: "right", fontSize: "10pt" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }}>INN:</strong> 123456789</li>
-                                            <li style={{ textAlign: "right", fontSize: "10pt" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }}>Hisob raqam:</strong> 1234567890123456</li>
-                                            <li style={{ textAlign: "right", fontSize: "10pt" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }}>Telefon raqam:</strong> +998 (93) 196 94 34</li>
-                                        </ul>
+                                    <td className="text-end">
+                                        <img width="150" src={logo && logo.logo} alt="logo" /><br />    
+                                        <img src={qr && qr} alt="QR" /><br/>
+                                        <p className="pe-3" style={{fontSize:"10pt"}}>Bu yerni skanerlang</p>
                                     </td>
                                 </tr>
                             </tbody>
@@ -155,20 +188,21 @@ export const Reciept = () => {
                             <tbody>
                                 <tr>
                                     <td>
-                                        <ul className="list-unstyled m-3 text-start">
-                                            <li style={{ fontSize: "10pt", fontFamily: "times" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }} >"DS ONE PROVIDER" MCHJ</strong></li>
+                                        <ul className="list-unstyled  text-start m-3">
+                                            <li className="" style={{ fontSize: "10pt", fontFamily: "times" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }} >"DS ONE PROVIDER" MCHJ</strong></li>
                                             <li style={{ fontSize: "10pt", fontFamily: "times" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }}>Manzil:</strong> Navoiy shahar Zarapetyan ko'chasi</li>
                                             <li style={{ fontSize: "10pt", fontFamily: "times" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }}>Bank:</strong> AKB "TURONBANK" Navoiy filiali</li>
                                             <li style={{ fontSize: "10pt", fontFamily: "times" }}> <strong style={{ fontSize: "10pt", fontFamily: "times" }}>MFO:</strong> 00200</li>
+                                            <li style={{ fontFamily: "times" }}> <h5 style={{ textAlign: "", fontSize: "10pt" }}> {today}</h5> </li>
+                                            <li style={{ textAlign: "", fontSize: "10pt" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }}>INN:</strong> 123456789</li>
+                                            <li style={{ textAlign: "", fontSize: "10pt" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }}>Hisob raqam:</strong> 1234567890123456</li>
+                                            <li style={{ textAlign: "", fontSize: "10pt" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }}>Telefon raqam:</strong> +998 (93) 196 94 34</li>
                                         </ul>
                                     </td>
-                                    <td className="text-center m-3">
-                                        <ul className="list-unstyled text-right">
-                                            <li style={{ fontFamily: "times" }}> <h5 style={{ textAlign: "right", fontSize: "10pt" }}> {today}</h5> </li>
-                                            <li style={{ textAlign: "right", fontSize: "10pt" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }}>INN:</strong> 123456789</li>
-                                            <li style={{ textAlign: "right", fontSize: "10pt" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }}>Hisob raqam:</strong> 1234567890123456</li>
-                                            <li style={{ textAlign: "right", fontSize: "10pt" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }}>Telefon raqam:</strong> +998 (93) 196 94 34</li>
-                                        </ul>
+                                    <td className="text-end">
+                                        <img width="150" src={logo && logo.logo} alt="logo" /><br />
+                                        <img src={qr && qr} alt="QR" /><br />
+                                        <p className="pe-3" style={{ fontSize: "10pt" }}>Bu yerni skanerlang</p>
                                     </td>
                                 </tr>
                             </tbody>
@@ -205,7 +239,7 @@ export const Reciept = () => {
                                                         <td style={{ fontSize: "10pt", fontFamily: "times" }}>{l}</td>
                                                         <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-start px-2">{section.name} {section.subname}</td>
                                                         <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.bron === 'offline' ? section.turn : section.bronTime}</td>
-                                                        <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{ section.price- section.priceCashier}</td>
+                                                        <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.price - section.priceCashier}</td>
                                                     </tr>
                                                     )
                                                 }
@@ -230,14 +264,10 @@ export const Reciept = () => {
                     </div>
                 </div>
             </div>
-            <div className="container m-5" style={{ position: "fixed", bottom: "0" }} >
-                <div className="row">
-                    <div className="offset-lg-5 col-lg-2 text-center">
-                        <button onClick={handlePrint} className="btn btn-primary px-5" >
-                            Print
-                        </button>
-                    </div>
-                </div>
+            <div className="text-center w-100" style={{ position: "fixed", bottom: "20px" }} >
+                <button onClick={handlePrint} className="btn btn-primary px-5" >
+                    Print
+                </button>
             </div>
         </div>
     )

@@ -27,8 +27,12 @@ app.use('/api/section', require('./routes/section.route'))
 app.use('/api/direction', require('./routes/direction.route'))
 // Cost
 app.use('/api/cost', require('./routes/cost.route'))
-// Cost
+// Connector
 app.use('/api/connector', require('./routes/connector.route'))
+// CompanyLogo
+app.use('/api/companylogo', require('./routes/companylogo.route'))
+// ClientsHistory
+app.use('/api/clienthistorys', require('./routes/clientshistory.route'))
 
 if (process.env.NODE_ENV === "production") {
     app.use('/', express.static(path.join(__dirname, 'frontend', 'build')))
