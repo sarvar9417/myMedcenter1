@@ -24,7 +24,7 @@ router.post('/register', async (req, res) => {
 })
 
 // /api/auth/companyLogo/
-router.get('/', auth, async (req, res) => {
+router.get('/', async (req, res) => {
     try {
         const companyLogos = await CompanyLogo.find({}).sort({ _id: -1 })
         res.json(companyLogos);

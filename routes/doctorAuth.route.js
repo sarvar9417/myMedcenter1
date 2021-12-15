@@ -159,4 +159,14 @@ router.delete('/director/:id', auth, async (req, res) => {
     }
 })
 
+// /api/section/reseption
+router.get('/historyclient', async (req, res) => {
+    try {
+        const doctors = await DoctorResume.find()
+        res.json(doctors)
+    } catch (e) {
+        res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
+    }
+})
+
 module.exports = router

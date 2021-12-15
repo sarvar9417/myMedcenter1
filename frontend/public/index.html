@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 
 <head>
   <meta charset="utf-8" />
@@ -32,6 +32,46 @@
   <link rel="stylesheet" href="%PUBLIC_URL%/plugins/daterangepicker/daterangepicker.css">
   <!-- summernote -->
   <link rel="stylesheet" href="%PUBLIC_URL%/plugins/summernote/summernote-bs4.min.css">
+
+  <style>
+    /*
+      Use the DejaVu Sans font for displaying and embedding in the PDF file.
+      The standard PDF fonts do not support Unicode characters.
+  */
+    dl {
+      font-family: "DejaVu Sans", "Arial", 'Times New Roman', Times, serif;
+    }
+
+    /*
+    The example loads the DejaVu Sans from the Kendo UI CDN.
+    Other fonts have to be hosted from your application.
+    The official site of the Deja Vu Fonts project is
+    https://dejavu-fonts.github.io/.
+  */
+    @font-face {
+      font-family: "DejaVu Sans";
+      src: url("https://kendo.cdn.telerik.com/2017.2.621/styles/fonts/DejaVu/DejaVuSans.ttf") format("truetype");
+    }
+
+    @font-face {
+      font-family: "DejaVu Sans";
+      font-weight: bold;
+      src: url("https://kendo.cdn.telerik.com/2017.2.621/styles/fonts/DejaVu/DejaVuSans-Bold.ttf") format("truetype");
+    }
+
+    @font-face {
+      font-family: "DejaVu Sans";
+      font-style: italic;
+      src: url("https://kendo.cdn.telerik.com/2017.2.621/styles/fonts/DejaVu/DejaVuSans-Oblique.ttf") format("truetype");
+    }
+
+    @font-face {
+      font-family: "DejaVu Sans";
+      font-weight: bold;
+      font-style: italic;
+      src: url("https://kendo.cdn.telerik.com/2017.2.621/styles/fonts/DejaVu/DejaVuSans-Oblique.ttf") format("truetype");
+    }
+  </style>
   <title>MedCenter Navoiy</title>
 </head>
 
@@ -82,7 +122,6 @@
 </script>
 <script src="./js/bootstrap-multiselect.js">
 </script>
-
 <script src="./js/jquery.min.js">
 </script>
 

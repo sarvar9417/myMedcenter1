@@ -1,6 +1,9 @@
 @import url("https://fonts.googleapis.com/css?family=Montserrat:400,500,600,700,800,900");
 @import url("https://cdn.linearicons.com/free/1.0.0/icon-font.min.css");
-
+@font-face {
+    font-family: "DejaVuSans";
+    src: url("https://kendo.cdn.telerik.com/2018.2.620/styles/fonts/DejaVu/DejaVuSans.ttf") format("truetype");
+}
 * {
     box-sizing: border-box;
 }
@@ -378,4 +381,10 @@ body {
 
 .main-footer {
     background-color: rgba(0, 0, 0, 0) !important;
+}
+
+.historytable:nth-child(even){
+    background-color: white !important;
+    border: 1px solid #aaa !important ;
+
 }
