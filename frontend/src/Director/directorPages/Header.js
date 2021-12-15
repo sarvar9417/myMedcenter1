@@ -23,7 +23,7 @@ export const Header = () => {
                     <a className="nav-link" data-widget="pushmenu"  role="button"><i className="fas fa-bars" /></a>
                 </li>
                 <li className="nav-item">
-                    <button className="btn nav-link a aktive" onClick={goBack} >Bosh sahifa</button>
+                    <button className="btn nav-link a aktive" onClick={goBack} >Bosh menyu</button>
                 </li>
                 <li className="nav-item">
                     <Link className="btn nav-link a aktive" to="/director/logo" >Logotip</Link>

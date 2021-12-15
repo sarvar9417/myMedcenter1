@@ -28,7 +28,7 @@ export const Navbar = () => {
     return (
         <nav className="navbar navbar-expand-lg navbar-light shadow fixed-top bg-light" data-aos="fade-down" data-aos-duration="1000" >
             <div className="container" >
-                <button className="navbar-brand btn" onClick={goBack}>Logo</button>
+                <button className="navbar-brand btn" onClick={goBack}>Bosh menyu</button>
                 <button onClick={() => setShow(!show)} className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-label="Toggle navigation">
                     <FontAwesomeIcon icon={faBars} className="navbar-icon" />
                 </button>
