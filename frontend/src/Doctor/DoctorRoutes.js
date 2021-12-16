@@ -7,6 +7,9 @@ import { Sayt } from '../Sayt/sayt'
 import { ClientsPages } from './DoctorPages/ClientsPages'
 import { EditAdoption } from './DoctorPages/EditAdoption'
 import { ClientAllHistory } from './DoctorPages/ClientAllHistory'
+import { Templates } from './DoctorPages/templates/Templates'
+import { CreateTemplate } from './DoctorPages/templates/CreateTemplate'
+import { EditTemplate } from './DoctorPages/templates/EditTemplate'
 
 export const DoctorRoutes = (isAuthenticated) => {
     if (isAuthenticated) {
@@ -27,6 +30,15 @@ export const DoctorRoutes = (isAuthenticated) => {
                     </Route>
                     <Route path="/doctor/clienthistory/:id" >
                         <ClientAllHistory />
+                    </Route>
+                    <Route path="/doctor/templates" >
+                        <Templates />
+                    </Route>
+                    <Route path="/doctor/createtemplate" >
+                        <CreateTemplate />
+                    </Route>
+                    <Route path="/doctor/edittemplate/:id" >
+                        <EditTemplate />
                     </Route>
                     <Route path="/sayt" >
                         <Sayt />

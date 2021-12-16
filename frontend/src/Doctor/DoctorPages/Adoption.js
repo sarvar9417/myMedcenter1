@@ -2,7 +2,12 @@ import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router'
 import { AuthContext } from '../context/AuthContext'
 import { useHttp } from '../hooks/http.hook'
-import Modal from 'react-modal';
+import { toast } from 'react-toastify'
+import QRCode from 'qrcode'
+import { Loader } from '../components/Loader'
+import makeAnimated from "react-select/animated"
+import Select from 'react-select'
+const animatedComponents = makeAnimated()
 const customStyles = {
     content: {
         top: '50%',
@@ -14,13 +19,14 @@ const customStyles = {
     },
 };
 
-
+toast.configure()
 export const Adoption = () => {
-    const { request, loading } = useHttp()
+    const { request, loading, error, clearError } = useHttp()
     const sectionId = useParams().id
     const auth = useContext(AuthContext)
     const [section, setSection] = useState()
     const history = useHistory()
+    const [options, setOptions] = useState()
     const [client, setClient] = useState({
         id: "",
         lastname: "",
@@ -30,6 +36,7 @@ export const Adoption = () => {
         phone: "",
         price: ""
     })
+
 
     //Modal oyna
     const [modal1, setModal1] = useState(false)
@@ -57,52 +64,6 @@ export const Adoption = () => {
 
         }
     }, [request, auth])
-
-
-    // Comment yozish
-    const comments = [
-        ` Contrary to popular belief, Lorem Ipsum is not simply `,
-        ` . It has roots in a piece of classical Latin literature from 45 BC, making it over `,
-        ` years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, `,
-        ` , from a Lorem Ipsum passage, and going through the cites of the word in `,
-        ` , discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" ( `,
-        ` )by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. `,
-        ` Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section `,
-        ` .`
-    ]
-    const changeComment = () => {
-        let s = ""
-        for (let i = 0; i < comments.length - 1; i++) {
-            let n = document.getElementsByClassName("comment")[i].value
-            s = s + comments[i] + n
-
-        }
-        s = s + comments[comments.length - 1]
-        setSection({ ...section, comment: s })
-    }
-
-    // Xulosa yozish
-    const summary = [
-        `  There are many variations of passages of Lorem Ipsum available, but the majority have suffered alteration in some form, `,
-        ` ,or randomised words which don't look even slightly believable. `,
-        ` to use a passage of Lorem Ipsum, you need to be sure there isn't anything embarrassing hidden in the middle of text. `,
-        ` generators on the Internet tend to repeat predefined chunks as necessary, making this the first true generator on the Internet. It uses a dictionary of `,
-        ` words, combined with a handful of model sentence structures, `,
-        ` Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition,
-            injected humour, or non-characteristic words etc.
-        `
-    ]
-    const changeSummary = () => {
-        let s = ""
-        for (let i = 0; i < summary.length - 1; i++) {
-            let n = document.getElementsByClassName("summary")[i].value
-            s = s + summary[i] + n
-
-        }
-        s = s + summary[summary.length - 1]
-        console.log(s);
-        setSection({ ...section, summary: s })
-    }
 
     const checkUp = (event) => {
         setSection({ ...section, [event.target.name]: event.target.id })
@@ -134,176 +95,211 @@ export const Adoption = () => {
                 {
                     Authorization: `Bearer ${auth.token}`
                 })
-            console.log(fetch)
             history.push(`/doctor`)
         } catch (e) {
 
         }
     }, [request, auth, section, sectionId])
 
+    const changeSections = (event) => {
+        let s = ""
+        event.map((e) => {
+            s = s + e.label + `
+            
+            ` + e.value + `
+            
+            `
+        })
+        setSection({ ...section, summary: s })
+    }
+
+    const changeHandlar = (event) => {
+        setSection({ ...section, [event.target.name]: event.target.value })
+    }
+
+    const getTemplates = useCallback(async () => {
+        try {
+            const fetch = await request(`/api/templatedoctor`, 'GET', null, {
+                Authorization: `Bearer ${auth.token}`
+            })
+            let opt = []
+            fetch.map((template) => {
+                let option = {
+                    label: template.subsection,
+                    value: template.template
+                }
+                opt.push(option)
+            })
+            setOptions(opt)
+        } catch (error) {
+            notify(error)
+        }
+    }, [request, auth])
+
+    const [logo, setLogo] = useState()
+    const getLogo = useCallback(async () => {
+        try {
+            const data = await request("/api/companylogo/", "GET", null)
+            setLogo(data[0])
+        } catch (e) {
+            notify(e)
+        }
+    }, [request, setLogo])
+
+    const notify = (e) => {
+        toast(e)
+    }
+
+    const [qr, setQr] = useState()
+    const uri = window.location.href
     useEffect(() => {
-        getSection()
-    }, [getSection])
+        QRCode.toDataURL(`${uri}`)
+            .then(data => {
+                setQr(data)
+            })
+        if (!logo) {
+            getLogo()
+        }
+        if (error) {
+            notify(error)
+            clearError()
+        }
+        if (!section) {
+            getSection()
+        }
+        if (!options) {
+            getTemplates()
+        }
+    }, [notify, clearError])
+
+    if (loading) {
+        return <Loader />
+    }
 
 
     return (
         <div style={{ marginTop: "70px" }}>
-            <div className="container-lg">
-                <div style={{ textAlign: "right", }}>
-                    <h1 style={{ color: "#14A479", marginBottom: "50px" }}>MedicalCenter For Navoi</h1>
-                    <h3>MedicalCenter Islom</h3>
-                    <p style={{ margin: "0", fontWeight: "500" }}>"Nosirov Islom MedicalCenter"</p>
-                    <p style={{ margin: "0", fontWeight: "500" }}>Naviy Navoiy 42</p>
-                    <p style={{ margin: "0", fontWeight: "500" }}>Uzbekistan Naviy Navoiy</p>
-                    <p style={{ margin: "0", fontWeight: "500" }}>+12312367890</p>
-                    <p style={{ margin: "0", fontWeight: "500" }}>nosirovislom071221312@gmail.com</p>
 
-                </div>
-                <div className="forms">
-                    <h2 style={{ color: "#14A479" }}>Mijoz ma'lumotlari</h2>
-                    <div className="row mt-5">
-                        <div className="col-lg-6">
+            <div className="container">
+                <div style={{ fontFamily: "times !important" }} className="m-2">
+                    <div className="row">
+                        <div className="col-8 border-right border-dark text-center  border-5 m-none">
+                            <img alt="logo" src={logo && logo.logo} className="w-50" />
+                            <div className="row mt-3">
+                                <div className="col-3 text-end">
+                                    <span className="fw-normal d-block" >Адрес:</span>
+                                </div>
+                                <div className="col-9 text-start fw-bold">
+                                    г. Самарканд ул Зарафшон шох, 25
+                                </div>
+                            </div>
                             <div className="row">
-                                <div className="col-md-4 col-sm-4">
-                                    <label style={{ fontSize: "20px", marginRight: "20%" }}>
-                                        ID:
-                                    </label>
+                                <div className="col-3 text-end">
+                                    <span className="fw-normal" >Ориентир:</span>
                                 </div>
-                                <div className="col-md-8 col-sm-8">
-                                    <h3 className="w-100 px-4" style={{ border: "none", background: "#E1FFF7", outline: "none", fontSize: "20px", padding: "5px", fontWeight: "600" }}>
-                                        {client.id}
-                                    </h3>
+                                <div className="col-9 text-start fw-bold">
+                                    школа №65, ресторан «РОХАТ»
                                 </div>
-                                <div className="col-md-4 col-sm-4">
-                                    <label style={{ fontSize: "20px", marginRight: "16.5%" }}>
-                                        F.I.O:
-                                    </label>
+                            </div>
+                            <div className="row">
+                                <div className="col-3 text-end">
+                                    <span className="fw-normal" >Тел:</span>
                                 </div>
-                                <div className="col-md-8 col-sm-8">
-                                    <h3 className="w-100 px-4" style={{ border: "none", background: "#E1FFF7", outline: "none", fontSize: "20px", padding: "5px", fontWeight: "600" }}>
-                                        {client.firstname} {client.lastname} {client.fathername}
-                                    </h3>
-                                </div>
-                                <div className="col-md-4 col-sm-4">
-                                    <label style={{ fontSize: "20px", marginRight: "4%" }}>
-                                        Tug'ilgan yili:
-                                    </label>
-                                </div>
-                                <div className="col-md-8 col-sm-8">
-                                    <h3 className="w-100 px-4" style={{ border: "none", background: "#E1FFF7", outline: "none", fontSize: "20px", padding: "5px", fontWeight: "600" }}>
-                                        {new Date(client.born).toLocaleDateString()}
-                                    </h3>
-                                </div>
-                                <div className="col-md-4 col-sm-4">
-                                    <label style={{ fontSize: "20px", marginRight: "13%" }}>
-                                        Phone:
-                                    </label>
-                                </div>
-                                <div className="col-md-8 col-sm-8">
-                                    <h3 className="w-100 px-4" style={{ border: "none", background: "#E1FFF7", outline: "none", fontSize: "20px", padding: "5px", fontWeight: "600" }}>
-                                        +{client.phone}
-                                    </h3>
+                                <div className="col-9 text-start fw-bold">
+                                    97 (919)-36-36, 93 (238)-55-44
                                 </div>
                             </div>
                         </div>
-                        <div className="col-lg-6">
-                            <div className="row">
-                                <div className="col-md-4 col-sm-4">
-                                    <label style={{ fontSize: "20px", marginRight: "15%" }}>
-                                        Maqsad:
-                                    </label>
-                                </div>
-                                <div className="col-md-8 col-sm-8">
-                                    <h3 className="w-100 px-4" style={{ border: "none", background: "#E1FFF7", outline: "none", fontSize: "20px", padding: "5px", fontWeight: "600" }}>
-                                        {section && section.subname}
-                                    </h3>
-                                </div>
-                                <div className="col-md-4 col-sm-4">
-                                    <label style={{ fontSize: "20px", marginRight: "15%" }}>
-                                        Navbati:
-                                    </label>
-                                </div>
-                                <div className="col-md-8 col-sm-8">
-                                    <h3 className="w-100 px-4" style={{ border: "none", background: "#E1FFF7", outline: "none", fontSize: "20px", padding: "5px", fontWeight: "600" }}>
-                                        {section && (section.turn ? section.turn : section.bronTime)}
-                                    </h3>
-                                </div>
-                                <div className="col-md-4 col-sm-4">
-                                    <label style={{ fontSize: "20px", marginRight: "15%" }}>
-                                        To'lov summasi:
-                                    </label>
-                                </div>
-                                <div className="col-md-8 col-sm-8">
-                                    <h3 className="w-100 px-4" style={{ border: "none", background: "#E1FFF7", outline: "none", fontSize: "20px", padding: "5px", fontWeight: "600" }}>
-                                        {section && section.price} so'm
-                                    </h3>
-                                </div>
-                                <div className="col-md-4 col-sm-4">
-                                    <label style={{ fontSize: "20px", marginRight: "15%" }}>
-                                        To'lovlangan summa:
-                                    </label>
-                                </div>
-                                <div className="col-md-8 col-sm-8">
-                                    <h3 className="w-100 px-4" style={{ border: "none", background: "#E1FFF7", outline: "none", fontSize: "20px", padding: "5px", fontWeight: "600" }}>
-                                        {section && section.priceCashier} so'm
-                                    </h3>
-                                </div>
-                            </div>
-                        </div>
+                        <div className="col-4 text-center">
 
+                        </div>
+                    </div>
+                    <div className="row my-3">
+                        <div className="col-12 fs-4 text-center fw-bold">
+                            {section && section.name}
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-12">
+                            <table className="w-100 historytable" >
+                                <tr>
+                                    <th className="px-3  w-25 text-end">
+                                        Пациент
+                                    </th>
+                                    <th className="px-3 w-75">
+                                        {client && client.lastname + " " + client.firstname + " " + client.fathername}
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th className="px-3 w-25 text-end">
+                                        Год рождения
+                                    </th>
+                                    <th className="px-3 w-75">
+                                        {client && new Date(client.born).toLocaleDateString()}
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th className="px-3 w-25 text-end">
+                                        Дата обследования
+                                    </th>
+                                    <th className="px-3 w-75">
+                                        {section && new Date(section.bronDay).toLocaleDateString() + " " + new Date(section.bronDay).toLocaleTimeString()}
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th className="px-3 w-25 text-end">
+                                        Tелефон номер
+                                    </th>
+                                    <th className="px-3 w-75">
+                                        +{client && client.phone}
+                                    </th>
+                                </tr>
+                                <tr>
+                                    <th className="px-3 w-25 text-end">
+                                        Врач
+                                    </th>
+                                    <th className="px-3 w-75">
+                                        {auth.doctor && auth.doctor.lastname + " " + auth.doctor.firstname}
+                                    </th>
+                                </tr>
+                            </table>
+
+                        </div>
+                    </div>
+                    <div className="row">
+                        <div className="col-12 col-md-6 pt-3">
+                            <h4 className="text-capitalize"> Xizmat: {section && section.subname}</h4>
+                        </div>
+                        <div className="col-12 col-md-6">
+
+                            <Select
+                                className="mt-3"
+                                onChange={(event) => changeSections(event)}
+                                closeMenuOnSelect={false}
+                                components={animatedComponents}
+                                name="shablonlar"
+                                isMulti
+                                options={options && options}
+                            />
+                        </div>
+                    </div>
+                    <br />
+                    <div className="row">
+                        <div className="col-12">
+                            <textarea value={section && section.summary} name="summary" onChange={changeHandlar} className="form-control" style={{ minHeight: "300px" }} />
+                        </div>
                     </div>
                 </div>
-                <div className="tt " style={{ fontFamily: "times" }}>
-                    <h1 className="mt-5" style={{ marginBottom: "50px", textAlign: "center" }}>MedicalCenter  Navoi</h1>
-                    <h5>{new Date().toLocaleDateString()}</h5>
-                    <h5>Bemor: <span className="fs-4">{client.firstname} {client.lastname} {client.fathername}</span></h5>
-                    <p id="comment">
-                        Contrary to popular belief, Lorem Ipsum is not simply
-                        <input onChange={changeComment} type="text" style={{ width: "150px" }} className="input comment" />.
-                        It has roots in a piece of classical Latin literature from 45 BC, making it over
-                        <input onChange={changeComment} type="text" style={{ width: "150px" }} className="input comment" />
-                        years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words,
-                        <input onChange={changeComment} type="text" style={{ width: "150px" }} className="input comment" />
-                        , from a Lorem Ipsum passage, and going through the cites of the word in
-                        <input onChange={changeComment} type="text" style={{ width: "150px" }} className="input comment" />,
-                        discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (
-                        <input onChange={changeComment} type="text" style={{ width: "150px" }} className="input comment" />
-                        )by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance.
-                        <input onChange={changeComment} type="text" style={{ width: "150px" }} className="input comment" />
-                        Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section
-                        <input onChange={changeComment} type="text" style={{ width: "150px" }} className="input comment" />.
-                    </p>
-                    <p>
-                        There are many variations of passages of Lorem Ipsum available,
-                        but the majority have suffered alteration in some form,
-                        <input onChange={changeSummary} type="text" style={{ width: "150px" }} className="input summary" />
-                        ,or randomised words which don't look even slightly believable.
-                        <input onChange={changeSummary} type="text" style={{ width: "150px" }} className="input summary" />
-                        to use a passage of Lorem Ipsum, you need to be sure there isn't anything
-                        embarrassing hidden in the middle of text.
-                        <input onChange={changeSummary} type="text" style={{ width: "150px" }} className="input summary" />
-                        generators on the Internet tend to repeat predefined chunks as necessary,
-                        making this the first true generator on the Internet. It uses a dictionary of
-                        <input onChange={changeSummary} type="text" style={{ width: "150px" }} className="input summary" />
-                        words, combined with a handful of model sentence structures,
-                        <input onChange={changeSummary} type="text" style={{ width: "150px" }} className="input summary" />
-                        Lorem Ipsum which looks reasonable. The generated Lorem Ipsum is therefore always free from repetition,
-                        injected humour, or non-characteristic words etc.
-                    </p>
-                    <br />
-
+                <div>
                     <h5>Doctor: <span className="fs-4">{auth.doctor.lastname} {auth.doctor.firstname[0]}</span></h5>
                     <div className="row mt-5 mb-5">
                         <div className="col-12">
-                            <button id="kelmagan" name="checkup" onClick={checkUp} className="btn btn-danger me-5">Mijoz kelmadi</button>
-                            <button className="btn" onClick={() => { window.scrollTo({ top: 0 }); setModal2(true) }} style={{ color: "#fff", backgroundColor: "#14A479" }}>Tasdiqlash</button>
+                            <button id="kelmagan" name="checkup" onClick={checkUp} className="btn button-danger me-5">Mijoz kelmadi</button>
+                            <button className="btn button-success" onClick={() => { window.scrollTo({ top: 0 }); setModal2(true) }}>Tasdiqlash</button>
                         </div>
                     </div>
                 </div>
-            </div >
-
-
-
+            </div>
 
 
             {/* Modal oynaning ochilishi */}
@@ -331,18 +327,14 @@ export const Adoption = () => {
                     <div className="card p-4" style={{ fontFamily: "times" }}>
                         <div className="row m-1">
                             <div className="col-12 ">
-                                <h5>
-                                    Izoh:<br />
-                                    {section && section.comment}
-                                </h5>
                             </div>
                         </div>
                         <div className="row m-1">
                             <div className="col-12 ">
-                                <h5 >
+                                <pre >
                                     Xulosa: <br />
                                     {section && section.summary}
-                                </h5>
+                                </pre>
                             </div>
                         </div>
                         <div className="row m-1">

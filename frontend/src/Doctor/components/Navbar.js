@@ -1,16 +1,27 @@
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { Link, useHistory } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
-import AOS from "aos"
 import "aos/dist/aos.css"
 import { AuthContext } from '../context/AuthContext'
 import './nav.css'
+import { useHttp } from '../hooks/http.hook'
+import { toast } from 'react-toastify'
 
+toast.configure()
 export const Navbar = () => {
-    useEffect(() => {
-        AOS.init()
-    }, [])
+
+    const { request, loading, error, clearError } = useHttp()
+    const [logo, setLogo] = useState()
+    const getLogo = useCallback(async () => {
+        try {
+            const data = await request("/api/companylogo/", "GET", null)
+            setLogo(data[0])
+        } catch (e) {
+            notify(e)
+        }
+    }, [request, setLogo])
+
     const history = useHistory()
     const auth = useContext(AuthContext)
 
@@ -25,11 +36,26 @@ export const Navbar = () => {
         window.location.reload()
     }
 
+    const notify = (e) => {
+        toast(e)
+    }
+    useEffect(() => {
+        if (!logo) {
+            getLogo()
+        }
+        if (error) {
+            notify(error)
+            clearError()
+        }
+    }, [notify, clearError])
+
     const [show, setShow] = useState(true)
     return (
         <nav className="navbar navbar-expand-lg navbar-light shadow fixed-top bg-light" data-aos="fade-down" data-aos-duration="1000" >
             <div className="container" >
-                <button className="navbar-brand btn" onClick={goBack}>Bosh menyu</button>
+                <button className="navbar-brand btn p-0" onClick={goBack}>
+                    <img width="100px" src={logo && logo.logo} alt="Bosh sahifa" />
+                </button>
                 <button onClick={() => setShow(!show)} className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-label="Toggle navigation">
                     <FontAwesomeIcon icon={faBars} className="navbar-icon" />
                 </button>
@@ -41,17 +67,14 @@ export const Navbar = () => {
                         <li className="nav-item" >
                             <Link className="nav-link a" to="/doctor/clients">Mijozlar</Link>
                         </li>
-                        {/* <li className="nav-item">
-                            <Link className="nav-link" to="/reseption/cost">Xarajat</Link>
+                        <li className="nav-item" >
+                            <Link className="nav-link a" to="/doctor/templates">Shablonlar</Link>
                         </li>
-                        <li className="nav-item">
-                            <Link className="nav-link" to="/reseption/costs">Xarajatlar</Link>
-                        </li> */}
-                        
+
                     </ul>
                     <li className="nav-item ll" >
-                            <span style={{ backgroundColor: "#EA5353" }} className="nav-link btn text-white" href="" onClick={logoutHandler} >Chiqish</span>
-                        </li>
+                        <span style={{ backgroundColor: "#EA5353" }} className="nav-link btn text-white" href="" onClick={logoutHandler} >Chiqish</span>
+                    </li>
                 </div>
             </div>
         </nav>

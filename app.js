@@ -33,6 +33,8 @@ app.use('/api/connector', require('./routes/connector.route'))
 app.use('/api/companylogo', require('./routes/companylogo.route'))
 // ClientsHistory
 app.use('/api/clienthistorys', require('./routes/clientshistory.route'))
+// TemplateDoctor
+app.use('/api/templatedoctor', require('./routes/templateDoctor.route'))
 
 if (process.env.NODE_ENV === "production") {
     app.use('/', express.static(path.join(__dirname, 'frontend', 'build')))

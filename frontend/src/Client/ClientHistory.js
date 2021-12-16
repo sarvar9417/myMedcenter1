@@ -198,7 +198,7 @@ export const ClientHistory = () => {
                                                 </th>
                                                 <th className="px-3 w-75">
                                                     {doctors && doctors.map((doctor) => {
-                                                        if (doctor.section === sections[0].name) {
+                                                        if (sections && doctor.section === sections[0].name) {
                                                             return (doctor.lastname + " " + doctor.firstname)
                                                         }
                                                     })}

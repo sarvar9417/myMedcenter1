@@ -243,8 +243,7 @@ router.get('/doctorall/:section', auth, async (req, res) => {
         const section = await Section.find({
             name: req.params.section,
             payment: {$ne: "to'lanmagan"}
-        })
-            .sort({ turn: 1 })
+        }).sort({_id: -1})
         res.json(section)
     } catch (e) {
         res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
