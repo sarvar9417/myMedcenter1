@@ -10,7 +10,7 @@ export const AuthPage = () => {
     const auth = useContext(AuthContext)
     const { loading, request, error, clearError } = useHttp()
     const [form, setForm] = useState({
-        login: '', password: '', doctorId: " "
+        login: '', password: ''
     })
 
     const notify = (e) => {
@@ -40,7 +40,8 @@ export const AuthPage = () => {
     const loginHandler = async () => {
         try {
             const data = await request('/api/auth/doctor/login', 'POST', { ...form })
-            auth.login(data.token, data.reseptionId, data.doctor)
+            console.log(data)
+            auth.login(data.token, data.doctorId, data.doctor)
         } catch (e) {
 
         }

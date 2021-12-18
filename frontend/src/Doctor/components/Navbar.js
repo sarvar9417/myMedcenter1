@@ -1,26 +1,13 @@
-import React, { useCallback, useContext, useEffect, useState } from 'react'
+import React, {useContext, useState } from 'react'
 import { Link, useHistory } from 'react-router-dom'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faBars } from '@fortawesome/free-solid-svg-icons'
-import "aos/dist/aos.css"
 import { AuthContext } from '../context/AuthContext'
 import './nav.css'
-import { useHttp } from '../hooks/http.hook'
 import { toast } from 'react-toastify'
 
 toast.configure()
 export const Navbar = () => {
-
-    const { request, loading, error, clearError } = useHttp()
-    const [logo, setLogo] = useState()
-    const getLogo = useCallback(async () => {
-        try {
-            const data = await request("/api/companylogo/", "GET", null)
-            setLogo(data[0])
-        } catch (e) {
-            notify(e)
-        }
-    }, [request, setLogo])
 
     const history = useHistory()
     const auth = useContext(AuthContext)
@@ -36,25 +23,13 @@ export const Navbar = () => {
         window.location.reload()
     }
 
-    const notify = (e) => {
-        toast(e)
-    }
-    useEffect(() => {
-        if (!logo) {
-            getLogo()
-        }
-        if (error) {
-            notify(error)
-            clearError()
-        }
-    }, [notify, clearError])
 
     const [show, setShow] = useState(true)
     return (
-        <nav className="navbar navbar-expand-lg navbar-light shadow fixed-top bg-light" data-aos="fade-down" data-aos-duration="1000" >
+        <nav className="navbar navbar-expand-lg navbar-light shadow fixed-top bg-light" >
             <div className="container" >
                 <button className="navbar-brand btn p-0" onClick={goBack}>
-                    <img width="100px" src={logo && logo.logo} alt="Bosh sahifa" />
+                    Bosh menyu
                 </button>
                 <button onClick={() => setShow(!show)} className="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-label="Toggle navigation">
                     <FontAwesomeIcon icon={faBars} className="navbar-icon" />

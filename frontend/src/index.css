@@ -388,3 +388,7 @@ body {
     border: 1px solid #aaa !important ;
 
 }
+
+.doctorChecked{
+    background-color: #E0EFE6;
+}

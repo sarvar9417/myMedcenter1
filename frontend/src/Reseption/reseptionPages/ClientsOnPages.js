@@ -84,7 +84,13 @@ export const ClientsOnPages = () => {
                 Authorization: `Bearer ${auth.token}`
             })
             setAllSections(fetch)
-            setSections(fetch)
+            let c=[]
+            fetch.map((section)=>{
+                if (new Date(section.bronDay).toLocaleDateString() === new Date().toLocaleDateString()) {
+                    c.push(section)
+                }
+            })
+            setSections(c)
         } catch (e) {
 
         }
@@ -327,7 +333,7 @@ export const ClientsOnPages = () => {
                     </thead>
                     <tbody className="" >
                         {
-                            sections.map((section, key) => {
+                            sections && sections.map((section, key) => {
                                 return AllClients.map((client, index) => {
                                     if (client._id === section.client && section.bron === "online") {
                                         k++
@@ -471,7 +477,7 @@ export const ClientsOnPages = () => {
                 <tbody className="" >
 
                     {
-                        sections.map((section, key) => {
+                        sections && sections.map((section, key) => {
                             return AllClients.map((client, index) => {
                                 if (client._id === section.client && section.bron === "online") {
                                     l++

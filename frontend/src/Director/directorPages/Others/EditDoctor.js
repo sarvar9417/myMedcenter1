@@ -22,6 +22,8 @@ export const EditDoctor = () => {
   //Doctor ma'lumotlari
   const doctorId = useParams().id
   const [doctor, setDoctor] = useState({
+    login: "",
+    password: "",
     firstname: "",
     lastname: "",
     fathername: "",
@@ -37,6 +39,7 @@ export const EditDoctor = () => {
         Authorization: `Bearer ${auth.token}`
       })
       setDoctor({
+        login: data.login,
         firstname: data.firstname,
         lastname: data.lastname,
         fathername: data.fathername,
@@ -78,9 +81,8 @@ export const EditDoctor = () => {
     }
   }, [auth, request, setOptions])
 
-  const changeHandlar = (event) => {
+  const changeHandler = (event) => {
     setDoctor({ ...doctor, [event.target.name]: event.target.value })
-    console.log(event.target.value);
   }
 
   const changeDate = (event) => {
@@ -92,11 +94,14 @@ export const EditDoctor = () => {
   }
 
   const checkData = () => {
+    if (!pwd) {
+      return notify("Diqqat! Parol berishda xatoga yo'l qo'yilgan. Iltimos to'g'ri parol kiritishga harakat qiling")
+    }
     if (CheckDoctorData(doctor)) {
       return notify(CheckDoctorData(doctor))
     }
     window.scrollTo({ top: 0 })
-    setModal1(true)
+    setModal2(true)
   }
 
   const [load, setLoad] = useState(false)
@@ -122,6 +127,39 @@ export const EditDoctor = () => {
       notify(e)
     }
   }
+
+  const [borderGreen, setBorderGreen] = useState(false)
+  const [borderRed, setBorderRed] = useState(false)
+  const [pwd, setPwd] = useState(false)
+
+  const createPassword = (event) => {
+    if (event.target.password < 6) {
+      setBorderGreen(false)
+      setBorderRed(true)
+      setPwd(false)
+    } else {
+      setBorderGreen(false)
+      setBorderRed(false)
+      setPwd(false)
+    }
+    setDoctor({ ...doctor, [event.target.name]: event.target.value })
+  }
+
+  const changePassword = (event) => {
+    if (doctor.password.length < 6) {
+      return notify("Parol 6 ta belgidan kam bo'lmasligi kerak. Iltimos boshqa parol kiriting!")
+    }
+    if (event.target.value === doctor.password) {
+      setBorderGreen(true)
+      setBorderRed(false)
+      setPwd(true)
+    } else {
+      setBorderGreen(false)
+      setBorderRed(true)
+      setPwd(false)
+    }
+  }
+
 
   const Delete = async () => {
     try {
@@ -157,64 +195,118 @@ export const EditDoctor = () => {
 
   return (
     <div>
-      <div className="">
-        <div className="col-md-12">
-          <article className="linkk mt-5" >
-            <h1 style={{ fontWeight: "700" }}>MedCenter </h1>
-            <div className="row mt-4" style={{ border: "25px solid hsla(212, 54%, 71%, 0.471)" }}>
+      <div className="card p-3">
+        <div className="card-header">
+          <input style={{ width: "157px" }} name="file" onChange={uploadImage} type="file" className="form-control" />
+        </div>
+        <div className="card-body">
+          <div className="row">
+            <div className="col-12 col-md-6 p-4">
+              <img className={doctor.image === "" ? "d-none" : ""} width="200px" src={doctor.image} alt="DosetDoctorImage" style={{ maxWidth: "200px", margin: "10px", borderRadius: "10px" }} />
+              <br />
+              <br />
+              <br />
+              <p className="fs-4"> Login va parol </p>
+              <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Login</label>
+              <input defaultValue={doctor.login} onChange={changeHandler} name="login" type="text" className="form-control" />
+              <br />
+              <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Parol</label>
+              <input type="password" placeholder="Parolni kiriting" defaultValue={doctor.password} onChange={createPassword} name="password" className={borderGreen ? `form-control border border-success` : `${borderRed ? "form-control border border-danger" : "form-control border"}`} />
+              <br />
+              <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Parolni qayta kiriting</label>
+              <input type="password" placeholder="Parolni qayta kiriting" onChange={changePassword} className={borderGreen ? `form-control border border-success` : `${borderRed ? "form-control border border-danger" : "form-control border"}`} />
+            </div>
+            <div className="col-12 col-md-6 p-4">
+              <p className="fs-4"> Qabul bo'lim xodimi ma'lumotlari </p>
+              <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Familiyasi</label>
+              <input defaultValue={doctor.lastname} onChange={changeHandler} name="lastname" className="form-control" />
+              <br />
+              <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Ismi</label>
+              <input defaultValue={doctor.firstname} onChange={changeHandler} name="firstname" className="form-control" />
+              <br />
+              <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Otasining ismi</label>
+              <input defaultValue={doctor.fathername} onChange={changeHandler} name="fathername" className="form-control" />
+              <br />
+              <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Tug'ilgan yili</label>
+              <input onChange={changeDate} name="born" type="date" className="form-control" value={new Date(doctor.born).getFullYear().toString() + '-' + (new Date(doctor.born).getMonth() < 9 ? "0" + (new Date(doctor.born).getMonth() + 1).toString() : (new Date(doctor.born).getMonth() + 1).toString()) + '-' + (new Date(doctor.born).getDate() < 10 ? "0" + (new Date(doctor.born).getDate()).toString() : (new Date(doctor.born).getDate()).toString())} />
+              <br />
+              <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Ixtisosligi</label>
+              <Select
+                defaultValue={doctor.section}
+                className="mt-3"
+                onChange={changeSection}
+                closeMenuOnSelect={false}
+                components={animatedComponents}
+                options={options && options}
+                name="section"
+              />
+              <br />
+              <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Telefon raqami</label>
+              <input defaultValue={doctor.phone} onChange={changeHandler} name="phone" type="number" className="form-control" />
+            </div>
+          </div>
+        </div>
+        <div className="card-footer">
+          <button className="btn button-success me-4" onClick={checkData}>Saqlash</button>
+          <button className="btn button-danger" onClick={()=>{setModal1(true); window.scrollTo({top:0})}}>O'chirish</button>
+        </div>
+      </div>
 
-              <div className="col-md-6 mt-3">
+
+      {/* Modal oynaning ochilishi */}
+      <div className={modal2 ? "modal" : "d-none"}>
+        <div className="modal-card">
+          <div className="" >
+            <div className="card" >
+              <div className="card-header">
+                <h6 className="text-danger">
+                  Diqqat! Shifokorning quyida ko'rsatilgan barcha ma'lumotlari to'g'riligini tasdiqlaysizmi?
+                </h6>
+              </div>
+              <div className="card-body">
                 <div className="row">
-                  <p style={{ fontWeight: "700", color: "blue", fontSize: "22px", margin: "10px" }}>Asosiy ma'lumotlar</p>
-                  <div className="col-4">
-                    <p style={{ fontWeight: "700", fontSize: "18px", margin: "10px" }} className="pt-2">Familiyasi:</p>
-                    <p style={{ fontWeight: "700", fontSize: "18px", margin: "10px" }} >Ismi:</p>
-                    <p style={{ fontWeight: "700", fontSize: "18px", margin: "10px" }}>Otasining ismi:</p>
+                  <div className="col-12 col-md-6 p-4">
+                    <img width="200px" src={doctor.image} alt="DosetDoctorImage" style={{ maxWidth: "200px", margin: "10px", borderRadius: "10px" }} />
+                    <br />
+                    <br />
+                    <br />
+                    <br />
+                    <p className="fs-4"> Login va parol </p>
+                    <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Login</label>
+                    <input disabled value={doctor.login} onChange={changeHandler} name="login" type="text" className="form-control" />
+                    <br />
+                    <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Parol</label>
+                    <input disabled placeholder="Parolni kiriting" value={doctor.password} onChange={createPassword} name="password" type="text" className={borderGreen ? `form-control border border-success` : `${borderRed ? "form-control border border-danger" : "form-control border"}`} />
+
                   </div>
-                  <div className="col-8">
-                    <p style={{ fontWeight: "500", fontSize: "18px", margin: "10px" }}> <input defaultValue={doctor.lastname} onChange={changeHandlar} name="lastname" className="addDoctor" /> <div className="clr"></div>  </p>
-                    <p style={{ fontWeight: "500", fontSize: "18px", margin: "10px" }} ><input defaultValue={doctor.firstname} onChange={changeHandlar} name="firstname" className="addDoctor" /> <div className="clr"></div></p>
-                    <p style={{ fontWeight: "500", fontSize: "18px", margin: "10px" }}><input defaultValue={doctor.fathername} onChange={changeHandlar} name="fathername" className="addDoctor" /><div className="clr"></div></p>
+                  <div className="col-12 col-md-6 p-4">
+                    <p className="fs-4"> Rahbar ma'lumotlari </p>
+                    <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Familiyasi</label>
+                    <input disabled value={doctor.lastname} onChange={changeHandler} name="lastname" className="form-control" />
+                    <br />
+                    <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Ismi</label>
+                    <input disabled value={doctor.firstname} onChange={changeHandler} name="firstname" className="form-control" />
+                    <br />
+                    <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Otasining ismi</label>
+                    <input disabled value={doctor.fathername} onChange={changeHandler} name="fathername" className="form-control" />
+                    <br />
+                    <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Tug'ilgan yili</label>
+                    <input disabled onChange={changeHandler} name="born" type="date" className="form-control" value={new Date(doctor.born).getFullYear().toString() + '-' + (new Date(doctor.born).getMonth() < 9 ? "0" + (new Date(doctor.born).getMonth() + 1).toString() : (new Date(doctor.born).getMonth() + 1).toString()) + '-' + (new Date(doctor.born).getDate() < 10 ? "0" + (new Date(doctor.born).getDate()).toString() : (new Date(doctor.born).getDate()).toString())} />
+                    <br />
+                    <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Bo'limi</label>
+                    <input disabled value={doctor.section} onChange={changeHandler} name="section" type="text" className="form-control" />
+                    <br />
+                    <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Telefon raqami</label>
+                    <input disabled value={doctor.phone} onChange={changeHandler} name="phone" type="number" className="form-control" />
                   </div>
                 </div>
               </div>
-              <div className="col-md-5 mt-3">
-                <div className="row">
-                  <p style={{ fontWeight: "700", color: "blue", fontSize: "20px", margin: "10px 0" }}>Qo'shimcha ma'lumotlar</p>
-                  <div className="col-4">
-                    <p style={{ fontWeight: "700", fontSize: "18px", margin: "10px 0" }}>Tug'ilgan sanasi:</p>
-                    <p style={{ fontWeight: "700", fontSize: "18px", margin: "10px 0" }}> Telefon: </p>
-                    <p style={{ fontWeight: "700", fontSize: "18px", margin: "10px 0" }}>Ixtisosligi: </p>
-                  </div>
-                  <div className="col-8">
-                    <p style={{ fontWeight: "500", fontSize: "18px", margin: "10px 0" }}> <input value={new Date(doctor.born).getFullYear().toString() + '-' + (new Date(doctor.born).getMonth() < 9 ? "0" + (new Date(doctor.born).getMonth() + 1).toString() : (new Date(doctor.born).getMonth() + 1).toString()) + '-' + (new Date(doctor.born).getDate() < 10 ? "0" + (new Date(doctor.born).getDate()).toString() : (new Date(doctor.born).getDate()).toString())} onChange={changeDate} type="date" className="addDoctor" /><div className="clr"></div></p>
-                    <p style={{ fontWeight: "500", fontSize: "18px", margin: "10px 0" }}><input defaultValue={doctor.phone} onChange={changeHandlar} name="phone" type="number" className="addDoctor pt-3" /><div className="clr"></div></p>
-                    <p style={{ fontWeight: "500", fontSize: "18px", margin: "10px 0" }}>
-                      <Select
-                        defaultValue={doctor.section}
-                        className="mt-3"
-                        onChange={changeSection}
-                        closeMenuOnSelect={false}
-                        components={animatedComponents}
-                        options={options && options}
-                        name="section"
-                      /></p>
-                  </div>
-                </div>
-              </div>
-              <div className="row pt-3">
-                <div className="col-4">
-                  <input style={{ width: "150px" }} name="file" onChange={uploadImage} type="file" className="doctor-control" />
-                  <img width="200px" src={doctor.image} alt={doctor.image} style={{ maxWidth: "200px", margin: "10px", borderRadius: "10px" }} />
-
-                </div>
+              <div className="card-footer text-center">
+                <button onClick={createHandler} className="btn button-success mb-2" style={{ marginRight: "30px" }}>Tasdiqlash</button>
+                <button onClick={() => setModal2(false)} className="btn button-danger mb-2" >Qaytish</button>
               </div>
             </div>
-            <div className="text-end pt-4 px-4 ">
-              <button onClick={checkData} className="btn button-success mb-2 text-end">O'zgartirishni  saqlash </button>
-              <button onClick={() => setModal2(true)} className="btn button-danger ms-5 mb-2"> Shifokorni o'chirish </button>
-            </div>
-          </article>
+          </div>
         </div>
       </div>
 
@@ -229,42 +321,11 @@ export const EditDoctor = () => {
                 <img width="400px" className="card-image img-fluid" src={doctor.image} />
               </div>
               <div className="card-body">
-                <h5>F.I.Sh: {doctor.lastname} {doctor.firstname} {doctor.fathername}</h5>
-                <p> Tu'gilgan yili: {new Date(doctor.born).toLocaleDateString()}</p>
-                <p>tel: +{doctor.phone}</p>
-                <h6>Ixtisosligi: {doctor.section}</h6>
+                <h5 className='text-danger'> {doctor.lastname + " " + doctor.firstname}ni o'chirilishini tasdiqlaysizmi?</h5>
               </div>
               <div className="card-footer text-center">
-                <button onClick={createHandler} className="btn button-success mb-2" style={{ marginRight: "30px" }}>Tasdiqlash</button>
-                <button onClick={() => setModal1(false)} className="btn button-danger mb-2" >Qaytish</button>
-              </div>
-            </div>
-          </div>
-        </div>
-
-
-      </div>
-
-      {/* Modal oynaning ochilishi */}
-      <div className={modal2 ? "modal" : "d-none"}>
-        <div className="modal-card">
-          <div className="">
-            <div className="p-4" >
-              <div className="card " style={{ maxWidth: "400px" }}>
-                <div className="card-header" >
-                  <img width="400px" className="card-image img-fluid " src={doctor.image} />
-                </div>
-                <div className="card-body p-3">
-                  <h5>F.I.Sh: {doctor.lastname} {doctor.firstname} {doctor.fathername}</h5>
-                  <p> Tu'gilgan yili: {new Date(doctor.born).toLocaleDateString()}</p>
-                  <p>tel: +{doctor.phone}</p>
-                  <h6>Ixtisosligi: {doctor.section}</h6>
-                </div>
-
-                <div className="card-footer text-center">
-                  <button onClick={Delete} className="btn button-success mb-2" style={{ marginRight: "30px" }}>O'chirishni tasdiqlang</button>
-                  <button onClick={() => setModal2(false)} className="btn button-danger mb-2 " >Qaytish</button>
-                </div>
+                <button onClick={Delete} className="btn button-success mb-2" style={{ marginRight: "30px" }}>Tasdiqlash</button>
+                <button onClick={() => {setModal1(false)}} className="btn button-danger mb-2" >Qaytish</button>
               </div>
             </div>
           </div>

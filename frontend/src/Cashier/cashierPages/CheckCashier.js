@@ -107,7 +107,7 @@ export const CheckCashier = () => {
             setSections(
                 Object.values({
                     ...sections,
-                    [key]: { ...sections[key], payment: "to'lanmagan", priceCashier: 0, commentCashier: " " }
+                    [key]: { ...sections[key], payment: "to'lanmagan", priceCashier: 0, commentCashier: " ", position: "kelgan" }
                 })
             )
         } else {

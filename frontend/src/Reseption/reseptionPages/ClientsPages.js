@@ -56,7 +56,13 @@ export const ClientsPages = () => {
                 Authorization: `Bearer ${auth.token}`
             })
             setAllSections(fetch)
-            setSections(fetch)
+            let c = []
+            fetch.map((section) => {
+                if (new Date(section.bronDay).toLocaleDateString() === new Date().toLocaleDateString()) {
+                    c.push(section)
+                }
+            })
+            setSections(c)
         } catch (e) {
 
         }
@@ -261,7 +267,7 @@ export const ClientsPages = () => {
                         </tr>
                     </thead>
                     <tbody className="" >
-                        {sections.map((section, key) => {
+                        {sections && sections.map((section, key) => {
                             return AllClients.map(client => {
                                 if (client._id === section.client) {
                                     paid = paid + section.priceCashier
@@ -308,19 +314,19 @@ export const ClientsPages = () => {
             <div className="overflow-auto" style={{ height: "65vh", minWidth: "1100px" }}>
                 <table className=" table-hover"  >
                     <tbody className="" >
-                        {sections.map((section, key) => {
+                        {sections &&  sections.map((section, key) => {
                             return AllClients.map(client => {
                                 if (client._id === section.client) {
                                     k++
                                     return (
-                                        <tr key={key} >
+                                        <tr key={key}  >
                                             <td className="no" >{k}</td>
                                             <td className="date" >{new mongoose.Types.ObjectId(client._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(client._id).getTimestamp().toLocaleTimeString()}</td>
-                                            <td className="fish text-uppercase" ><Link style={{ fontWeight: "600" }} to={`/reseption/clientallhistory/${client._id}`} > {client.lastname} {client.firstname} {client.fathername} </Link></td>
+                                            <td className="fish text-uppercase" ><Link className='text-success' style={{ fontWeight: "600" }} to={`/reseption/clientallhistory/${client._id}`} > {client.lastname} {client.firstname} {client.fathername} </Link></td>
                                             <td className="id" >{client.id}</td>
                                             <td className="turn">{section.bron === "offline" ? section.turn : section.bronTime + " " + new Date(section.bronDay).toLocaleDateString()}</td>
                                             <td className="phone">+{client.phone}</td>
-                                            <td className="section text-uppercase"> <Link to={`/reseption/clienthistory/${section._id}`} style={{ color: "#00aa00", fontWeight: "600" }} > {section.name} </Link></td>
+                                            <td className="section text-uppercase"> <Link to={`/reseption/clienthistory/${section._id}`} className={section.summary !== " " ? "prices fw-bold text-success" : "prices fw-bold text-danger"} > {section.name} </Link></td>
                                             <td className="edit"> <Link to={`/reseption/edit/${client._id}`} > <FontAwesomeIcon icon={faPenAlt} className="text-dark" /> </Link>  </td>
                                             <td className="prices fw-bold" >{section.price}</td>
                                             <td className="prices fw-bold text-success" >{section.priceCashier}</td>

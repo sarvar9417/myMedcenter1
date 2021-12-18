@@ -93,7 +93,8 @@ export const OldClient = () => {
         bronDay: new Date(),
         bronTime: " ",
         position: "offline",
-        checkup: "chaqirilmagan"
+        checkup: "chaqirilmagan",
+        doctor: " "
       })
     })
     setSections(s)

@@ -11,6 +11,9 @@ import { EditDirection } from './Others/EditDirection'
 import { ClientAllHistory } from '../directorPages/Others/ClientAllHistory'
 import { ClientHistory  } from '../directorPages/Others/ClientHistory'
 import { AddLogo } from './Others/AddLogo'
+import { EditDirector } from './Others/EditDirector'
+import { EditReseption } from './Others/EditReseption'
+import { EditCashier } from './Others/EditCashier'
 export const DashboardRoutes = () => {
     return (
         <div style={{ overflow: "auto" }}>
@@ -44,6 +47,15 @@ export const DashboardRoutes = () => {
                 </Route>
                 <Route path='/director/clienthistory/:id' >
                     <ClientHistory />
+                </Route>
+                <Route path='/director/editdirector' >
+                    <EditDirector />
+                </Route>
+                <Route path='/director/editreseption' >
+                    <EditReseption />
+                </Route>
+                <Route path='/director/editcashier' >
+                    <EditCashier />
                 </Route>
                 <Route path='/director/logo' >
                     <AddLogo />

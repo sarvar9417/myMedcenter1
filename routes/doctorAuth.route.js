@@ -1,24 +1,24 @@
 const { Router } = require('express')
 const router = Router()
 const auth = require('../middleware/auth.middleware')
-const { Doctor, validateDoctor } = require('../models/Doctor')
-const { DoctorResume, validateDoctorResume } = require('../models/DoctorResume')
+const { Doctor, validateDoctor, validateDoctorLogin } = require('../models/Doctor')
 const bcrypt = require('bcryptjs')
 const config = require('config')
 const jwt = require('jsonwebtoken')
 
 // /api/auth/register
-router.post('/doctorresume/register',  async (req, res) => {
+router.post('/register', async (req, res) => {
     try {
-        const { error } = validateDoctorResume(req.body)
+        const { error } = validateDoctor(req.body)
         if (error) {
             return res.status(400).json({
                 error: error,
                 message: error.message
             })
         }
-        console.log(req.body)
         const {
+            login,
+            password,
             firstname,
             lastname,
             fathername,
@@ -28,7 +28,14 @@ router.post('/doctorresume/register',  async (req, res) => {
             image
         } = req.body
 
-        const doctorResume = new DoctorResume({
+        const candidate = await Doctor.findOne({ login })
+        if (candidate) {
+            return res.status(400).json({ message: 'Bunday foydalanuvchi tizimda avvaldan mavjud' })
+        }
+        const hash = await bcrypt.hash(password, 8)
+        const doctor = new Doctor({
+            login,
+            password: hash,
             firstname,
             lastname,
             fathername,
@@ -37,32 +44,6 @@ router.post('/doctorresume/register',  async (req, res) => {
             phone,
             image
         })
-        await doctorResume.save()
-        res.status(201).json( doctorResume)
-
-    } catch (e) {
-        res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
-    }
-})
-
-//
-router.post('/register',  async (req, res) => {
-    try {
-        const { error } = validateDoctor(req.body)
-        if (error) {
-            return res.status(400).json({
-                error: error,
-                message: error.message
-            })
-        }
-        const { login, password, doctorId } = req.body
-
-        const candidate = await Doctor.findOne({ login })
-        if (candidate) {
-            return res.status(400).json({ message: 'Bunday foydalanuvchi tizimda avvaldan mavjud' })
-        }
-        const hash = await bcrypt.hash(password, 8)
-        const doctor = new Doctor({ login: login, password: hash, doctorId: doctorId })
         await doctor.save()
         res.status(201).json({ message: "Doctor yaratildi" })
 
@@ -75,7 +56,7 @@ router.post('/register',  async (req, res) => {
 // /api/auth/login
 router.post('/login', async (req, res) => {
     try {
-        const { error } = validateDoctor(req.body)
+        const { error } = validateDoctorLogin(req.body)
         if (error) {
             return res.status(400).json({
                 error: error,
@@ -94,14 +75,13 @@ router.post('/login', async (req, res) => {
             return res.status(400).json({ message: `Login yoki parol noto'g'ri` })
         }
 
-        const doctorResume = await DoctorResume.findById(doctor.doctorId)
         const token = jwt.sign(
             { doctorId: doctor._id },
             config.get('jwtSecret'),
             { expiresIn: '1h' }
 
         )
-        res.send({ token, doctorId: doctor._id, doctor: doctorResume })
+        res.send({ token, doctorId: doctor._id, doctor: doctor })
 
     } catch (e) {
         res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
@@ -111,7 +91,7 @@ router.post('/login', async (req, res) => {
 // /api/section/reseption
 router.get('/director', auth, async (req, res) => {
     try {
-        const doctors = await DoctorResume.find()
+        const doctors = await Doctor.find()
         res.json(doctors)
     } catch (e) {
         res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
@@ -121,7 +101,7 @@ router.get('/director', auth, async (req, res) => {
 // /api/section/reseption
 router.get('/login/:id', auth, async (req, res) => {
     try {
-        const doctor = await Doctor.find({doctorId: req.params.id})
+        const doctor = await Doctor.find({ doctorId: req.params.id })
         res.json(doctor)
     } catch (e) {
         res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
@@ -132,18 +112,52 @@ router.get('/login/:id', auth, async (req, res) => {
 router.get('/director/:id', auth, async (req, res) => {
     try {
         const id = req.params.id
-        const doctor = await DoctorResume.findById(id)
+        const doctor = await Doctor.findById(id)
         res.json(doctor)
     } catch (e) {
         res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
     }
 })
 
-router.patch('/director/:id', auth, async (req, res) => {
+// /api/auth/login
+router.patch('/director/:id', async (req, res) => {
     try {
-        const id = req.params.id
-        const edit = await DoctorResume.findByIdAndUpdate(id, req.body)
-        res.json(edit)
+        const { error } = validateDoctor(req.body)
+        if (error) {
+            return res.status(400).json({
+                error: error,
+                message: error.message
+            })
+        }
+        const {
+            login,
+            password,
+            firstname,
+            lastname,
+            fathername,
+            section,
+            born,
+            phone,
+            image } = req.body
+
+        // const candidate = await Director.findOne({ login })
+        // if (candidate) {
+        //     return res.status(400).json({ message: 'Bunday Loginli foydalanuvchi tizimda avvaldan mavjud' })
+        // }
+        const hash = await bcrypt.hash(password, 8)
+        const doctor = await Doctor.findById(req.params.id)
+        doctor.login = login
+        doctor.password = hash
+        doctor.firstname = firstname
+        doctor.lastname = lastname
+        doctor.fathername = fathername
+        doctor.section = section
+        doctor.born = born
+        doctor.phone = phone
+        doctor.image = image
+        const update = await doctor.save()
+        res.status(201).send({ update })
+
     } catch (e) {
         res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
     }
@@ -162,7 +176,7 @@ router.delete('/director/:id', auth, async (req, res) => {
 // /api/section/reseption
 router.get('/historyclient', async (req, res) => {
     try {
-        const doctors = await DoctorResume.find()
+        const doctors = await Doctor.find()
         res.json(doctors)
     } catch (e) {
         res.status(500).json({ message: 'Serverda xatolik yuz berdi' })

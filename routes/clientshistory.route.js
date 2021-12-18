@@ -2,6 +2,16 @@ const { Router } = require('express')
 const router = Router()
 const { Clients } = require('../models/Clients')
 const { Section } = require('../models/Section')
+const config = require('config')
+
+router.get('/url', async (req, res) => {
+    try {
+        const url = config.get("baseUrl")
+        res.json(url)
+    } catch (e) {
+        res.status(500).json({ message: 'So`ralgan mijoz ma`lumotlari topilmadi' })
+    }
+})
 
 router.get('/client/:id', async (req, res) => {
     try {

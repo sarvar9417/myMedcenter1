@@ -106,7 +106,8 @@ export const OldOnlineClient = () => {
                 bronDay: new Date(),
                 bronTime: " ",
                 position: 'kutilmoqda',
-                checkup: "chaqirilmagan"
+                checkup: "chaqirilmagan",
+                doctor: " "
             })
         })
         setSections(s)

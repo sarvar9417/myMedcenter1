@@ -13,8 +13,34 @@ router.post('/register', async (req, res) => {
                 message: error.message
             })
         }
-        const { logo } = req.body
-        const companyLogo = new CompanyLogo({ URL })
+        const {
+            logo,
+            name,
+            companyname,
+            address,
+            orientation,
+            bank,
+            mfo,
+            accountnumber,
+            inn,
+            phone1,
+            phone2,
+            phone3
+        } = req.body
+        const companyLogo = new CompanyLogo({
+            logo,
+            name,
+            companyname,
+            address,
+            orientation,
+            bank,
+            mfo,
+            accountnumber,
+            inn,
+            phone1,
+            phone2,
+            phone3
+        })
         await companyLogo.save()
         res.status(201).json({ message: "Logo yaratildi" })
 

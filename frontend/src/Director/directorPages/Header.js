@@ -25,9 +25,6 @@ export const Header = () => {
                 <li className="nav-item">
                     <button className="btn nav-link a aktive" onClick={goBack} >Bosh menyu</button>
                 </li>
-                <li className="nav-item">
-                    <Link className="btn nav-link a aktive" to="/director/logo" >Logotip</Link>
-                </li>
             </ul>
             {/* Right navbar links */}
             <ul className="navbar-nav ml-auto">

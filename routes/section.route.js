@@ -35,6 +35,7 @@ router.post('/reseption/register/:id', auth, async (req, res) => {
             position,
             checkup,
             connector,
+            doctor
 
         } = req.body
         const section = new Section({
@@ -54,7 +55,8 @@ router.post('/reseption/register/:id', auth, async (req, res) => {
             bronTime,
             position,
             checkup,
-            connector
+            connector,
+            doctor
         })
         await section.save()
         res.status(201).send(section)
@@ -180,14 +182,24 @@ router.patch('/cashier/:id', auth, async (req, res) => {
 // Get online sections
 router.get('/doctoronline/:section', auth, async (req, res) => {
     try {
-        const section = await Section.find({
+        const sections = await Section.find({
             bronDay: { $gte: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()) },
             bron: "online",
             checkup: "chaqirilmagan",
             name: req.params.section,
+            position: "kelgan",
+            payment: { $ne: "to'lanmagan" }
         })
-            .sort({ turn: 1 })
-        res.json(section[0])
+            .or([{ payment: "to'langan" }, { comment: { $ne: " " } }])
+            .and([{ payment: { $ne: "to'lanmagan" } }, {}])
+            .sort({ bronTime: 1 })
+        let c = []
+        sections.map((section) => {
+            if (new Date(section.bronDay).toLocaleDateString() === new Date().toLocaleDateString()) {
+                c.push(section)
+            }
+        })
+        res.json(c[0])
     } catch (e) {
         res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
     }
@@ -196,15 +208,22 @@ router.get('/doctoronline/:section', auth, async (req, res) => {
 // Get offline sections
 router.get('/doctoroffline/:section', auth, async (req, res) => {
     try {
-        const section = await Section.find({
+        const sections = await Section.find({
             bronDay: { $gte: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()) },
             bron: "offline",
             checkup: "chaqirilmagan",
             name: req.params.section,
-            payment : {$ne: "to'lanmagan" }
+            payment: { $ne: "to'lanmagan" }
         })
+            .or([{ payment: "to'langan" }, { comment: { $ne: " " } }])
             .sort({ turn: 1 })
-        res.json(section[0])
+        let c = []
+        sections.map((section) => {
+            if (new Date(section.bronDay).toLocaleDateString() === new Date().toLocaleDateString()) {
+                c.push(section)
+            }
+        })
+        res.json(c[0])
     } catch (e) {
         res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
     }
@@ -242,8 +261,8 @@ router.get('/doctorall/:section', auth, async (req, res) => {
     try {
         const section = await Section.find({
             name: req.params.section,
-            payment: {$ne: "to'lanmagan"}
-        }).sort({_id: -1})
+            payment: { $ne: "to'lanmagan" }
+        }).sort({ _id: -1 })
         res.json(section)
     } catch (e) {
         res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
@@ -331,7 +350,7 @@ router.get('/turn/:section', async (req, res) => {
             bron: "offline",
             checkup: "chaqirilmagan",
             name: req.params.section,
-            payment: {$ne: "to'lanmagan"}
+            payment: { $ne: "to'lanmagan" }
         }).sort({ turn: 1 })
         res.json(section[0])
     } catch (e) {

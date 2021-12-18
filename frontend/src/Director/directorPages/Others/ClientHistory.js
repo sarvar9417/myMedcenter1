@@ -1,187 +1,231 @@
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router'
-import { useReactToPrint } from 'react-to-print'
 import { AuthContext } from '../../context/AuthContext'
 import { useHttp } from '../../hooks/http.hook'
-const mongoose = require("mongoose")
+import { toast } from 'react-toastify'
+import { savePDF } from '@progress/kendo-react-pdf'
+import QRCode from 'qrcode'
+import { Loader } from '../../../Doctor/components/Loader'
 
+toast.configure()
 export const ClientHistory = () => {
     const auth = useContext(AuthContext)
-    const componentRef = useRef()
-    const handlePrint = useReactToPrint({
-        content: () => componentRef.current,
-    })
-    const sectionId = useParams().id
-    const { request } = useHttp()
-    const [section, setSection] = useState([])
-    const [client, setClient] = useState('')
 
-    const getClient = useCallback(async (clientId) => {
+    const sectionId = useParams().id
+    const { request, loading, error, clearError } = useHttp()
+    const [section, setSection] = useState()
+    const [client, setClient] = useState()
+    const [baseUrl, setBaseUrl] = useState()
+
+    const notify = (e) => {
+        toast.error(e)
+    }
+
+    const contentArea = useRef(null)
+
+    const createSizeHistory = () => {
+        savePDF(
+            contentArea.current,
+            {
+                paperSize: "A4",
+                repeatHeaders: true,
+                fileName: client.lastname + client.firstname + client.fathername,
+
+            }, encodeURIComponent()
+
+        )
+    }
+
+    const getBaseUrl = useCallback(async () => {
         try {
-            const data = await request(`/api/clients/reseption/${clientId}`, 'GET', null, {
+            console.log("salom");
+            const data = await request(`/api/clienthistorys/url`, 'GET', null, {
+                Authorization: `Bearer ${auth.token}`
+            })
+            setBaseUrl(data)
+        } catch (e) {
+            notify(e)
+        }
+    }, [request])
+
+    const getClient = useCallback(async (id) => {
+        try {
+            const data = await request(`/api/clients/reseption/${id}`, 'GET', null, {
                 Authorization: `Bearer ${auth.token}`
             })
             setClient(data)
         } catch (e) {
+            notify(e)
         }
-    }, [request])
+    }, [request, auth, section])
 
     const getSection = useCallback(async () => {
         try {
+            console.log("Salom");
             const fetch = await request(`/api/section/reseption/${sectionId}`, 'GET', null, {
                 Authorization: `Bearer ${auth.token}`
             })
             getClient(fetch.client)
             setSection(fetch)
         } catch (e) {
-
+            notify(e)
         }
-    }, [request, sectionId])
+    }, [request, sectionId, auth])
+
+    const [logo, setLogo] = useState()
+    const getLogo = useCallback(async () => {
+        try {
+            const data = await request("/api/companylogo/", "GET", null)
+            setLogo(data[0])
+        } catch (e) {
+            notify(e)
+        }
+    }, [request, setLogo])
+
+    const [qr, setQr] = useState()
 
     useEffect(() => {
-        getSection()
-    }, [getSection])
+        if (client) {
+            QRCode.toDataURL(`${baseUrl}/api/clienthistorys/${client._id}`)
+                .then(data => {
+                    setQr(data)
+                })
+        }
+        if (!baseUrl) {
+            getBaseUrl()
+        }
+        if (!logo) {
+            getLogo()
+        }
+        if (!section) {
+            getSection()
+        }
+        if (error) {
+            notify(error)
+            clearError()
+        }
+    }, [notify, clearError])
 
-
+    if (loading) {
+        return <Loader />
+    }
     return (
         <div>
-            <div className="">
-                <article className="linkk mt-5" >
-                    <h1 style={{ fontWeight: "700" }}>Kasallik tarixi</h1>
-                    <div className="row mt-4" style={{ border: "25px solid hsla(212, 54%, 71%, 0.471)" }}>
-                        <div className="col-md-7 col-12 mt-3">
-                            <div className="row">
-                                <p style={{ fontWeight: "700", color: "blue", fontSize: "22px", margin: "10px" }}>Mijoz ma'lumotlari</p>
-                                <div className="col-4">
-                                    <p style={{ fontWeight: "700", fontSize: "18px", margin: "10px" }}>Familiyasi</p>
-                                    <p style={{ fontWeight: "700", fontSize: "18px", margin: "10px" }} >Ismi</p>
-                                    <p style={{ fontWeight: "700", fontSize: "18px", margin: "10px" }}>Otasining ismi</p>
-                                </div>
-                                <div className="col-8">
-                                    <p style={{ fontWeight: "500", fontSize: "18px", margin: "10px" }}>{client.lastname}</p>
-                                    <p style={{ fontWeight: "500", fontSize: "18px", margin: "10px" }} >{client.firstname}</p>
-                                    <p style={{ fontWeight: "500", fontSize: "18px", margin: "10px" }}>{client.fathername}</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div className="col-md-5 col-12 mt-3">
-                            <div className="row">
-                                <p style={{ fontWeight: "700", color: "blue", fontSize: "20px", margin: "10px 0" }}>Qo'shimcha ma'lumotlar</p>
-                                <div className="col-4">
-                                    <p style={{ fontWeight: "700", fontSize: "18px", margin: "10px 0" }}>Tug'ilgan yili</p>
-                                    <p style={{ fontWeight: "700", fontSize: "18px", margin: "10px 0" }}>Jinsi</p>
-                                    <p style={{ fontWeight: "700", fontSize: "18px", margin: "10px 0" }}>Telefon raqami</p>
-                                </div>
-                                <div className="col-8">
-                                    <p style={{ fontWeight: "500", fontSize: "18px", margin: "10px 0" }}>{client.born && new Date(client.born).toLocaleDateString()}</p>
-                                    <p style={{ fontWeight: "500", fontSize: "18px", margin: "10px 0" }} >{client && client.gender === "man" ? "Erkak" : "Ayol"}</p>
-                                    <p style={{ fontWeight: "500", fontSize: "18px", margin: "10px 0" }} >+{client && client.phone}</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="row" style={{ border: "25px solid hsla(212, 54%, 71%, 0.471)", borderTop: "none" }}>
-                        <div className="row">
-                            <div className="col-md-6 col-12 fs-5 fw-bold p-2">
-                                Bo'limi: {section && section.name} <br />
-                                Masad: {section && section.subname}
-                            </div>
-                            <div className="col-md-4 col-9 fs-5 p-2 text-end">
-                                Murojaat kuni: <br />
-                                To'lov:
-                            </div>
-                            <div className="col-md-2 col-3 fs-5 p-2 text-end">
-                                {section && new Date(section.bronDay).toLocaleDateString()}<br />
-                                {section && section.price}
-                            </div>
-                            <hr />
-                            <div className="col-12">
-                                <h5>Izoh:</h5>
-                                <p>{section.comment && section.comment}</p>
-                            </div>
-                            <div className="col-12">
-                                <h5>Xulosa:</h5>
-                                <p>{section.summary && section.summary}</p>
-                            </div>
-                        </div>
-                    </div>
-                </article>
+            <div className='text-end' >
+                <button className='btn btn-primary pe-3 mb-2' onClick={createSizeHistory}>Yuklab olish</button>
             </div>
-            <div className="d-none">
-                <div ref={componentRef}>
-                    <div className="" >
-                        <article className="linkk mt-5" >
-                            <h1 style={{ fontWeight: "700" }}>Kasallik tarixi</h1>
-                            <div className="row mt-4" style={{ border: "25px solid hsla(212, 54%, 71%, 0.471)" }}>
-                                <div className=" col-7 mt-3">
+            <dl style={{ maxHeight: "100vh", overflow: "auto" }}>
+                <dl style={{ backgroundColor: "#123456" }}>
+                    <dl ref={contentArea} style={{ width: "15cm", margin: "0 auto" }} >
+                        <dl style={{ minHeight: "100vh", fontFamily: "times !important", fontSize: "7pt", backgroundColor: "white" }} className="m-2">
+                            <dl className="row">
+                                <dl className="col-8 border-right border-dark text-center  border-5 m-none">
+                                    <img alt="logo" src={logo && logo.logo} className="w-50" />
+                                    <div className="row mt-3">
+                                        <div className="col-3 text-end">
+                                            <span className="fw-normal d-block" >Адрес:</span>
+                                        </div>
+                                        <div className="col-9 text-start fw-bold">
+                                            {logo && logo.address}
+                                        </div>
+                                    </div>
                                     <div className="row">
-                                        <p style={{ fontWeight: "700", color: "blue", fontSize: "22px", margin: "10px" }}>Mijoz ma'lumotlari</p>
-                                        <div className="col-4">
-                                            <p style={{ fontWeight: "700", fontSize: "18px", margin: "10px" }}>Familiyasi</p>
-                                            <p style={{ fontWeight: "700", fontSize: "18px", margin: "10px" }} >Ismi</p>
-                                            <p style={{ fontWeight: "700", fontSize: "18px", margin: "10px" }}>Otasining ismi</p>
+                                        <div className="col-3 text-end">
+                                            <span className="fw-normal" >Ориентир:</span>
                                         </div>
-                                        <div className="col-8">
-                                            <p style={{ fontWeight: "500", fontSize: "18px", margin: "10px" }}>{client.lastname}</p>
-                                            <p style={{ fontWeight: "500", fontSize: "18px", margin: "10px" }} >{client.firstname}</p>
-                                            <p style={{ fontWeight: "500", fontSize: "18px", margin: "10px" }}>{client.fathername}</p>
+                                        <div className="col-9 text-start fw-bold">
+                                            {logo && logo.orientation}
                                         </div>
                                     </div>
-                                </div>
-                                <div className=" col-5 mt-3">
                                     <div className="row">
-                                        <p style={{ fontWeight: "700", color: "blue", fontSize: "20px", margin: "10px 0" }}>Qo'shimcha ma'lumotlar</p>
-                                        <div className="col-4">
-                                            <p style={{ fontWeight: "700", fontSize: "18px", margin: "10px 0" }}>Tug'ilgan yili</p>
-                                            <p style={{ fontWeight: "700", fontSize: "18px", margin: "10px 0" }}>Jinsi</p>
-                                            <p style={{ fontWeight: "700", fontSize: "18px", margin: "10px 0" }}>Telefon raqami</p>
+                                        <div className="col-3 text-end">
+                                            <span className="fw-normal" >Тел:</span>
                                         </div>
-                                        <div className="col-8">
-                                            <p style={{ fontWeight: "500", fontSize: "18px", margin: "10px 0" }}>{client.born && new Date(client.born).toLocaleDateString()}</p>
-                                            <p style={{ fontWeight: "500", fontSize: "18px", margin: "10px 0" }} >{client && client.gender === "man" ? "Erkak" : "Ayol"}</p>
-                                            <p style={{ fontWeight: "500", fontSize: "18px", margin: "10px 0" }} >+{client && client.phone}</p>
+                                        <div className="col-9 text-start fw-bold">
+                                            {logo && logo.phone1 !== null ? "+" + logo.phone1 : ""} <br />
+                                            {logo && logo.phone2 !== null ? "+" + logo.phone2 : ""} <br />
+                                            {logo && logo.phone3 !== null ? "+" + logo.phone3 : ""} <br />
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                            <div className="row" style={{ border: "25px solid hsla(212, 54%, 71%, 0.471)", borderTop: "none" }}>
-                                <div className="row">
-                                    <div className="col-6 fs-5 fw-bold p-2">
-                                        Bo'limi: {section && section.name} <br />
-                                        Masad: {section && section.subname}
-                                    </div>
-                                    <div className="col-4 fs-5 p-2 text-end">
-                                        Murojaat kuni: <br />
-                                        To'lov:
-                                    </div>
-                                    <div className="col-2 fs-5 p-2 text-end">
-                                        {section && new Date(section.bronDay).toLocaleDateString()}<br />
-                                        {section && section.price}
-                                    </div>
-                                    <hr />
-                                    <div className="col-12">
-                                        <h5>Izoh:</h5>
-                                        <p>{section.comment && section.comment}</p>
-                                    </div>
-                                    <div className="col-12">
-                                        <h5>Xulosa:</h5>
-                                        <p>{section.summary && section.summary}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </article>
-                    </div>
-                </div>
-            </div>
-            <div className="container" style={{ position: "fixed", bottom: "0" }} >
-                <div className="row">
-                    <div className="offset-lg-5 col-lg-2 text-center">
-                        <button onClick={handlePrint} className="btn btn-primary" >
-                            Print
-                        </button>
-                    </div>
-                </div>
-            </div>
+                                </dl>
+                                <dl className="col-4 text-center">
+                                    <img width="100px" src={qr} alt="QR" />
+                                    <p className="">для получения результата сканируйте здесь</p>
+                                </dl>
+                            </dl>
+                            <dl className="row">
+                                <dl className="col-12 fs-6 text-center fw-bold">
+                                    {section && section.name}
+                                    <h5 style={{ fontSize: "9pt" }}>
+                                        ({section && section.subname})
+                                    </h5>
+                                </dl>
+                            </dl>
+                            <dl className="row">
+                                <dl className="col-12">
+                                    <table className="w-100 historytable" >
+                                        <tr>
+                                            <th className="px-3  w-25 text-end">
+                                                Пациент
+                                            </th>
+                                            <th className="px-3 w-75">
+                                                {client && client.lastname + " " + client.firstname + " " + client.fathername}
+                                            </th>
+                                        </tr>
+                                        <tr>
+                                            <th className="px-3 w-25 text-end">
+                                                Год рождения
+                                            </th>
+                                            <th className="px-3 w-75">
+                                                {client && new Date(client.born).toLocaleDateString()}
+                                            </th>
+                                        </tr>
+                                        <tr>
+                                            <th className="px-3 w-25 text-end">
+                                                Дата обследования
+                                            </th>
+                                            <th className="px-3 w-75">
+                                                {section && new Date(section.bronDay).toLocaleDateString() + " " + new Date(section.bronDay).toLocaleTimeString()}
+                                            </th>
+                                        </tr>
+                                        <tr>
+                                            <th className="px-3 w-25 text-end">
+                                                Tелефон номер
+                                            </th>
+                                            <th className="px-3 w-75">
+                                                +{client && client.phone}
+                                            </th>
+                                        </tr>
+                                        <tr>
+                                            <th className="px-3 w-25 text-end">
+                                                Врач
+                                            </th>
+                                            <th className="px-3 w-75">
+                                                {section && section.doctor}
+                                            </th>
+                                        </tr>
+                                    </table>
+
+                                </dl>
+                            </dl>
+                            <dl>
+                                <dl className='row'>
+                                    <dl className='col-12'>
+                                        <pre style={{ whiteSpace: "pre-wrap" }}>
+                                            {section && section.comment}
+                                        </pre>
+                                        <pre style={{ whiteSpace: "pre-wrap" }}>
+                                            {section && section.summary}
+                                        </pre>
+                                    </dl>
+                                </dl>
+                            </dl>
+                        </dl>
+                    </dl>
+                </dl>
+
+
+            </dl>
         </div>
     )
 }

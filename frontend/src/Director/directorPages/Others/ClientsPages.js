@@ -83,6 +83,7 @@ export const ClientsPages = () => {
     const notify = (e) => {
         toast.error(e);
     }
+
     useEffect(() => {
         if (error) {
             notify(error)
@@ -93,7 +94,6 @@ export const ClientsPages = () => {
         }
         if (AllSections.length === 0 ) {
             getAllSections()
-            
         }
         if (AllClients.length === 0 ) {
             getClients()

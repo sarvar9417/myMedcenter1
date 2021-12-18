@@ -54,22 +54,30 @@ export const Reciept = () => {
         }
 
     }, [getSections, sections])
-    const [logo, setLogo] = useState()
-
-    const getLogo = useCallback(async () => {
-        try {
-            const data = await request("/api/companylogo/", "GET", null, {
-                Authorization: `Bearer ${auth.token}`
-            })
-            setLogo(data[0])
-        } catch (e) {
-            notify(e)
-        }
-    }, [auth, request, setLogo])
 
     const notify = (e) => {
         toast.error(e)
     }
+
+    const [baseUrl, setBasuUrl] = useState()
+    const getBaseUrl = useCallback(async () => {
+        try {
+            const fetch = await request(`/api/clienthistorys/url`, 'GET', null)
+            setBasuUrl(fetch)
+        } catch (e) {
+            notify(e)
+        }
+    }, [request, setBasuUrl])
+
+    const [logo, setLogo] = useState()
+    const getLogo = useCallback(async () => {
+        try {
+            const data = await request("/api/companylogo/", "GET", null)
+            setLogo(data[0])
+        } catch (e) {
+            notify(e)
+        }
+    }, [request, setLogo])
 
     const uri = 'http://192.168.1.1'
     useEffect(() => {
@@ -86,6 +94,9 @@ export const Reciept = () => {
         }
         if (!logo) {
             getLogo()
+        }
+        if (!baseUrl) {
+            getBaseUrl()
         }
 
     }, [getClient, client, notify, clearError])
@@ -105,20 +116,23 @@ export const Reciept = () => {
                                 <tr>
                                     <td>
                                         <ul className="list-unstyled  text-start m-3">
-                                            <li className="" style={{ fontSize: "10pt", fontFamily: "times" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }} >"DS ONE PROVIDER" MCHJ</strong></li>
-                                            <li style={{ fontSize: "10pt", fontFamily: "times" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }}>Manzil:</strong> Navoiy shahar Zarapetyan ko'chasi</li>
-                                            <li style={{ fontSize: "10pt", fontFamily: "times" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }}>Bank:</strong> AKB "TURONBANK" Navoiy filiali</li>
-                                            <li style={{ fontSize: "10pt", fontFamily: "times" }}> <strong style={{ fontSize: "10pt", fontFamily: "times" }}>MFO:</strong> 00200</li>
+                                            <li className="" style={{ fontSize: "10pt", fontFamily: "times" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }} > {logo && logo.companyname}</strong></li>
+                                            <li style={{ fontSize: "10pt", fontFamily: "times" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }}>Manzil: </strong> {logo && logo.address}</li>
+                                            <li style={{ fontSize: "10pt", fontFamily: "times" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }}>Bank: </strong> {logo && logo.bank}</li>
+                                            <li style={{ fontSize: "10pt", fontFamily: "times" }}> <strong style={{ fontSize: "10pt", fontFamily: "times" }}>MFO: </strong> {logo && logo.mfo}</li>
                                             <li style={{ fontFamily: "times" }}> <h5 style={{ textAlign: "", fontSize: "10pt" }}> {today}</h5> </li>
-                                            <li style={{ textAlign: "", fontSize: "10pt" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }}>INN:</strong> 123456789</li>
-                                            <li style={{ textAlign: "", fontSize: "10pt" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }}>Hisob raqam:</strong> 1234567890123456</li>
-                                            <li style={{ textAlign: "", fontSize: "10pt" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }}>Telefon raqam:</strong> +998 (93) 196 94 34</li>
+                                            <li style={{ textAlign: "", fontSize: "10pt" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }}>INN:</strong> {logo && logo.inn}</li>
+                                            <li style={{ textAlign: "", fontSize: "10pt" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }}>Hisob raqam: </strong> {logo && logo.accountnumber}</li>
+                                            <li style={{ textAlign: "", fontSize: "10pt" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }}>Telefon raqam: </strong>
+                                                {logo.phone1 !== null ? "+" + logo.phone1 : ""} <br />
+                                                {logo.phone2 !== null ? "+" + logo.phone2 : ""} <br />
+                                                {logo.phone3 !== null ? "+" + logo.phone3 : ""} <br /></li>
                                         </ul>
                                     </td>
                                     <td className="text-end">
-                                        <img width="150" src={logo && logo.logo} alt="logo" /><br />    
-                                        <img src={qr && qr} alt="QR" /><br/>
-                                        <p className="pe-3" style={{fontSize:"10pt"}}>Bu yerni skanerlang</p>
+                                        <img width="150" src={logo && logo.logo} alt="logo" /><br />
+                                        <img src={qr && qr} alt="QR" /><br />
+                                        <p className="pe-3" style={{ fontSize: "10pt" }}>Bu yerni skanerlang</p>
                                     </td>
                                 </tr>
                             </tbody>

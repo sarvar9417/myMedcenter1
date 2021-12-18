@@ -105,8 +105,8 @@ export const RegistorDirector = () => {
       notify(e)
     }
   }
-console.log(loginPassword)
-  const createLogin =useCallback( async (id) => {
+
+  const createLogin = useCallback(async (id) => {
     try {
       const data = await request("/api/auth/director/register", "POST", {
         login: loginPassword.login,

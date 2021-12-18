@@ -17,7 +17,7 @@ const customStyles = {
         marginRight: '-50%',
         transform: 'translate(-50%, -50%)',
     },
-};
+}
 
 toast.configure()
 export const Adoption = () => {
@@ -27,15 +27,7 @@ export const Adoption = () => {
     const [section, setSection] = useState()
     const history = useHistory()
     const [options, setOptions] = useState()
-    const [client, setClient] = useState({
-        id: "",
-        lastname: "",
-        firstname: "",
-        fathername: "",
-        born: "",
-        phone: "",
-        price: ""
-    })
+    const [client, setClient] = useState()
 
 
     //Modal oyna
@@ -47,23 +39,22 @@ export const Adoption = () => {
             const fetch = await request(`/api/section/doctor/${sectionId}`, 'GET', null, {
                 Authorization: `Bearer ${auth.token}`
             })
-            getClient(fetch.client)
             setSection(fetch)
         } catch (error) {
-
+            notify(error)
         }
     }, [request, auth, sectionId])
 
-    const getClient = useCallback(async (id) => {
+    const getClient = useCallback(async () => {
         try {
-            const fetch = await request(`/api/clients/doctor/${id}`, 'GET', null, {
+            const fetch = await request(`/api/clients/doctor/${section.client}`, 'GET', null, {
                 Authorization: `Bearer ${auth.token}`
             })
             setClient(fetch)
         } catch (e) {
-
+            notify(e)
         }
-    }, [request, auth])
+    }, [request, auth, section])
 
     const checkUp = (event) => {
         setSection({ ...section, [event.target.name]: event.target.id })
@@ -150,13 +141,26 @@ export const Adoption = () => {
         toast(e)
     }
 
+    const [baseUrl, setBaseUrl] = useState()
+    const getBaseUrl = useCallback(async () => {
+        try {
+            const fetch = await request(`/api/clienthistorys/url`, 'GET', null)
+            setBaseUrl(fetch)
+        } catch (e) {
+            notify(e)
+        }
+    }, [request, setBaseUrl])
+
     const [qr, setQr] = useState()
-    const uri = window.location.href
-    useEffect(() => {
-        QRCode.toDataURL(`${uri}`)
+    const createQR = () => {
+        QRCode.toDataURL(`${baseUrl}/api/clienthistorys/${client._id}`)
             .then(data => {
                 setQr(data)
             })
+    }
+
+    useEffect(() => {
+
         if (!logo) {
             getLogo()
         }
@@ -169,6 +173,15 @@ export const Adoption = () => {
         }
         if (!options) {
             getTemplates()
+        }
+        if (!baseUrl) {
+            getBaseUrl()
+        }
+        if (section && !client) {
+            getClient()
+        }
+        if (client) {
+            createQR()
         }
     }, [notify, clearError])
 
@@ -183,14 +196,14 @@ export const Adoption = () => {
             <div className="container">
                 <div style={{ fontFamily: "times !important" }} className="m-2">
                     <div className="row">
-                        <div className="col-8 border-right border-dark text-center  border-5 m-none">
+                        <div className=" col-md-8 col-12 border-right border-dark text-center  border-5 m-none">
                             <img alt="logo" src={logo && logo.logo} className="w-50" />
                             <div className="row mt-3">
                                 <div className="col-3 text-end">
                                     <span className="fw-normal d-block" >Адрес:</span>
                                 </div>
                                 <div className="col-9 text-start fw-bold">
-                                    г. Самарканд ул Зарафшон шох, 25
+                                    {logo && logo.address}
                                 </div>
                             </div>
                             <div className="row">
@@ -198,7 +211,7 @@ export const Adoption = () => {
                                     <span className="fw-normal" >Ориентир:</span>
                                 </div>
                                 <div className="col-9 text-start fw-bold">
-                                    школа №65, ресторан «РОХАТ»
+                                    {logo && logo.orientation}
                                 </div>
                             </div>
                             <div className="row">
@@ -206,17 +219,21 @@ export const Adoption = () => {
                                     <span className="fw-normal" >Тел:</span>
                                 </div>
                                 <div className="col-9 text-start fw-bold">
-                                    97 (919)-36-36, 93 (238)-55-44
+                                    {logo && logo.phone1 !== null ? "+" + logo.phone1 : ""} <br />
+                                    {logo && logo.phone2 !== null ? "+" + logo.phone2 : ""} <br />
+                                    {logo && logo.phone3 !== null ? "+" + logo.phone3 : ""} <br />
                                 </div>
                             </div>
                         </div>
-                        <div className="col-4 text-center">
-
+                        <div className="col-md-4 col-12 text-center">
+                            <img src={qr && qr} />
                         </div>
                     </div>
                     <div className="row my-3">
                         <div className="col-12 fs-4 text-center fw-bold">
                             {section && section.name}
+                            <h4 className=""> ({section && section.subname})</h4>
+
                         </div>
                     </div>
                     <div className="row">
@@ -268,7 +285,6 @@ export const Adoption = () => {
                     </div>
                     <div className="row">
                         <div className="col-12 col-md-6 pt-3">
-                            <h4 className="text-capitalize"> Xizmat: {section && section.subname}</h4>
                         </div>
                         <div className="col-12 col-md-6">
 
@@ -289,9 +305,15 @@ export const Adoption = () => {
                             <textarea value={section && section.summary} name="summary" onChange={changeHandlar} className="form-control" style={{ minHeight: "300px" }} />
                         </div>
                     </div>
+                    <br/>
+                    <div className="row">
+                        <div className="col-12">
+                            Comment:
+                            <textarea value={section && section.comment} name="comment" onChange={changeHandlar} className="form-control"    />
+                        </div>
+                    </div>
                 </div>
                 <div>
-                    <h5>Doctor: <span className="fs-4">{auth.doctor.lastname} {auth.doctor.firstname[0]}</span></h5>
                     <div className="row mt-5 mb-5">
                         <div className="col-12">
                             <button id="kelmagan" name="checkup" onClick={checkUp} className="btn button-danger me-5">Mijoz kelmadi</button>
@@ -334,6 +356,12 @@ export const Adoption = () => {
                                 <pre >
                                     Xulosa: <br />
                                     {section && section.summary}
+                                </pre>
+                            </div>
+                            <div className="col-12 ">
+                                <pre >
+                                    Izoh: <br />
+                                    {section && section.comment}
                                 </pre>
                             </div>
                         </div>
