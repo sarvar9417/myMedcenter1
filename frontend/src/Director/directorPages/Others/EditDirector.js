@@ -145,7 +145,7 @@ export const EditDirector = () => {
                 <div className="card-body">
                     <div className="row">
                         <div className="col-12 col-md-6 p-4">
-                            <img width="200px" src={auth.director && auth.director.image} alt="DirectorImage" style={{ maxWidth: "200px", margin: "10px", borderRadius: "10px" }} />
+                            <img width="200px" src={director && director.image} alt="DirectorImage" style={{ maxWidth: "200px", margin: "10px", borderRadius: "10px" }} />
                             <br />
                             <br />
                             <br />

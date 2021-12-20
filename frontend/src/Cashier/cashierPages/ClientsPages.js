@@ -270,7 +270,7 @@ export const ClientsPages = () => {
                                             <td className="fish text-uppercase" ><Link className='text-success' style={{ fontWeight: "700" }} to={`/cashier/pay/${client._id}/${section.connector}`} > {client.lastname} {client.firstname} {client.fathername} </Link></td>
                                             <td className="id" >{client.id}</td>
                                             <td className="phone">+{client.phone}</td>
-                                            <td className={section.price === section.priceCashier ? "prices fw-bold text-success" : `${section.priceCashier === 0 ? "rices fw-bold text-danger" : "rices fw-bold text-warning"}`}>  {section.name} <br /> <span style={{ fontSize: "10pt" }}>{section.subname}</span> </td>
+                                            <td className={section.price === section.priceCashier ? "prices fw-bold text-success" : `${section.priceCashier === 0 ? "prices fw-bold text-danger" : "prices fw-bold text-warning"}`}>  {section.name} <br /> <span style={{ fontSize: "10pt" }}>{section.subname}</span> </td>
                                             <td className="edit"> {section.payment === "to'langan" || section.payment === "to'lanmagan" ? "" : <button className="btn" onClick={() => edit(client._id, section)} > <FontAwesomeIcon icon={faPenAlt} className="text-dark" /> </button>}   </td>
                                             <td className={
                                                 payment.map((pay) => {

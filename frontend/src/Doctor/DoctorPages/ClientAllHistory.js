@@ -93,7 +93,7 @@ export const ClientAllHistory = () => {
 
     const [qr, setQr] = useState()
     useEffect(() => {
-        QRCode.toDataURL(`${baseUrl}/api/clienthistorys/${clientId}`)
+        QRCode.toDataURL(`${baseUrl}/clienthistorys/${clientId}`)
             .then(data => {
                 setQr(data)
             })

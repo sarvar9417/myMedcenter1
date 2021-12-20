@@ -86,7 +86,7 @@ export const ClientHistory = () => {
 
     useEffect(() => {
         if (client) {
-            QRCode.toDataURL(`${baseUrl}/api/clienthistorys/${client._id}`)
+            QRCode.toDataURL(`${baseUrl}/clienthistorys/${client._id}`)
                 .then(data => {
                     setQr(data)
                 })

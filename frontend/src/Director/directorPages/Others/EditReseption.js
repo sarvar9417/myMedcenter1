@@ -53,7 +53,7 @@ export const EditReseption = () => {
         data.append('file', files)
         data.append('upload_preset', "myimage")
         setLoad(true)
-        const res = await fetch("https://api.cloudinary.com/v1_1/academik/image/upload", { method: 'POST', body: data[0] })
+        const res = await fetch("https://api.cloudinary.com/v1_1/academik/image/upload", { method: 'POST', body: data })
         const file = await res.json()
         setReseption({ ...reseption, image: file.secure_url })
         setLoad(false)
@@ -162,7 +162,7 @@ export const EditReseption = () => {
                 <div className="card-body">
                     <div className="row">
                         <div className="col-12 col-md-6 p-4">
-                            <img width="200px" src={reseption.image} alt="ReseptionImage" style={{ maxWidth: "200px", margin: "10px", borderRadius: "10px" }} />
+                            <img width="200px" src={reseption && reseption.image} alt="ReseptionImage" style={{ maxWidth: "200px", margin: "10px", borderRadius: "10px" }} />
                             <br />
                             <br />
                             <br />
@@ -171,7 +171,7 @@ export const EditReseption = () => {
                             <input defaultValue={reseption.login} onChange={changeHandler} name="login" type="text" className="form-control" />
                             <br />
                             <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Parol</label>
-                            <input type="password" placeholder="Parolni kiriting" defaultValue={reseption.password} onChange={createPassword} name="password"  className={borderGreen ? `form-control border border-success` : `${borderRed ? "form-control border border-danger" : "form-control border"}`} />
+                            <input type="password" placeholder="Parolni kiriting" defaultValue={reseption.password} onChange={createPassword} name="password" className={borderGreen ? `form-control border border-success` : `${borderRed ? "form-control border border-danger" : "form-control border"}`} />
                             <br />
                             <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Parolni qayta kiriting</label>
                             <input type="password" placeholder="Parolni qayta kiriting" onChange={changePassword} className={borderGreen ? `form-control border border-success` : `${borderRed ? "form-control border border-danger" : "form-control border"}`} />
@@ -188,7 +188,7 @@ export const EditReseption = () => {
                             <input defaultValue={reseption.fathername} onChange={changeHandler} name="fathername" className="form-control" />
                             <br />
                             <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Tug'ilgan yili</label>
-                            <input onChange={changeDate} name="born" type="date" className="form-control"  value={new Date(reseption.born).getFullYear().toString() + '-' + (new Date(reseption.born).getMonth() < 9 ? "0" + (new Date(reseption.born).getMonth() + 1).toString() : (new Date(reseption.born).getMonth() + 1).toString()) + '-' + (new Date(reseption.born).getDate() < 10 ? "0" + (new Date(reseption.born).getDate()).toString() : (new Date(reseption.born).getDate()).toString())} />
+                            <input onChange={changeDate} name="born" type="date" className="form-control" value={new Date(reseption.born).getFullYear().toString() + '-' + (new Date(reseption.born).getMonth() < 9 ? "0" + (new Date(reseption.born).getMonth() + 1).toString() : (new Date(reseption.born).getMonth() + 1).toString()) + '-' + (new Date(reseption.born).getDate() < 10 ? "0" + (new Date(reseption.born).getDate()).toString() : (new Date(reseption.born).getDate()).toString())} />
                             <br />
                             <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Ixtisosligi</label>
                             <input defaultValue={reseption.section} onChange={changeHandler} name="section" type="text" className="form-control" />
@@ -211,7 +211,7 @@ export const EditReseption = () => {
                         <div className="card" >
                             <div className="card-header">
                                 <h6 className="text-danger">
-                                    Diqqat! Qabul bo'limi xodimining barcha ma'lumotlari quyida ko'rsatilgan ma'lumotlarga o'zgartiriladi. <br/>
+                                    Diqqat! Qabul bo'limi xodimining barcha ma'lumotlari quyida ko'rsatilgan ma'lumotlarga o'zgartiriladi. <br />
                                     Ushbu o'zgartirishni tasdiqlaysizmi?
                                 </h6>
                             </div>
@@ -243,7 +243,7 @@ export const EditReseption = () => {
                                         <input disabled value={reseption.fathername} onChange={changeHandler} name="fathername" className="form-control" />
                                         <br />
                                         <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Tug'ilgan yili</label>
-                                        <input disabled onChange={changeHandler} name="born" type="date" className="form-control"  value={new Date(reseption.born).getFullYear().toString() + '-' + (new Date(reseption.born).getMonth() < 9 ? "0" + (new Date(reseption.born).getMonth() + 1).toString() : (new Date(reseption.born).getMonth() + 1).toString()) + '-' + (new Date(reseption.born).getDate() < 10 ? "0" + (new Date(reseption.born).getDate()).toString() : (new Date(reseption.born).getDate()).toString())} />
+                                        <input disabled onChange={changeHandler} name="born" type="date" className="form-control" value={new Date(reseption.born).getFullYear().toString() + '-' + (new Date(reseption.born).getMonth() < 9 ? "0" + (new Date(reseption.born).getMonth() + 1).toString() : (new Date(reseption.born).getMonth() + 1).toString()) + '-' + (new Date(reseption.born).getDate() < 10 ? "0" + (new Date(reseption.born).getDate()).toString() : (new Date(reseption.born).getDate()).toString())} />
                                         <br />
                                         <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Bo'limi</label>
                                         <input disabled value={reseption.section} onChange={changeHandler} name="section" type="text" className="form-control" />

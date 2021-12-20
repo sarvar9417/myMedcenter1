@@ -53,7 +53,7 @@ export const EditCashier = () => {
         data.append('file', files)
         data.append('upload_preset', "myimage")
         setLoad(true)
-        const res = await fetch("https://api.cloudinary.com/v1_1/academik/image/upload", { method: 'POST', body: data[0] })
+        const res = await fetch("https://api.cloudinary.com/v1_1/academik/image/upload", { method: 'POST', body: data })
         const file = await res.json()
         setCashier({ ...cashier, image: file.secure_url })
         setLoad(false)
