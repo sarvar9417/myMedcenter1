@@ -4,21 +4,9 @@ import { useParams } from 'react-router'
 import { useHttp } from '../hooks/http.hook'
 import { faSearch } from '@fortawesome/free-solid-svg-icons'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import Modal from 'react-modal'
 import './cashier.css'
 import { AuthContext } from '../context/AuthContext'
 import { toast } from "react-toastify"
-
-const customStyles = {
-    content: {
-        top: '50%',
-        left: '50%',
-        right: 'auto',
-        bottom: 'auto',
-        marginRight: '-50%',
-        transform: 'translate(-50%, -50%)'
-    },
-}
 
 toast.configure()
 export const CheckCashier = () => {
@@ -38,22 +26,20 @@ export const CheckCashier = () => {
 
     const [clientId, setClientId] = useState(useParams().id)
     const [clientid, setClientid] = useState()
-    const [allSections, setAllSections] = useState([])
-    const [sections, setSections] = useState([])
-    const [client, setClient] = useState([])
-    const { loading, request } = useHttp()
+    const [sections, setSections] = useState()
+    const [client, setClient] = useState()
+    const { loading, request, error, clearError } = useHttp()
 
     const getClient = useCallback(async () => {
         try {
             const fetch = await request(`/api/clients/cashier/${clientId}`, 'GET', null, {
                 Authorization: `Bearer ${auth.token}`
             })
-            // setAllSections(fetch)
             setClient(fetch)
         } catch (e) {
-
+            notify(e)
         }
-    }, [request, clientId])
+    }, [request, clientId, auth, setClient])
 
 
     const getAllSections = useCallback(async () => {
@@ -63,15 +49,15 @@ export const CheckCashier = () => {
             })
             let s = []
             fetch.map((section) => {
-                if (section.payment === "kutilmoqda") {
+                if (section.payment === "kutilmoqda" && (section.position === "offline" || section.position === "kelgan")) {
                     s.push(section)
                 }
             })
             setSections(s)
         } catch (e) {
-
+            notify(e)
         }
-    }, [request, clientId])
+    }, [request, clientId, auth])
 
     const inputPriceCashier = (event, key) => {
         document.getElementById(`checkbox${key}`).checked = false
@@ -142,15 +128,14 @@ export const CheckCashier = () => {
                 Authorization: `Bearer ${auth.token}`
             })
         } catch (e) {
-
+            notify(e)
         }
-    }, [request])
+    }, [request, auth])
 
-    // const [printPage, setPrintPage] = useState(false)
 
     const checkPrices = () => {
         let k = 0
-        sections.map(section => {
+        sections && sections.map(section => {
             if (section.price !== section.priceCashier && section.commentCashier.length < 6) {
                 k++
                 return notify("Iltimos mijoz to'lovni bajarolmagani sababini to'liq ko'rsating.")
@@ -163,7 +148,7 @@ export const CheckCashier = () => {
     }
 
     const setPayments = () => {
-        sections.map((section) => {
+        sections &&  sections.map((section) => {
             patchPayments(section)
         })
         history.push({
@@ -172,44 +157,48 @@ export const CheckCashier = () => {
         })
     }
 
-    const getchangeSections = useCallback(async () => {
+    const getchangeSections = useCallback(async (event) => {
         try {
-            const fetch = await request(`/api/clients/cashierid/${clientid}`, 'GET', null, {
+            const fetch = await request(`/api/clients/cashierid/${parseInt(event.target.value)}`, 'GET', null, {
                 Authorization: `Bearer ${auth.token}`
             })
             setClientId(fetch[0]._id)
         } catch (e) {
-
+            notify(e)
         }
-    }, [request, clientid])
-
-    const changeHandlar = () => {
-        getchangeSections()
-    }
+    }, [request, clientid, auth, setClientId])
 
     useEffect(() => {
-        getAllSections()
-        getClient()
-    }, [getAllSections, getClient])
+        if (error) {
+            notify(error)
+            clearError()
+        }
+        if (!sections) {
+            getAllSections()
+        }
+        if (!client) {
+            getClient()
+        }
+    }, [notify, clearError])
     return (
         <>
             <div className="m-3" style={{ minWidth: "700px", maxWidth: "1000px", padding: "20px 10px", border: "1px solid #999", borderRadius: "5px" }}>
                 <div className="row" style={{ justifyContent: "space-between" }}>
                     <div className="col-sm-6 col-lg-4 input_box" >
                         <input
-                            defaultValue={client.id}
+                            defaultValue={client && client.id}
                             name='ID'
                             type="number"
                             className="form-control inp w-75 d-inline-block mr-3 mb-2"
                             placeholder=""
-                            onChange={(event => setClientid(parseInt(event.target.value)))}
+                            onChange={getchangeSections}
                         />
                         <label className="labels">Mijoznig ID raqami</label>
-                        <button onClick={changeHandlar} className="btn text-white" style={{ backgroundColor: "#45D3D3", marginLeft: "5px" }}><FontAwesomeIcon icon={faSearch} /></button>
+                        <button onClick={() => { getClient(); getAllSections() }} className="btn text-white" style={{ backgroundColor: "#45D3D3", marginLeft: "5px" }}><FontAwesomeIcon icon={faSearch} /></button>
                     </div>
                     <div className="col-sm-6 col-lg-4 input_box" >
                         <input
-                            value={client.lastname + " " + client.firstname + " " + client.fathername}
+                            value={client &&  client.lastname + " " + client.firstname + " " + client.fathername}
                             disabled
                             name='FIO'
                             type="text"
@@ -233,7 +222,7 @@ export const CheckCashier = () => {
                     </thead>
                     <tbody style={{ borderBottom: "1px solid #999" }}>
                         {
-                            sections.map((section, key) => {
+                            sections && sections.map((section, key) => {
                                 allPrice = allPrice + section.price
                                 paymented = paymented + section.priceCashier
 
@@ -272,7 +261,7 @@ export const CheckCashier = () => {
                                             </div>
                                         </td>
                                         <td style={{ textAlign: "center", padding: "10px 0", color: "green" }}>
-                                            {section.price !== section.priceCashier ? <textarea defaultValue={section.commentCashier} onChange={(event) => inputCommentCashier(event, key)} key={key} placeholder="To'lov bajarilmagan holatda sababini ko'rsating" className="addDirection" minLength="6" ></textarea> : "To'langan"}
+                                            {section.price !== section.priceCashier ? <textarea value={section.commentCashier} onChange={(event) => inputCommentCashier(event, key)} key={key} placeholder="To'lov bajarilmagan holatda sababini ko'rsating" className="addDirection" minLength="6" ></textarea> : "To'langan"}
                                         </td>
                                     </tr>
                                 )
@@ -321,7 +310,7 @@ export const CheckCashier = () => {
                     </div>
                     <div className="row">
                         <div className="col-12 text-center">
-                            <button className="btn btn-success" onClick={checkPrices}>To'lovni tasdiqlash</button>
+                            <button className="btn button-success" onClick={checkPrices}>To'lovni tasdiqlash</button>
                         </div>
                     </div>
                 </div>
@@ -334,7 +323,7 @@ export const CheckCashier = () => {
                     <div className="card">
                         <div className="card-header">
                             <div className="text-center fs-4 fw-bold text-secondary">
-                                <span className="text-dark">Mijoz: </span>  {client.lastname} {client.firstname} {client.fathername}
+                                <span className="text-dark">Mijoz: </span>  {client && client.lastname} {client && client.firstname} {client && client.fathername}
                             </div>
 
                         </div>
@@ -352,7 +341,7 @@ export const CheckCashier = () => {
                                 <tbody style={{ borderBottom: "1px solid #999" }}>
 
                                     {
-                                        sections.map((section, key) => {
+                                        sections &&  sections.map((section, key) => {
                                             return (
                                                 <tr >
                                                     <td style={{ width: "10%", textAlign: "center", padding: "10px 0" }}>{key + 1}</td>
@@ -418,8 +407,8 @@ export const CheckCashier = () => {
                         <div className="card-footer">
                             <div className="row ">
                                 <div className="col-12 text-center">
-                                    <button onClick={setPayments} className="btn btn-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
-                                    <button onClick={() => setModal(false)} className="btn btn-danger" >Qaytish</button>
+                                    <button onClick={setPayments} className="btn button-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
+                                    <button onClick={() => setModal(false)} className="btn button-danger" >Qaytish</button>
                                 </div>
                             </div>
 

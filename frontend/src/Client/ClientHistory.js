@@ -1,22 +1,23 @@
-import React, { useCallback, useEffect, useRef, useState } from 'react'
+import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router'
+import { savePDF } from '@progress/kendo-react-pdf'
 import { useHttp } from './hooks/http.hook'
 import { toast } from 'react-toastify'
-import { Loader } from '../Reseption/components/Loader'
-import { savePDF } from '@progress/kendo-react-pdf'
 import QRCode from 'qrcode'
-import '../index.css'
+import { Loader } from '../Director/components/Loader'
 
 toast.configure()
 export const ClientHistory = () => {
-    const { request, loading, error, clearError } = useHttp()
+    //
     const clientId = useParams().id
-    const [client, setClient] = useState({
-        lastname: "",
-        firstname: "",
-        fathername: ""
-    })
+    const { request, loading, error, clearError } = useHttp()
     const [sections, setSections] = useState()
+    const [client, setClient] = useState()
+    const [baseUrl, setBasuUrl] = useState()
+    const notify = (e) => {
+        toast.error(e)
+    }
+
     const contentArea = useRef(null)
 
     const createSizeHistory = () => {
@@ -25,30 +26,14 @@ export const ClientHistory = () => {
             {
                 paperSize: "A4",
                 repeatHeaders: true,
-                fileName: client.lastname + client.firstname + client.fathername,
+                fileName: client && client.lastname + client.firstname + client.fathername,
 
             }, encodeURIComponent()
 
         )
     }
 
-    const getClient = useCallback(async () => {
-        try {
-            const data = await request(`/api/clienthistorys/client/${clientId}`, 'GET', null)
-            setClient(data)
-        } catch (e) {
-        }
-    }, [request, clientId, setClient])
-
-    const getSections = useCallback(async () => {
-        try {
-            const data = await request(`/api/clienthistorys/sections/${clientId}`, 'GET', null)
-            setSections(data)
-        } catch (e) {
-        }
-    }, [request, clientId, setSections])
-
-    const [doctors, setDoctors] = useState([])
+    const [doctors, setDoctors] = useState()
 
     const getDoctors = useCallback(async () => {
         try {
@@ -59,8 +44,35 @@ export const ClientHistory = () => {
         }
     })
 
-    const [logo, setLogo] = useState()
+    const getClient = useCallback(async () => {
+        try {
+            const data = await request(`/api/clients/reseption/${clientId}`, 'GET', null)
+            getSections()
+            setClient(data)
+        } catch (e) {
+            notify(e)
+        }
+    }, [request, clientId])
 
+    const getSections = useCallback(async () => {
+        try {
+            const fetch = await request(`/api/section/reseptionid/${clientId}`, 'GET', null)
+            setSections(fetch)
+        } catch (e) {
+            notify(e)
+        }
+    }, [request, clientId])
+
+    const getBaseUrl = useCallback(async () => {
+        try {
+            const fetch = await request(`/api/clienthistorys/url`, 'GET', null)
+            setBasuUrl(fetch)
+        } catch (e) {
+            notify(e)
+        }
+    }, [request, setBasuUrl])
+
+    const [logo, setLogo] = useState()
     const getLogo = useCallback(async () => {
         try {
             const data = await request("/api/companylogo/", "GET", null)
@@ -70,151 +82,160 @@ export const ClientHistory = () => {
         }
     }, [request, setLogo])
 
-    const notify = (e) => {
-        toast.error(e)
-    }
-
     const [qr, setQr] = useState()
-    const uri = window.location.href
     useEffect(() => {
-        QRCode.toDataURL(`${uri}`)
+        QRCode.toDataURL(`${baseUrl}/api/clienthistorys/${clientId}`)
             .then(data => {
                 setQr(data)
             })
-        if (client.lastname === "") {
-            getClient()
-        }
-        if (!sections) {
-            getSections()
-        }
         if (error) {
             notify(error)
             clearError()
         }
+        if (!client) {
+            getClient()
+        }
+        if (!baseUrl) {
+            getBaseUrl()
+        }
         if (!logo) {
             getLogo()
         }
-        if (doctors.length === 0) {
+        if (!doctors) {
             getDoctors()
         }
-
     }, [notify, clearError])
 
-    const s = [
-        { name: "Sarvar" },
-        { name: "Sarvar" },
-        { name: "Sarvar" },
-        { name: "Sarvar" },
-        { name: "Sarvar" },
-        { name: "Sarvar" },
-    ]
     if (loading) {
         return <Loader />
     }
-
     return (
-        <dl>
-            <dl style={{ backgroundColor: "#123456" }}>
-                <dl ref={contentArea} style={{ width: "15cm", margin: "0 auto", backgroundColor: "white" }} >
-                    {s.map(() => {
-                        return (
-                            <dl style={{ minHeight: "100vh", fontFamily: "times !important", fontSize: "7pt" }} className="m-2">
-                                <dl className="row">
-                                    <dl className="col-8 border-right border-dark text-center  border-5 m-none">
-                                        <img alt="logo" src={logo && logo.logo} className="w-50" />
-                                        <div className="row mt-3">
-                                            <div className="col-3 text-end">
-                                                <span className="fw-normal d-block" >Адрес:</span>
-                                            </div>
-                                            <div className="col-9 text-start fw-bold">
-                                                г. Самарканд ул Зарафшон шох, 25
-                                            </div>
-                                        </div>
-                                        <div className="row">
-                                            <div className="col-3 text-end">
-                                                <span className="fw-normal" >Ориентир:</span>
-                                            </div>
-                                            <div className="col-9 text-start fw-bold">
-                                                школа №65, ресторан «РОХАТ»
-                                            </div>
-                                        </div>
-                                        <div className="row">
-                                            <div className="col-3 text-end">
-                                                <span className="fw-normal" >Тел:</span>
-                                            </div>
-                                            <div className="col-9 text-start fw-bold">
-                                                97 (919)-36-36, 93 (238)-55-44
-                                            </div>
-                                        </div>
-                                    </dl>
-                                    <dl className="col-4 text-center">
-                                        <img width="100px" src={qr} alt="QR" />
-                                        <p className="">для получения результата сканируйте это</p>
-                                    </dl>
-                                </dl>
-                                <dl className="row">
-                                    <dl className="col-12 fs-6 text-center fw-bold">
-                                        {sections && sections[0].name + " " + sections[0].subname}
-                                    </dl>
-                                </dl>
-                                <dl className="row">
-                                    <dl className="col-12">
-                                        <table className="w-100 historytable" >
-                                            <tr>
-                                                <th className="px-3  w-25 text-end">
-                                                    Пациент
-                                                </th>
-                                                <th className="px-3 w-75">
-                                                    {client && client.lastname + " " + client.firstname + " " + client.fathername}
-                                                </th>
-                                            </tr>
-                                            <tr>
-                                                <th className="px-3 w-25 text-end">
-                                                    Год рождения
-                                                </th>
-                                                <th className="px-3 w-75">
-                                                    {client && new Date(client.born).toLocaleDateString()}
-                                                </th>
-                                            </tr>
-                                            <tr>
-                                                <th className="px-3 w-25 text-end">
-                                                    Дата обследования
-                                                </th>
-                                                <th className="px-3 w-75">
-                                                    {sections && new Date(sections[0].bronDay).toLocaleDateString() + " " + new Date(sections[0].bronDay).toLocaleTimeString()}
-                                                </th>
-                                            </tr>
-                                            <tr>
-                                                <th className="px-3 w-25 text-end">
-                                                    Tелефон номер
-                                                </th>
-                                                <th className="px-3 w-75">
-                                                    +{client && client.phone}
-                                                </th>
-                                            </tr>
-                                            <tr>
-                                                <th className="px-3 w-25 text-end">
-                                                    Врач
-                                                </th>
-                                                <th className="px-3 w-75">
-                                                    {doctors && doctors.map((doctor) => {
-                                                        if (sections && doctor.section === sections[0].name) {
-                                                            return (doctor.lastname + " " + doctor.firstname)
-                                                        }
-                                                    })}
-                                                </th>
-                                            </tr>
-                                        </table>
+        <div>
+            <div className='text-end container pt-3' >
+                <button className='btn btn-success pe-3 mb-2' onClick={createSizeHistory}>Yuklab olish</button>
+            </div>
+            <dl style={{ maxHeight: "100vh", overflow: "auto" }}>
+                <dl style={{ backgroundColor: "#123456" }}>
+                    <dl ref={contentArea} style={{ width: "15cm", margin: "0 auto" }} >
+                        {
+                            sections && sections.map((section) => {
+                                if (section.done === "tasdiqlangan") {
 
-                                    </dl>
-                                </dl>
-                            </dl>
-                        )
-                    })}
 
+                                    return (
+                                        <dl style={{ minHeight: "100vh", fontFamily: "times !important", fontSize: "7pt", backgroundColor: "white" }} className="m-2">
+                                            <dl className="row">
+                                                <dl className="col-8 border-right border-dark text-center  border-5 m-none">
+                                                    <img alt="logo" src={logo && logo.logo} className="w-50" />
+                                                    <div className="row mt-3">
+                                                        <div className="col-3 text-end">
+                                                            <span className="fw-normal d-block" >Адрес:</span>
+                                                        </div>
+                                                        <div className="col-9 text-start fw-bold">
+                                                            {logo && logo.address}
+                                                        </div>
+                                                    </div>
+                                                    <div className="row">
+                                                        <div className="col-3 text-end">
+                                                            <span className="fw-normal" >Ориентир:</span>
+                                                        </div>
+                                                        <div className="col-9 text-start fw-bold">
+                                                            {logo && logo.orientation}
+                                                        </div>
+                                                    </div>
+                                                    <div className="row">
+                                                        <div className="col-3 text-end">
+                                                            <span className="fw-normal" >Тел:</span>
+                                                        </div>
+                                                        <div className="col-9 text-start fw-bold">
+                                                            {logo.phone1 !== null ? "+" + logo.phone1 : ""} <br />
+                                                            {logo.phone2 !== null ? "+" + logo.phone2 : ""} <br />
+                                                            {logo.phone3 !== null ? "+" + logo.phone3 : ""} <br />
+                                                        </div>
+                                                    </div>
+                                                </dl>
+                                                <dl className="col-4 text-center">
+                                                    <img width="100px" src={qr} alt="QR" />
+                                                    <p className="">для получения результата сканируйте здесь</p>
+                                                </dl>
+                                            </dl>
+                                            <dl className="row">
+                                                <dl className="col-12 fs-6 text-center fw-bold">
+                                                    {section.name}
+                                                    <h5 style={{ fontSize: "9pt" }}>
+                                                        ({section.subname})
+                                                    </h5>
+                                                </dl>
+                                            </dl>
+                                            <dl className="row">
+                                                <dl className="col-12">
+                                                    <table className="w-100 historytable" >
+                                                        <tr>
+                                                            <th className="px-3  w-25 text-end">
+                                                                Пациент
+                                                            </th>
+                                                            <th className="px-3 w-75">
+                                                                {client && client.lastname + " " + client.firstname + " " + client.fathername}
+                                                            </th>
+                                                        </tr>
+                                                        <tr>
+                                                            <th className="px-3 w-25 text-end">
+                                                                Год рождения
+                                                            </th>
+                                                            <th className="px-3 w-75">
+                                                                {client && new Date(client.born).toLocaleDateString()}
+                                                            </th>
+                                                        </tr>
+                                                        <tr>
+                                                            <th className="px-3 w-25 text-end">
+                                                                Дата обследования
+                                                            </th>
+                                                            <th className="px-3 w-75">
+                                                                {new Date(section.bronDay).toLocaleDateString() + " " + new Date(section.bronDay).toLocaleTimeString()}
+                                                            </th>
+                                                        </tr>
+                                                        <tr>
+                                                            <th className="px-3 w-25 text-end">
+                                                                Tелефон номер
+                                                            </th>
+                                                            <th className="px-3 w-75">
+                                                                +{client && client.phone}
+                                                            </th>
+                                                        </tr>
+                                                        <tr>
+                                                            <th className="px-3 w-25 text-end">
+                                                                Врач
+                                                            </th>
+                                                            <th className="px-3 w-75">
+                                                                {section.doctor && section.doctor}
+                                                            </th>
+                                                        </tr>
+                                                    </table>
+
+                                                </dl>
+                                            </dl>
+                                            <dl>
+                                                <dl className='row'>
+                                                    <dl className='col-12'>
+                                                        <pre style={{ whiteSpace: "pre-wrap" }}>
+                                                            {section.comment}
+                                                        </pre>
+                                                        <pre style={{ whiteSpace: "pre-wrap" }}>
+                                                            {section.summary}
+                                                        </pre>
+                                                    </dl>
+                                                </dl>
+                                            </dl>
+                                        </dl>
+                                    )
+                                }
+                            })
+                        }
+                    </dl>
                 </dl>
+
+
             </dl>
-            <button onClick={createSizeHistory}>Save</button>
-        </dl>
+        </div>
     )
 }

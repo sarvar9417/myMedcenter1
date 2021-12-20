@@ -4,13 +4,14 @@ import { AuthContext } from '../context/AuthContext'
 import { useHttp } from '../hooks/http.hook'
 import makeAnimated from "react-select/animated"
 import Select from 'react-select'
-import {toast} from 'react-toastify'
-
+import { toast } from 'react-toastify'
+import { Loader } from '../components/Loader'
+import QRCode from 'qrcode'
 const animatedComponents = makeAnimated()
 
 toast.configure()
 export const EditAdoption = () => {
-    const { request, loading } = useHttp()
+    const { request, loading, error, clearError } = useHttp()
     const sectionId = useParams().id
     const auth = useContext(AuthContext)
     const [section, setSection] = useState()
@@ -54,18 +55,6 @@ export const EditAdoption = () => {
     }, [request, auth])
 
 
-    const dontCome = useCallback(async () => {
-        try {
-            const fetch = await request(`/api/section/doctordontcome/${sectionId}`, 'PUT', { checkUp: "kelmagan" }, {
-                Authorization: `Bearer ${auth.token}`
-            })
-            history.push(`/doctor`)
-        } catch (e) {
-
-        }
-    }, [request, auth])
-
-
     const doneCome = useCallback(async () => {
         try {
             const fetch = await request(`/api/section/doctordone/${sectionId}`, 'PUT',
@@ -73,12 +62,12 @@ export const EditAdoption = () => {
                     checkUp: "kelgan",
                     comment: section.comment,
                     summary: section.summary,
-                    done: "tasdiqlangan"
+                    done: "tasdiqlangan",
+                    doctor: auth.doctor.lastname + " " + auth.doctor.firstname + " " + auth.doctor.fathername
                 },
                 {
                     Authorization: `Bearer ${auth.token}`
                 })
-            console.log(fetch)
             history.push(`/doctor`)
         } catch (e) {
 
@@ -94,9 +83,9 @@ export const EditAdoption = () => {
         event.map((e) => {
             s = s + e.label + `
             
-            ` + e.value + `
+` + e.value + `
             
-            `
+`
         })
         setSection({ ...section, summary: s })
     }
@@ -104,6 +93,25 @@ export const EditAdoption = () => {
     const notify = (e) => {
         toast(e)
     }
+
+    const getTemplates = useCallback(async () => {
+        try {
+            const fetch = await request(`/api/templatedoctor`, 'GET', null, {
+                Authorization: `Bearer ${auth.token}`
+            })
+            let opt = []
+            fetch.map((template) => {
+                let option = {
+                    label: template.subsection,
+                    value: template.template
+                }
+                opt.push(option)
+            })
+            setOptions(opt)
+        } catch (error) {
+            notify(error)
+        }
+    }, [request, auth])
 
     const [logo, setLogo] = useState()
     const getLogo = useCallback(async () => {
@@ -115,10 +123,53 @@ export const EditAdoption = () => {
         }
     }, [request, setLogo])
 
-    useEffect(() => {
-        getSection()
-    }, [getSection])
+    const [baseUrl, setBaseUrl] = useState()
+    const getBaseUrl = useCallback(async () => {
+        try {
+            const fetch = await request(`/api/clienthistorys/url`, 'GET', null)
+            setBaseUrl(fetch)
+        } catch (e) {
+            notify(e)
+        }
+    }, [request, setBaseUrl])
 
+    const [qr, setQr] = useState()
+    const createQR = () => {
+        QRCode.toDataURL(`${baseUrl}/api/clienthistorys/${client._id}`)
+            .then(data => {
+                setQr(data)
+            })
+    }
+
+    useEffect(() => {
+
+        if (!logo) {
+            getLogo()
+        }
+        if (error) {
+            notify(error)
+            clearError()
+        }
+        if (!section) {
+            getSection()
+        }
+        if (!options) {
+            getTemplates()
+        }
+        if (!baseUrl) {
+            getBaseUrl()
+        }
+        if (section && !client) {
+            getClient()
+        }
+        if (client) {
+            createQR()
+        }
+    }, [notify, clearError])
+
+    if (loading) {
+        return <Loader />
+    }
 
     return (
         <div style={{ marginTop: "70px" }}>
@@ -154,7 +205,7 @@ export const EditAdoption = () => {
                             </div>
                         </div>
                         <div className="col-4 text-center">
-
+                            <img src={qr && qr} />
                         </div>
                     </div>
                     <div className="row my-3">
@@ -232,9 +283,15 @@ export const EditAdoption = () => {
                             <textarea value={section && section.summary} name="summary" onChange={changeHandlar} className="form-control" style={{ minHeight: "300px" }} />
                         </div>
                     </div>
+                    <br />
+                    <div className="row">
+                        <div className="col-12">
+                            Comment:
+                            <textarea value={section && section.comment} name="comment" onChange={changeHandlar} className="form-control" />
+                        </div>
+                    </div>
                 </div>
                 <div>
-                    <h5>Doctor: <span className="fs-4">{auth.doctor.lastname} {auth.doctor.firstname[0]}</span></h5>
                     <div className="row mt-5 mb-5">
                         <div className="col-12">
                             <button className="btn button-success" onClick={() => { window.scrollTo({ top: 0 }); setModal(true) }}>Tasdiqlash</button>
@@ -253,9 +310,15 @@ export const EditAdoption = () => {
                         </div>
                         <div className="row m-1">
                             <div className="col-12 ">
-                                <pre >
+                                <pre style={{ whiteSpace: "pre-wrap" }} >
                                     Xulosa: <br />
                                     {section && section.summary}
+                                </pre>
+                            </div>
+                            <div className="col-12 ">
+                                <pre style={{ whiteSpace: "pre-wrap" }}>
+                                    Izoh: <br />
+                                    {section && section.comment}
                                 </pre>
                             </div>
                         </div>

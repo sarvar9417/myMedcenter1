@@ -58,7 +58,13 @@ export const ClientsPages = () => {
                 Authorization: `Bearer ${auth.token}`
             })
             setAllSections(fetch)
-            setSections(fetch)
+            let c = []
+            fetch.map((section) => {
+                if (new Date(section.bronDay).toLocaleDateString() === new Date().toLocaleDateString()) {
+                    c.push(section)
+                }
+            })
+            setSections(c)
         } catch (e) {
 
         }
@@ -171,7 +177,7 @@ export const ClientsPages = () => {
 
     }
 
-    const edit = (id, section)=>{
+    const edit = (id, section) => {
         history.push({
             pathname: `/cashier/payedit/${id}`,
             state: section
@@ -251,18 +257,20 @@ export const ClientsPages = () => {
                     <tbody className="" >
                         {sections.map((section, key) => {
                             return AllClients.map(client => {
-                                if (client._id === section.client) {
-                                    paid = paid + section.priceCashier
-                                    unpaid = unpaid + (section.price - section.priceCashier)
+                                if (client._id === section.client && (section.bron === "offline" || (section.bron === "online" && section.position === "kelgan"))) {
+                                    if (section.payment !== "to'lanmagan") {
+                                        paid = paid + section.priceCashier
+                                        unpaid = unpaid + (section.price - section.priceCashier)
+                                    }
                                     k++
                                     return (
                                         <tr key={key} >
                                             <td className="no" >{k}</td>
                                             <td className="date" >{new Date(section.bronDay).toLocaleDateString()}</td>
-                                            <td className="fish text-uppercase" ><Link style={{ fontWeight: "500" }} to={`/cashier/pay/${client._id}/${section.connector}`} > {client.lastname} {client.firstname} {client.fathername} </Link></td>
+                                            <td className="fish text-uppercase" ><Link className='text-success' style={{ fontWeight: "700" }} to={`/cashier/pay/${client._id}/${section.connector}`} > {client.lastname} {client.firstname} {client.fathername} </Link></td>
                                             <td className="id" >{client.id}</td>
                                             <td className="phone">+{client.phone}</td>
-                                            <td className="section text-uppercase fw-bold text-success">  {section.name}</td>
+                                            <td className={section.price === section.priceCashier ? "prices fw-bold text-success" : `${section.priceCashier === 0 ? "rices fw-bold text-danger" : "rices fw-bold text-warning"}`}>  {section.name} <br /> <span style={{ fontSize: "10pt" }}>{section.subname}</span> </td>
                                             <td className="edit"> {section.payment === "to'langan" || section.payment === "to'lanmagan" ? "" : <button className="btn" onClick={() => edit(client._id, section)} > <FontAwesomeIcon icon={faPenAlt} className="text-dark" /> </button>}   </td>
                                             <td className={
                                                 payment.map((pay) => {

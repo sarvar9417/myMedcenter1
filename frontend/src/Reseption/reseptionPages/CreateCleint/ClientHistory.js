@@ -109,8 +109,8 @@ export const ClientHistory = () => {
     }
     return (
         <div>
-            <div className='text-end' >
-                <button className='btn btn-primary pe-3 mb-2' onClick={createSizeHistory}>Yuklab olish</button>
+            <div className='text-end container' >
+                <button className='btn btn-success pe-3 mb-2' onClick={createSizeHistory}>Yuklab olish</button>
             </div>
             <dl style={{ maxHeight: "100vh", overflow: "auto" }}>
                 <dl style={{ backgroundColor: "#123456" }}>

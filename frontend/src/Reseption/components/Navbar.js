@@ -46,12 +46,6 @@ export const Navbar = () => {
                         <li className="nav-item" >
                             <Link className="nav-link a" to="/reseption/clients">Mijozlar</Link>
                         </li>
-                        {/* <li className="nav-item">
-                            <Link className="nav-link" to="/reseption/cost">Xarajat</Link>
-                        </li>
-                        <li className="nav-item">
-                            <Link className="nav-link" to="/reseption/costs">Xarajatlar</Link>
-                        </li> */}
                         
                     </ul>
                     <li className="nav-item ll" >

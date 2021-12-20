@@ -8,16 +8,6 @@ import { Loader } from '../components/Loader'
 import makeAnimated from "react-select/animated"
 import Select from 'react-select'
 const animatedComponents = makeAnimated()
-const customStyles = {
-    content: {
-        top: '50%',
-        left: '50%',
-        right: 'auto',
-        bottom: 'auto',
-        marginRight: '-50%',
-        transform: 'translate(-50%, -50%)',
-    },
-}
 
 toast.configure()
 export const Adoption = () => {
@@ -81,7 +71,8 @@ export const Adoption = () => {
                     checkUp: "kelgan",
                     comment: section.comment,
                     summary: section.summary,
-                    done: "tasdiqlangan"
+                    done: "tasdiqlangan",
+                    doctor: auth.doctor.lastname + " " + auth.doctor.firstname + " " + auth.doctor.fathername
                 },
                 {
                     Authorization: `Bearer ${auth.token}`
@@ -97,9 +88,9 @@ export const Adoption = () => {
         event.map((e) => {
             s = s + e.label + `
             
-            ` + e.value + `
+        ` + e.value + `
             
-            `
+`
         })
         setSection({ ...section, summary: s })
     }
@@ -305,11 +296,11 @@ export const Adoption = () => {
                             <textarea value={section && section.summary} name="summary" onChange={changeHandlar} className="form-control" style={{ minHeight: "300px" }} />
                         </div>
                     </div>
-                    <br/>
+                    <br />
                     <div className="row">
                         <div className="col-12">
                             Comment:
-                            <textarea value={section && section.comment} name="comment" onChange={changeHandlar} className="form-control"    />
+                            <textarea value={section && section.comment} name="comment" onChange={changeHandlar} className="form-control" />
                         </div>
                     </div>
                 </div>
@@ -353,13 +344,13 @@ export const Adoption = () => {
                         </div>
                         <div className="row m-1">
                             <div className="col-12 ">
-                                <pre >
+                                <pre style={{ whiteSpace: "pre-wrap" }} >
                                     Xulosa: <br />
                                     {section && section.summary}
                                 </pre>
                             </div>
                             <div className="col-12 ">
-                                <pre >
+                                <pre style={{ whiteSpace: "pre-wrap" }}>
                                     Izoh: <br />
                                     {section && section.comment}
                                 </pre>

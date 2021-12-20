@@ -42,7 +42,7 @@ router.post('/reseption/register', auth, async (req, res) => {
     }
 })
 
-// /api/auth/clients/reseption
+// /api/auth/clients/reseption/
 router.get('/reseption', auth, async (req, res) => {
     try {
         const clients = await Clients.find().sort({ _id: -1 })
@@ -54,7 +54,7 @@ router.get('/reseption', auth, async (req, res) => {
 })
 
 // /api/auth/clients/reseption
-router.get('/reseption/:id', auth, async (req, res) => {
+router.get('/reseption/:id', async (req, res) => {
     try {
         const clients = await Clients.findById(req.params.id)
         res.json(clients)
@@ -110,7 +110,7 @@ router.get('/cashier', auth, async (req, res) => {
 // /api/auth/clients/cashier
 router.get('/cashier/:id', auth, async (req, res) => {
     try {
-        const clients = await Clients.findById( req.params.id )
+        const clients = await Clients.findById(req.params.id)
         res.json(clients)
     } catch (e) {
         res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
@@ -120,7 +120,7 @@ router.get('/cashier/:id', auth, async (req, res) => {
 // /api/auth/clients/cashier
 router.get('/cashierid/:id', auth, async (req, res) => {
     try {
-        const clients = await Clients.find({id: req.params.id})
+        const clients = await Clients.find({ id: req.params.id })
         res.json(clients)
     } catch (e) {
         res.status(500).json({ message: 'Serverda xatolik yuz berdi' })

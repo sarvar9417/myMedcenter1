@@ -4,7 +4,10 @@ import { useReactToPrint } from 'react-to-print'
 import { Loader } from '../components/Loader'
 import { AuthContext } from '../context/AuthContext'
 import { useHttp } from '../hooks/http.hook'
+import { toast } from 'react-toastify'
+import QRCode from 'qrcode'
 
+toast.configure()
 export const Reciept = () => {
     //Avtorizatsiyani olish
     const auth = useContext(AuthContext)
@@ -15,14 +18,14 @@ export const Reciept = () => {
     const clientId = useParams().id
     const today = (new Date().getDate().toString() + "." + (new Date().getMonth() + 1).toString() + "." + new Date().getFullYear().toString() + " " + new Date().getHours().toString() + ":" + new Date().getMinutes().toString() + ":" + new Date().getSeconds().toString())
     const sections = useLocation().state
-    
+
     let unpaid = 0
-    let paid = 0 
+    let paid = 0
     let price = 0
     let k = 0
     let l = 0
-    const [client, setClient] = useState('')
-    const { loading, request } = useHttp()
+    const [client, setClient] = useState()
+    const { loading, request , error, clearError} = useHttp()
 
 
     const getClient = useCallback(async () => {
@@ -35,12 +38,53 @@ export const Reciept = () => {
         }
     }, [request, clientId, auth])
 
+    const notify = (e) => {
+        toast.error(e)
+    }
 
+    const [baseUrl, setBasuUrl] = useState()
+    const getBaseUrl = useCallback(async () => {
+        try {
+            const fetch = await request(`/api/clienthistorys/url`, 'GET', null)
+            setBasuUrl(fetch)
+        } catch (e) {
+            notify(e)
+        }
+    }, [request, setBasuUrl])
+
+    const [logo, setLogo] = useState()
+    const getLogo = useCallback(async () => {
+        try {
+            const data = await request("/api/companylogo/", "GET", null)
+            setLogo(data[0])
+        } catch (e) {
+            notify(e)
+        }
+    }, [request, setLogo])
+
+
+    const [qr, setQr] = useState()
     useEffect(() => {
-        if (client === '') {
+        if (client) {
+            QRCode.toDataURL(`${baseUrl}/api/clienthistorys/${client._id}`)
+                .then(data => {
+                    setQr(data)
+                })
+        }
+        if (error) {
+            notify(error)
+            clearError()
+        }
+        if (!client) {
             getClient()
         }
-    }, [getClient, client])
+        if (!logo) {
+            getLogo()
+        }
+        if (!baseUrl) {
+            getBaseUrl()
+        }
+    }, [ error, clearError])
 
     if (loading) {
         return <Loader />
@@ -57,19 +101,23 @@ export const Reciept = () => {
                                 <tr>
                                     <td>
                                         <ul className="list-unstyled  text-start m-3">
-                                            <li className="" style={{ fontSize: "10pt", fontFamily: "times" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }} >"DS ONE PROVIDER" MCHJ</strong></li>
-                                            <li style={{ fontSize: "10pt", fontFamily: "times" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }}>Manzil:</strong> Navoiy shahar Zarapetyan ko'chasi</li>
-                                            <li style={{ fontSize: "10pt", fontFamily: "times" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }}>Bank:</strong> AKB "TURONBANK" Navoiy filiali</li>
-                                            <li style={{ fontSize: "10pt", fontFamily: "times" }}> <strong style={{ fontSize: "10pt", fontFamily: "times" }}>MFO:</strong> 00200</li>
+                                            <li className="" style={{ fontSize: "10pt", fontFamily: "times" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }} > {logo && logo.companyname}</strong></li>
+                                            <li style={{ fontSize: "10pt", fontFamily: "times" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }}>Manzil: </strong> {logo && logo.address}</li>
+                                            <li style={{ fontSize: "10pt", fontFamily: "times" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }}>Bank: </strong> {logo && logo.bank}</li>
+                                            <li style={{ fontSize: "10pt", fontFamily: "times" }}> <strong style={{ fontSize: "10pt", fontFamily: "times" }}>MFO: </strong> {logo && logo.mfo}</li>
+                                            <li style={{ fontFamily: "times" }}> <h5 style={{ textAlign: "", fontSize: "10pt" }}> {today}</h5> </li>
+                                            <li style={{ textAlign: "", fontSize: "10pt" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }}>INN:</strong> {logo && logo.inn}</li>
+                                            <li style={{ textAlign: "", fontSize: "10pt" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }}>Hisob raqam: </strong> {logo && logo.accountnumber}</li>
+                                            <li style={{ textAlign: "", fontSize: "10pt" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }}>Telefon raqam: </strong>
+                                                {logo && logo.phone1 !== null ? "+" + logo.phone1 : ""} <br />
+                                                {logo && logo.phone2 !== null ? "+" + logo.phone2 : ""} <br />
+                                                {logo && logo.phone3 !== null ? "+" + logo.phone3 : ""} <br /></li>
                                         </ul>
                                     </td>
-                                    <td className="">
-                                        <ul className="list-unstyled text-right m-3">
-                                            <li style={{ fontFamily: "times" }}> <h5 style={{ textAlign: "right", fontSize: "10pt" }}> {today}</h5> </li>
-                                            <li style={{ textAlign: "right", fontSize: "10pt" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }}>INN:</strong> 123456789</li>
-                                            <li style={{ textAlign: "right", fontSize: "10pt" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }}>Hisob raqam:</strong> 1234567890123456</li>
-                                            <li style={{ textAlign: "right", fontSize: "10pt" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }}>Telefon raqam:</strong> +998 (93) 196 94 34</li>
-                                        </ul>
+                                    <td className="text-end">
+                                        <img className='me-3' width="150" src={logo && logo.logo} alt="logo" /><br />
+                                        <img width="140" className='me-3' src={qr && qr} alt="QR" /><br />
+                                        <p className="pe-3 me-1" style={{ fontSize: "10pt" }}>Bu yerni skanerlang</p>
                                     </td>
                                 </tr>
                             </tbody>
@@ -78,8 +126,8 @@ export const Reciept = () => {
                     <div className="row">
                         <div className="col-lg-12">
                             <div className="invoice-from">
-                                <h6 style={{ textTransform: "uppercase", fontFamily: "times", fontSize: "17pt" }} >ID: {client.id}</h6>
-                                <h6 style={{ fontSize: "12pt", fontFamily: "times" }}>F.I.O: {client.lastname} {client.firstname} {client.fathername}</h6>
+                                <h6 style={{ textTransform: "uppercase", fontFamily: "times", fontSize: "17pt" }} >ID: {client &&  client.id}</h6>
+                                <h6 style={{ fontSize: "12pt", fontFamily: "times" }}>F.I.O: {client && client.lastname} {client && client.firstname} {client &&  client.fathername}</h6>
                                 {/* <h6>Maqsad: {client.intact}</h6> */}
                             </div>
                         </div>
@@ -98,14 +146,14 @@ export const Reciept = () => {
                                     </thead>
                                     <tbody>
                                         {
-                                            sections.map((section) => {
+                                            sections && sections.map((section) => {
                                                 paid = paid + section.priceCashier
                                                 section.payment === "to'lanmagan" ? unpaid = unpaid : unpaid = unpaid + (section.price - section.priceCashier)
                                                 k++
                                                 price = price + (section.price - section.priceCashier)
                                                 return (<tr>
                                                     <td style={{ fontSize: "10pt", fontFamily: "times" }}>{k}</td>
-                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.name} {section.subname}</td>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="ps-3">{section.name} {section.subname}</td>
                                                     <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.bron === 'offline' ? section.turn : section.bronTime}</td>
                                                     <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.payment === "to'lanmagan" ? "Rad etilgan" : section.price}</td>
                                                     <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.payment === "to'lanmagan" ? "Rad etilgan" : section.priceCashier}</td>
@@ -143,20 +191,24 @@ export const Reciept = () => {
                             <tbody>
                                 <tr>
                                     <td>
-                                        <ul className="list-unstyled m-3 text-start">
-                                            <li style={{ fontSize: "10pt", fontFamily: "times" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }} >"DS ONE PROVIDER" MCHJ</strong></li>
-                                            <li style={{ fontSize: "10pt", fontFamily: "times" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }}>Manzil:</strong> Navoiy shahar Zarapetyan ko'chasi</li>
-                                            <li style={{ fontSize: "10pt", fontFamily: "times" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }}>Bank:</strong> AKB "TURONBANK" Navoiy filiali</li>
-                                            <li style={{ fontSize: "10pt", fontFamily: "times" }}> <strong style={{ fontSize: "10pt", fontFamily: "times" }}>MFO:</strong> 00200</li>
+                                        <ul className="list-unstyled  text-start m-3">
+                                            <li className="" style={{ fontSize: "10pt", fontFamily: "times" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }} > {logo && logo.companyname}</strong></li>
+                                            <li style={{ fontSize: "10pt", fontFamily: "times" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }}>Manzil: </strong> {logo && logo.address}</li>
+                                            <li style={{ fontSize: "10pt", fontFamily: "times" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }}>Bank: </strong> {logo && logo.bank}</li>
+                                            <li style={{ fontSize: "10pt", fontFamily: "times" }}> <strong style={{ fontSize: "10pt", fontFamily: "times" }}>MFO: </strong> {logo && logo.mfo}</li>
+                                            <li style={{ fontFamily: "times" }}> <h5 style={{ textAlign: "", fontSize: "10pt" }}> {today}</h5> </li>
+                                            <li style={{ textAlign: "", fontSize: "10pt" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }}>INN:</strong> {logo && logo.inn}</li>
+                                            <li style={{ textAlign: "", fontSize: "10pt" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }}>Hisob raqam: </strong> {logo && logo.accountnumber}</li>
+                                            <li style={{ textAlign: "", fontSize: "10pt" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }}>Telefon raqam: </strong>
+                                                {logo && logo.phone1 !== null ? "+" + logo.phone1 : ""} <br />
+                                                {logo && logo.phone2 !== null ? "+" + logo.phone2 : ""} <br />
+                                                {logo && logo.phone3 !== null ? "+" + logo.phone3 : ""} <br /></li>
                                         </ul>
                                     </td>
-                                    <td className="text-center m-3">
-                                        <ul className="list-unstyled text-right">
-                                            <li style={{ fontFamily: "times" }}> <h5 style={{ textAlign: "right", fontSize: "10pt" }}> {today}</h5> </li>
-                                            <li style={{ textAlign: "right", fontSize: "10pt" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }}>INN:</strong> 123456789</li>
-                                            <li style={{ textAlign: "right", fontSize: "10pt" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }}>Hisob raqam:</strong> 1234567890123456</li>
-                                            <li style={{ textAlign: "right", fontSize: "10pt" }}><strong style={{ fontSize: "10pt", fontFamily: "times" }}>Telefon raqam:</strong> +998 (93) 196 94 34</li>
-                                        </ul>
+                                    <td className="text-end">
+                                        <img className='me-3' width="150" src={logo && logo.logo} alt="logo" /><br />
+                                        <img width="140" className='me-3' src={qr && qr} alt="QR" /><br />
+                                        <p className="pe-3 me-1" style={{ fontSize: "10pt" }}>Bu yerni skanerlang</p>
                                     </td>
                                 </tr>
                             </tbody>
@@ -165,8 +217,8 @@ export const Reciept = () => {
                     <div className="row">
                         <div className="col-lg-12">
                             <div className="invoice-from">
-                                <h6 style={{ textTransform: "uppercase", fontFamily: "times", fontSize: "17pt" }} >ID: {client.id}</h6>
-                                <h6 style={{ fontSize: "12pt", fontFamily: "times" }}>F.I.O: {client.lastname} {client.firstname} {client.fathername}</h6>
+                                <h6 style={{ textTransform: "uppercase", fontFamily: "times", fontSize: "17pt" }} >ID: {client &&  client.id}</h6>
+                                <h6 style={{ fontSize: "12pt", fontFamily: "times" }}>F.I.O: {client && client.lastname} {client && client.firstname} {client &&  client.fathername}</h6>
                                 {/* <h6>Maqsad: {client.intact}</h6> */}
                             </div>
                         </div>
@@ -185,10 +237,10 @@ export const Reciept = () => {
                                     </thead>
                                     <tbody>
                                         {
-                                            sections.map((section, index) => {
+                                            sections && sections.map((section, index) => {
                                                 return (<tr>
-                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }}>{index+1}</td>
-                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.name} {section.subname}</td>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }}>{index + 1}</td>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="ps-3">{section.name} {section.subname}</td>
                                                     <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.bron === 'offline' ? section.turn : section.bronTime}</td>
                                                     <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.payment === "to'lanmagan" ? "Rad etilgan" : section.price}</td>
                                                     <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.payment === "to'lanmagan" ? "Rad etilgan" : section.priceCashier}</td>
@@ -219,7 +271,7 @@ export const Reciept = () => {
                     </div>
                 </div>
             </div>
-            <div className="" style={{ position: "fixed", bottom: "20px", width:"100%" }} >
+            <div className="" style={{ position: "fixed", bottom: "20px", width: "100%" }} >
                 <div className="row">
                     <div className=" col-12 text-center">
                         <button onClick={handlePrint} className="btn btn-primary px-5" >

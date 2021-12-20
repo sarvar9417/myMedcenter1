@@ -4,12 +4,14 @@ import { useHttp } from '../hooks/http.hook'
 import './home.css'
 import { toast } from 'react-toastify'
 import { Link } from 'react-router-dom'
-import {Loader} from '../components/Loader'
+import { Loader } from '../components/Loader'
 
 toast.configure()
 export const Home = () => {
     const auth = useContext(AuthContext)
-
+    const notify = (e) => {
+        toast.error(e)
+    }
     const { loading, request, error, clearError } = useHttp()
     const [online, setOnline] = useState([])
     const [offline, setOffline] = useState({
@@ -52,7 +54,7 @@ export const Home = () => {
             getClientOffline(fetch.client)
             setOffline(fetch)
         } catch (e) {
-
+            notify(e)
         }
     }, [request, auth])
 
@@ -63,11 +65,9 @@ export const Home = () => {
             })
             setClientOffline(fetch)
         } catch (e) {
-
+            notify(e)
         }
     }, [request, auth])
-
-
 
     useEffect(() => {
         if (error) {
@@ -76,12 +76,7 @@ export const Home = () => {
         }
         getOnline()
         getOffline()
-
     }, [getOnline, getOffline])
-
-    const notify = (e) => {
-        toast.error(e)
-    }
 
     const [time, setTime] = useState(new Date().toLocaleTimeString())
     setInterval(() => {
@@ -117,6 +112,9 @@ export const Home = () => {
                             <h4>
                                 ID: {clientOffline.id}
                             </h4>
+                            <h4>
+                                Xizmat turi: {offline.subname}
+                            </h4>
                         </div>
                     </div>
                     <div className="row">
@@ -127,7 +125,9 @@ export const Home = () => {
                             </h4>
                         </div>
                         <div className="col-6 text-end" >
-                            <Link to={`/doctor/adoption/${offline._id}`} className="btn text-white" style={{ backgroundColor: "#FCAE49", width: "50%", marginLeft: "5%" }}>Kirish</Link>
+                            {clientOffline.length !== 0 ?
+                                <Link to={`/doctor/adoption/${offline._id}`} className="btn text-white" style={{ backgroundColor: "#FCAE49", width: "50%", marginLeft: "5%" }}>Kirish</Link>
+                                : ""}
                         </div>
                     </div>
 
@@ -141,6 +141,9 @@ export const Home = () => {
                             </h4>
                             <h4>
                                 ID: {clientOnline.id}
+                            </h4>
+                            <h4>
+                                Xizmat turi: {online.subname}
                             </h4>
                         </div>
                     </div>
@@ -165,32 +168,7 @@ export const Home = () => {
 
 
 
-            {/* <hr></hr>
-            <div className="container">
-                <div className="col-md-12">
-                    <article className="linkk blue mt-5" >
-                        <h1>MedCenter Director</h1>
-                        <div className="row mt-5">
-                            <div className="col-md-4">
-                            </div>
-                            <div className="col-md-6">
-                                <h2>Nosirov Islom</h2>
-                                <p style={{ fontSize: "20px" }}>17 avgust 2003</p>
-                                <p style={{ fontSize: "20px" }}>MedCenter Director MedCenter Director MedCenter Director MedCenter Director MedCenter Director</p>
-                                <p style={{ fontSize: "20px" }}>+998 93 123 21 23</p>
-                                <p style={{ fontSize: "20px" }}>nosirovislom07@gmail.com</p>
-                                <p style={{ textAlign: "right" }}>
-                                    <button className="btn text-white" style={{ backgroundColor: "rgb(83, 158, 241)", width: "20%", marginLeft: "5%" }}>Edit</button>
-                                </p>
 
-                            </div>
-
-                        </div>
-
-                    </article>
-                </div>
-
-            </div> */}
 
         </>
     )

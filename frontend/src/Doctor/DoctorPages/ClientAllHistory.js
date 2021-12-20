@@ -1,23 +1,51 @@
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router'
-import { useReactToPrint } from 'react-to-print'
+import { savePDF } from '@progress/kendo-react-pdf'
 import { AuthContext } from '../context/AuthContext'
 import { useHttp } from '../hooks/http.hook'
+import { toast } from 'react-toastify'
+import { Loader } from '../components/Loader'
+import QRCode from 'qrcode'
 const mongoose = require("mongoose")
 
+toast.configure()
 export const ClientAllHistory = () => {
     const auth = useContext(AuthContext)
-    // {
-    //     Authorization: `Bearer ${auth.token}`
-    // }
-    const componentRef = useRef()
-    const handlePrint = useReactToPrint({
-        content: () => componentRef.current,
-    })
+
     const clientId = useParams().id
-    const { request } = useHttp()
-    const [sections, setSections] = useState([])
-    const [client, setClient] = useState('')
+    const { request, loading, error, clearError } = useHttp()
+    const [sections, setSections] = useState()
+    const [client, setClient] = useState()
+    const [baseUrl, setBasuUrl] = useState()
+    const notify = (e) => {
+        toast.error(e)
+    }
+
+    const contentArea = useRef(null)
+
+    const createSizeHistory = () => {
+        savePDF(
+            contentArea.current,
+            {
+                paperSize: "A4",
+                repeatHeaders: true,
+                fileName: client.lastname + client.firstname + client.fathername,
+
+            }, encodeURIComponent()
+
+        )
+    }
+
+    const [doctors, setDoctors] = useState()
+
+    const getDoctors = useCallback(async () => {
+        try {
+            const fetch = await request('/api/auth/doctor/historyclient', 'GET', null)
+            setDoctors(fetch)
+        } catch (error) {
+            notify(error)
+        }
+    })
 
     const getClient = useCallback(async () => {
         try {
@@ -28,8 +56,9 @@ export const ClientAllHistory = () => {
             getSections()
             setClient(data)
         } catch (e) {
+            notify(e)
         }
-    }, [request, clientId])
+    }, [request, clientId, auth])
 
     const getSections = useCallback(async () => {
         try {
@@ -37,106 +66,184 @@ export const ClientAllHistory = () => {
                 {
                     Authorization: `Bearer ${auth.token}`
                 })
-            console.log(fetch);
             setSections(fetch)
         } catch (e) {
-
+            notify(e)
         }
-    }, [request])
+    }, [request, auth, clientId])
 
+    const getBaseUrl = useCallback(async () => {
+        try {
+            const fetch = await request(`/api/clienthistorys/url`, 'GET', null)
+            setBasuUrl(fetch)
+        } catch (e) {
+            notify(e)
+        }
+    }, [request, setBasuUrl])
+
+    const [logo, setLogo] = useState()
+    const getLogo = useCallback(async () => {
+        try {
+            const data = await request("/api/companylogo/", "GET", null)
+            setLogo(data[0])
+        } catch (e) {
+            notify(e)
+        }
+    }, [request, setLogo])
+
+    const [qr, setQr] = useState()
     useEffect(() => {
-        if (sections.length === 0) {
-            getSections()
+        QRCode.toDataURL(`${baseUrl}/api/clienthistorys/${clientId}`)
+            .then(data => {
+                setQr(data)
+            })
+        if (error) {
+            notify(error)
+            clearError()
         }
-        getClient()
-    }, [getClient, getSections])
+        if (!client) {
+            getClient()
+        }
+        if (!baseUrl) {
+            getBaseUrl()
+        }
+        if (!logo) {
+            getLogo()
+        }
+        if (!doctors) {
+            getDoctors()
+        }
+    }, [notify, clearError])
 
-
+    if (loading) {
+        return <Loader />
+    }
     return (
         <div>
-            <div ref={componentRef}>
-
-                <div className="">
-                    <article className="linkk mt-5" >
-                        <h1 style={{ fontWeight: "700" }}>Kasallik tarixi</h1>
-                        <div className="row mt-4" style={{ border: "25px solid hsla(212, 54%, 71%, 0.471)" }}>
-                            <div className="col-7 mt-3">
-                                <div className="row">
-                                    <p style={{ fontWeight: "700", color: "blue", fontSize: "22px", margin: "10px" }}>Mijoz ma'lumotlari</p>
-                                    <div className="col-4">
-                                        <p style={{ fontWeight: "700", fontSize: "18px", margin: "10px" }}>Familiyasi</p>
-                                        <p style={{ fontWeight: "700", fontSize: "18px", margin: "10px" }} >Ismi</p>
-                                        <p style={{ fontWeight: "700", fontSize: "18px", margin: "10px" }}>Otasining ismi</p>
-                                    </div>
-                                    <div className="col-8">
-                                        <p style={{ fontWeight: "500", fontSize: "18px", margin: "10px" }}>{client.lastname}</p>
-                                        <p style={{ fontWeight: "500", fontSize: "18px", margin: "10px" }} >{client.firstname}</p>
-                                        <p style={{ fontWeight: "500", fontSize: "18px", margin: "10px" }}>{client.fathername}</p>
-                                    </div>
-                                </div>
-                            </div>
-                            <div className="col-5 mt-3">
-                                <div className="row">
-                                    <p style={{ fontWeight: "700", color: "blue", fontSize: "20px", margin: "10px 0" }}>Qo'shimcha ma'lumotlar</p>
-                                    <div className="col-4">
-                                        <p style={{ fontWeight: "700", fontSize: "18px", margin: "10px 0" }}>Tug'ilgan yili</p>
-                                        <p style={{ fontWeight: "700", fontSize: "18px", margin: "10px 0" }}>Jinsi</p>
-                                        <p style={{ fontWeight: "700", fontSize: "18px", margin: "10px 0" }}>Telefon raqami</p>
-                                    </div>
-                                    <div className="col-8">
-                                        <p style={{ fontWeight: "500", fontSize: "18px", margin: "10px 0" }}>{client.born && new Date(client.born).toLocaleDateString()}</p>
-                                        <p style={{ fontWeight: "500", fontSize: "18px", margin: "10px 0" }} >{client && client.gender === "man" ? "Erkak" : "Ayol"}</p>
-                                        <p style={{ fontWeight: "500", fontSize: "18px", margin: "10px 0" }} >+{client && client.phone}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+            <div className='text-end container pt-3' >
+                <button className='btn btn-success pe-3 mb-2' onClick={createSizeHistory}>Yuklab olish</button>
+            </div>
+            <dl style={{ maxHeight: "100vh", overflow: "auto" }}>
+                <dl style={{ backgroundColor: "#123456" }}>
+                    <dl ref={contentArea} style={{ width: "15cm", margin: "0 auto" }} >
                         {
-                            sections && sections.map((section, key) => {
-                                if (section.payment !== "to'lanmagan") {
-
+                            sections && sections.map((section) => {
+                                if (section.done === "tasdiqlangan") {
 
                                     return (
-                                        <div className="row" style={{ border: "25px solid hsla(212, 54%, 71%, 0.471)", borderTop: "none" }}>
-                                            <div className="row">
-                                                <div className="col-6 fs-5 fw-bold p-2">
-                                                    Bo'limi: {section && section.name} <br/>
-                                                    Maqsad: {section && section.subname}
-                                                </div>
-                                                <div className="col-4 fs-5 p-2 text-end">
-                                                    Murojaat kuni: <br />
-                                                    To'lov:
-                                                </div>
-                                                <div className="col-2 fs-5 p-2 text-end">
-                                                    {section && new Date(section.bronDay).toLocaleDateString()}<br />
-                                                    {section && section.price}
-                                                </div>
-                                                <hr />
-                                                <div className="col-12">
-                                                    <h5>Izoh:</h5>
-                                                    <p>{section.comment && section.comment}</p>
-                                                </div>
-                                                <div className="col-12">
-                                                    <h5>Xulosa:</h5>
-                                                    <p>{section.summary && section.summary}</p>
-                                                </div>
-                                            </div>
-                                        </div>)
+                                        <dl style={{ minHeight: "100vh", fontFamily: "times !important", fontSize: "7pt", backgroundColor: "white" }} className="m-2">
+                                            <dl className="row">
+                                                <dl className="col-8 border-right border-dark text-center  border-5 m-none">
+                                                    <img alt="logo" src={logo && logo.logo} className="w-50" />
+                                                    <div className="row mt-3">
+                                                        <div className="col-3 text-end">
+                                                            <span className="fw-normal d-block" >Адрес:</span>
+                                                        </div>
+                                                        <div className="col-9 text-start fw-bold">
+                                                            {logo && logo.address}
+                                                        </div>
+                                                    </div>
+                                                    <div className="row">
+                                                        <div className="col-3 text-end">
+                                                            <span className="fw-normal" >Ориентир:</span>
+                                                        </div>
+                                                        <div className="col-9 text-start fw-bold">
+                                                            {logo && logo.orientation}
+                                                        </div>
+                                                    </div>
+                                                    <div className="row">
+                                                        <div className="col-3 text-end">
+                                                            <span className="fw-normal" >Тел:</span>
+                                                        </div>
+                                                        <div className="col-9 text-start fw-bold">
+                                                            {logo && logo.phone1 !== null ? "+" + logo.phone1 : ""} <br />
+                                                            {logo && logo.phone2 !== null ? "+" + logo.phone2 : ""} <br />
+                                                            {logo && logo.phone3 !== null ? "+" + logo.phone3 : ""} <br />
+                                                        </div>
+                                                    </div>
+                                                </dl>
+                                                <dl className="col-4 text-center">
+                                                    <img width="100px" src={qr} alt="QR" />
+                                                    <p className="">для получения результата сканируйте здесь</p>
+                                                </dl>
+                                            </dl>
+                                            <dl className="row">
+                                                <dl className="col-12 fs-6 text-center fw-bold">
+                                                    {section.name}
+                                                    <h5 style={{ fontSize: "9pt" }}>
+                                                        ({section.subname})
+                                                    </h5>
+                                                </dl>
+                                            </dl>
+                                            <dl className="row">
+                                                <dl className="col-12">
+                                                    <table className="w-100 historytable" >
+                                                        <tr>
+                                                            <th className="px-3  w-25 text-end">
+                                                                Пациент
+                                                            </th>
+                                                            <th className="px-3 w-75">
+                                                                {client && client.lastname + " " + client.firstname + " " + client.fathername}
+                                                            </th>
+                                                        </tr>
+                                                        <tr>
+                                                            <th className="px-3 w-25 text-end">
+                                                                Год рождения
+                                                            </th>
+                                                            <th className="px-3 w-75">
+                                                                {client && new Date(client.born).toLocaleDateString()}
+                                                            </th>
+                                                        </tr>
+                                                        <tr>
+                                                            <th className="px-3 w-25 text-end">
+                                                                Дата обследования
+                                                            </th>
+                                                            <th className="px-3 w-75">
+                                                                {new Date(section.bronDay).toLocaleDateString() + " " + new Date(section.bronDay).toLocaleTimeString()}
+                                                            </th>
+                                                        </tr>
+                                                        <tr>
+                                                            <th className="px-3 w-25 text-end">
+                                                                Tелефон номер
+                                                            </th>
+                                                            <th className="px-3 w-75">
+                                                                +{client && client.phone}
+                                                            </th>
+                                                        </tr>
+                                                        <tr>
+                                                            <th className="px-3 w-25 text-end">
+                                                                Врач
+                                                            </th>
+                                                            <th className="px-3 w-75">
+                                                                {section.doctor && section.doctor}
+                                                            </th>
+                                                        </tr>
+                                                    </table>
+
+                                                </dl>
+                                            </dl>
+                                            <dl>
+                                                <dl className='row'>
+                                                    <dl className='col-12'>
+                                                        <pre style={{ whiteSpace: "pre-wrap" }}>
+                                                            {section.comment}
+                                                        </pre>
+                                                        <pre style={{ whiteSpace: "pre-wrap" }}>
+                                                            {section.summary}
+                                                        </pre>
+                                                    </dl>
+                                                </dl>
+                                            </dl>
+                                        </dl>
+                                    )
                                 }
                             })
                         }
-                    </article>
-                </div>
-            </div>
-            <div className="container" style={{ position: "fixed", bottom: "0" }} >
-                <div className="row">
-                    <div className="offset-lg-5 col-lg-2 text-center">
-                        <button onClick={handlePrint} className="btn btn-primary" >
-                            Print
-                        </button>
-                    </div>
-                </div>
-            </div>
+                    </dl>
+                </dl>
+
+
+            </dl>
         </div>
     )
 }

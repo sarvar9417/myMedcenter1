@@ -36,7 +36,20 @@ export const ClientsPages = () => {
                 price: 0
             }]
             data.map((section)=>{
-                m.push(section)
+                let k = 0
+                m.map((mm)=>{
+                    if (mm.value === section.section) {
+                        k++
+                    }
+                })
+                if (!k) {
+                    m.push({
+                        value: section.section,
+                        label: section.section,
+                        subvalue: " ",
+                        price: 0
+                    })
+                }
             })
             setOptions(m)
         } catch (e) {
@@ -74,7 +87,13 @@ export const ClientsPages = () => {
                 Authorization: `Bearer ${auth.token}`
             })
             setAllSections(fetch)
-            setSections(fetch)
+            let c = []
+            fetch.map((section) => {
+                if (new Date(section.bronDay).toLocaleDateString() === new Date().toLocaleDateString()) {
+                    c.push(section)
+                }
+            })
+            setSections(c)
         } catch (e) {
 
         }
@@ -114,7 +133,6 @@ export const ClientsPages = () => {
     }
 
     const sortOnOff = (event) => {
-        console.log(event.value);
         position = event.value
         let c = []
         if (event.value === "all") {
@@ -126,7 +144,7 @@ export const ClientsPages = () => {
             setSections(c)
         } else {
             AllSections.map((section) => {
-                if (section.name === event.section && setSortDate(section))
+                if (section.name === event.value && setSortDate(section))
                     c.push(section)
             })
             setSections(c)
@@ -341,10 +359,10 @@ export const ClientsPages = () => {
                                         <tr key={key} >
                                             <td className="no" >{k}</td>
                                             <td className="date" >{new mongoose.Types.ObjectId(client._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(client._id).getTimestamp().toLocaleTimeString()}</td>
-                                            <td className="fish text-uppercase" ><Link style={{ fontWeight: "500" }} to={`/director/clientallhistory/${client._id}`} > {client.lastname} {client.firstname} {client.fathername} </Link></td>
+                                            <td className="fish text-uppercase " ><Link className='text-success' style={{ fontWeight: "700" }} to={`/director/clientallhistory/${client._id}`} > {client.lastname} {client.firstname} {client.fathername} </Link></td>
                                             <td className="id" >{client.id}</td>
                                             <td className="phone">+{client.phone}</td>
-                                            <td className="section text-uppercase"> <Link to={`/director/clienthistory/${section._id}`} style={{ color: "#00aa00", fontWeight: "600" }} > {section.name} </Link></td>
+                                            <td className="section text-uppercase"> <Link  to={`/director/clienthistory/${section._id}`} style={{ color: "#00aa00", fontWeight: "600" }} > {section.name} <br /> <span style={{ fontSize: "10pt" }}>{section.subname}</span> </Link></td>
                                             <td className="prices text-bold">{section.payment === "to'lanmagan"? "Rad etilgan":section.price}</td>
                                             <td className="prices text-bold text-success">{section.payment === "to'lanmagan" ? "" : section.priceCashier}</td>
                                             <td className="prices text-bold text-danger" >{section.payment === "to'lanmagan" ? "" : section.price - section.priceCashier}</td>

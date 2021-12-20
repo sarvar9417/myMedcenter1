@@ -11,19 +11,6 @@ import ReactHTMLTableToExcel from 'react-html-to-excel'
 import Select from 'react-select'
 import "react-datepicker/dist/react-datepicker.css"
 import { AuthContext } from '../context/AuthContext'
-import Modal from 'react-modal'
-const mongoose = require("mongoose")
-
-const customStyles = {
-    content: {
-        top: '50%',
-        left: '50%',
-        right: 'auto',
-        bottom: 'auto',
-        marginRight: '-50%',
-        transform: 'translate(-50%, -50%)',
-    },
-}
 
 toast.configure()
 export const ClientsOnPages = () => {
@@ -40,7 +27,8 @@ export const ClientsOnPages = () => {
 
     // Modal oyna funksiyalari
     let allPrice = 0
-    const [modal, setModal] = useState(false)
+    const [modal1, setModal1] = useState(false)
+    const [modal2, setModal2] = useState(false)
 
     let unpaid = 0
     let paid = 0
@@ -51,8 +39,8 @@ export const ClientsOnPages = () => {
     const [born, setBorn] = useState('')
     const { loading, request, error, clearError } = useHttp()
     const [sections, setSections] = useState([])
-    const [AllSections, setAllSections] = useState([])
-    const [AllClients, setAllClients] = useState([])
+    const [AllSections, setAllSections] = useState()
+    const [AllClients, setAllClients] = useState()
     const [clientId, setClientId] = useState('')
 
     const getClients = useCallback(async () => {
@@ -84,8 +72,8 @@ export const ClientsOnPages = () => {
                 Authorization: `Bearer ${auth.token}`
             })
             setAllSections(fetch)
-            let c=[]
-            fetch.map((section)=>{
+            let c = []
+            fetch.map((section) => {
                 if (new Date(section.bronDay).toLocaleDateString() === new Date().toLocaleDateString()) {
                     c.push(section)
                 }
@@ -98,7 +86,7 @@ export const ClientsOnPages = () => {
 
     const searchDate = () => {
         let c = []
-        AllSections.map((section) => {
+        AllSections && AllSections.map((section) => {
             if (setSortDate(section)) {
                 c.push(section)
             }
@@ -111,7 +99,7 @@ export const ClientsOnPages = () => {
     const [client, setClient] = useState()
     const getSections = (client) => {
         let s = []
-        AllSections.map((section) => {
+        AllSections && AllSections.map((section) => {
             if (
                 section.client === client._id
                 &&
@@ -129,7 +117,7 @@ export const ClientsOnPages = () => {
         setSortSections(s)
         setClient(client)
         window.scrollTo({ top: 0 })
-        setModal(true)
+        setModal1(true)
     }
 
     const Confirm = () => {
@@ -142,22 +130,41 @@ export const ClientsOnPages = () => {
 
     const [counter, setCounter] = useState(true)
     setTimeout(() => {
-        if (counter && AllSections.length !== 0) {
+        if (counter && AllSections) {
             dontCome()
         }
     }, 1)
+
+    const dele = useCallback(async (id) => {
+        try {
+            const fetch = await request(`/api/section/reseption/${id}`, 'DELETE', null, {
+                Authorization: `Bearer ${auth.token}`
+            })
+        } catch (e) {
+            notify(e)
+        }
+    }, [request, auth])
+
     const dontCome = () => {
         let year = new Date().getFullYear()
-        let month = new Date().getMonth() * 100
+        let month = (new Date().getMonth() + 1)
         let day = new Date().getDate()
-        let n = year + month + day
-        AllSections.map((section) => {
+        AllSections && AllSections.map((section) => {
             let years = new Date(section.bronDay).getFullYear()
-            let months = new Date(section.bronDay).getMonth() * 100
+            let months = (new Date(section.bronDay).getMonth() + 1)
             let days = new Date(section.bronDay).getDate()
-            let ns = years + months + days
-            if (section.bron === "online" && n > ns) {
-                positionUpdate(section._id, "kelmagan")
+            if (
+                section.bron === "online" 
+                && 
+                section.position === "kutilmoqda" 
+                &&
+                year >= years 
+                && 
+                month >= months 
+                && 
+                day > days
+            ) {
+                dele(section._id)
             }
         })
         setCounter(false)
@@ -170,8 +177,8 @@ export const ClientsOnPages = () => {
 
     const searchId = () => {
         let c = []
-        AllSections.map((section) => {
-            AllClients.map((client) => {
+        AllSections && AllSections.map((section) => {
+            AllClients && AllClients.map((client) => {
                 if (client.id === clientId && section.client === client._id) {
                     c.push(section)
                 }
@@ -182,8 +189,8 @@ export const ClientsOnPages = () => {
 
     const searchBornDate = () => {
         let c = []
-        AllSections.map((section) => {
-            AllClients.map((client) => {
+        AllSections && AllSections.map((section) => {
+            AllClients && AllClients.map((client) => {
                 let year = born.getFullYear().toString()
                 let month = born.getMonth().toString() < 10 ? "0" + born.getMonth().toString() : born.getMonth().toString()
                 let day = born.getDate().toString() < 10 ? "0" + born.getDate().toString() : born.getDate().toString()
@@ -225,14 +232,14 @@ export const ClientsOnPages = () => {
     const sort = (event) => {
         let c = []
         if (event.value === "all") {
-            AllSections.map((section) => {
+            AllSections && AllSections.map((section) => {
                 if (setSortDate(section)) {
                     c.push(section)
                 }
             })
             setSections(c)
         } else {
-            AllSections.map((section) => {
+            AllSections && AllSections.map((section) => {
                 if (section.position === event.value && setSortDate(section))
                     c.push(section)
             })
@@ -240,14 +247,34 @@ export const ClientsOnPages = () => {
         }
     }
 
+    const [del, setDel] = useState()
+    const Delete = useCallback(async () => {
+        try {
+            const fetch = await request(`/api/section/reseption/${del._id}`, 'DELETE', null, {
+                Authorization: `Bearer ${auth.token}`
+            })
+            getAllSections()
+            getClients()
+            setModal2(false)
+            setDel()
+        } catch (e) {
+
+        }
+    }, [request, auth, del])
+
     useEffect(() => {
         if (error) {
             notify(error)
             clearError()
         }
-        getClients()
-        getAllSections()
-    }, [getClients, getAllSections])
+        if (!AllClients) {
+            getClients()
+        }
+        if (!AllSections) {
+            getAllSections()
+        }
+
+    }, [])
 
 
     if (loading) {
@@ -334,21 +361,24 @@ export const ClientsOnPages = () => {
                     <tbody className="" >
                         {
                             sections && sections.map((section, key) => {
-                                return AllClients.map((client, index) => {
+                                return AllClients && AllClients.map((client, index) => {
                                     if (client._id === section.client && section.bron === "online") {
                                         k++
                                         return (
                                             <tr key={key} id={index} >
                                                 <td className="no" >{k}</td>
-                                                <td className="fish text-uppercase" ><Link style={{ fontWeight: "600" }} to={`/reseption/clientallhistory/${client._id}`} > {client.lastname} {client.firstname} {client.fathername} </Link></td>
+                                                <td className="fish text-uppercase" ><Link className='text-success' style={{ fontWeight: "600" }} to={`/reseption/clientallhistory/${client._id}`} > {client.lastname} {client.firstname} {client.fathername} </Link></td>
                                                 <td className="id" >{client.id}</td>
                                                 <td className="date text-center" >{new Date(section.bronDay).toLocaleDateString()}</td>
                                                 <td className="turn">{section.bronTime}</td>
                                                 <td className="phone">+{client.phone}</td>
-                                                <td className="section text-uppercase"> <Link to={`/reseption/clienthistory/${section._id}`} style={{ color: "#00aa00", fontWeight: "600" }}> {section.name} </Link></td>
+                                                <td className="section text-uppercase"> <Link className={section.position} to={`/reseption/clienthistory/${section._id}`} style={{ color: "#00aa00", fontWeight: "600" }}> {section.name} <br /> <span style={{ fontSize: "10pt" }}>{section.subname}</span> </Link></td>
                                                 <td className="edit"> <Link to={`/reseption/edit/${client._id}`} > <FontAwesomeIcon icon={faPenAlt} className="text-dark" /> </Link>  </td>
-                                                <td className={
+                                                <td className={section.position === "kelmagan" ? " text-danger prices text-center" :
                                                     payment.map((pay, key) => {
+                                                        if (section.position === "kelmagan") {
+                                                            return " text-danger prices text-center"
+                                                        }
                                                         if (pay === "to'langan" && section.payment === "to'langan") {
                                                             return " text-success prices text-center"
                                                         }
@@ -360,7 +390,7 @@ export const ClientsOnPages = () => {
                                                         }
                                                     })
                                                 } >
-                                                    {
+                                                    {section.position === "kelmagan" ? <FontAwesomeIcon icon={faTimesCircle} /> :
                                                         payment.map((pay, key) => {
                                                             if (pay === "to'langan" && section.payment === "to'langan") {
                                                                 return (<FontAwesomeIcon icon={faCheck} />)
@@ -379,7 +409,7 @@ export const ClientsOnPages = () => {
                                                         section.position === "kutilmoqda" ?
                                                             <>
                                                                 <button onClick={() => { getSections(client) }} className="btn come mx-1" >Qabul qilish</button>
-                                                                <button onClick={() => positionUpdate(section._id, "kelmagan")} className="btn dontcome" >Rad etish</button>
+                                                                <button onClick={() => { setDel(section); setModal2(true) }} className="btn dontcome" >Rad etish</button>
                                                             </> :
                                                             section.position
                                                     }
@@ -396,9 +426,9 @@ export const ClientsOnPages = () => {
             </div>
 
             {/* Modal oynaning ochilishi */}
-            <div className={modal ? "modal" : "d-none"}>
+            <div className={modal1 ? "modal" : "d-none"}>
                 <div className="modal-card">
-                    <div className="card">
+                    <div className="card p-3">
                         <div className="text-center fs-4 fw-bold text-secondary">
                             <span className="text-dark">Mijoz: </span>  {client && client.lastname} {client && client.firstname} {client && client.fathername}
                         </div>
@@ -447,12 +477,31 @@ export const ClientsOnPages = () => {
                         <div className="row m-1">
                             `            <div className="col-12 text-center">
                                 <button onClick={Confirm} className="btn btn-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
-                                <button onClick={() => setModal(false)} className="btn btn-danger" >Qaytish</button>
+                                <button onClick={() => setModal1(false)} className="btn btn-danger" >Qaytish</button>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
+
+            {/* Modal oynaning ochilishi */}
+            <div className={modal2 ? "modal" : "d-none"}>
+                <div className="modal-card">
+                    <div className="card p-3">
+                        <div className='card-body fs-3 text-danger'>
+                            Diqqat! Ushbu {del && del.name + " " + del.subname} xizmati mijoz kelmaganligi sababli xizmatlar ro'yxatidan o'chirishni tasdiqlaysizmi?
+                        </div>
+
+                        <div className="row m-1">
+                            <div className="col-12 text-center">
+                                <button onClick={Delete} className="btn btn-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
+                                <button onClick={() => setModal2(false)} className="btn btn-danger" >Qaytish</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
 
 
             {/* ========================================================== */}
@@ -468,7 +517,7 @@ export const ClientsOnPages = () => {
                         <th scope="" className="date text-center" >Kuni <FontAwesomeIcon icon={faSort} /></th>
                         <th scope="" className="turn text-center">Vaqti <FontAwesomeIcon icon={faSort} /></th>
                         <th scope="" className="phone text-center">Tel <FontAwesomeIcon icon={faSort} /></th>
-                        <th scope="" className="section text-center">Bo'limi <FontAwesomeIcon icon={faSort} /></th>
+                        <th scope="" className="section text-center">Bo'limi va maqsadi <FontAwesomeIcon icon={faSort} /></th>
                         <th scope="" className="prices text-center">To'lov <FontAwesomeIcon icon={faSort} /></th>
                         <th scope="" className="prices text-center">To'langan <FontAwesomeIcon icon={faSort} /></th>
                         <th scope="" className="position text-center">Holati <FontAwesomeIcon icon={faSort} /></th>
@@ -478,7 +527,7 @@ export const ClientsOnPages = () => {
 
                     {
                         sections && sections.map((section, key) => {
-                            return AllClients.map((client, index) => {
+                            return AllClients && AllClients.map((client, index) => {
                                 if (client._id === section.client && section.bron === "online") {
                                     l++
                                     paid = paid + section.priceCashier
@@ -491,7 +540,7 @@ export const ClientsOnPages = () => {
                                             <td className="date text-center" >{new Date(section.bronDay).toLocaleDateString()}</td>
                                             <td className="turn">{section.bronTime}</td>
                                             <td className="phone">+{client.phone}</td>
-                                            <td className="section text-uppercase"> {section.name} </td>
+                                            <td className="section text-uppercase"> {section.name}  {section.subname}</td>
                                             <td  >
                                                 {
                                                     section.price

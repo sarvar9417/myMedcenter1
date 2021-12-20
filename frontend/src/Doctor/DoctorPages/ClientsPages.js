@@ -24,6 +24,10 @@ export const ClientsPages = () => {
         { value: "kelgan", label: "Chaqirilgan" }
     ]
 
+    const notify = (e) => {
+        toast.error(e)
+    }
+
     let paid = 0
     let unpaid = 0
     let k = 0
@@ -32,10 +36,10 @@ export const ClientsPages = () => {
     const [startDate, setStartDate] = useState(new Date())
     const [endDate, setEndDate] = useState(new Date())
     const [born, setBorn] = useState('')
-    const { loading, request } = useHttp()
-    const [sections, setSections] = useState([])
-    const [AllSections, setAllSections] = useState([])
-    const [AllClients, setAllClients] = useState([])
+    const { loading, request, error, clearError } = useHttp()
+    const [sections, setSections] = useState()
+    const [AllSections, setAllSections] = useState()
+    const [AllClients, setAllClients] = useState()
     const [clientId, setClientId] = useState('')
 
     const getClients = useCallback(async () => {
@@ -45,9 +49,9 @@ export const ClientsPages = () => {
             })
             setAllClients(fetch)
         } catch (e) {
-
+            notify(e)
         }
-    }, [request])
+    }, [request, setAllSections, auth])
 
     const getAllSections = useCallback(async () => {
         try {
@@ -55,21 +59,21 @@ export const ClientsPages = () => {
                 Authorization: `Bearer ${auth.token}`
             })
             setAllSections(fetch)
-            setSections(fetch)
+            let c = []
+            fetch.map((section) => {
+                if (new Date(section.bronDay).toLocaleDateString() === new Date().toLocaleDateString()) {
+                    c.push(section)
+                }
+            })
+            setSections(c)
         } catch (e) {
-
+            notify(e)
         }
-    }, [request])
-
-    useEffect(() => {
-        getClients()
-        getAllSections()
-    }, [getClients, getAllSections])
-
+    }, [request, auth, setSections, setAllSections])
 
     const searchDate = () => {
         let c = []
-        AllSections.map((section) => {
+        AllSections && AllSections.map((section) => {
             if (setSortDate(section) && position) {
                 c.push(section)
             }
@@ -81,14 +85,14 @@ export const ClientsPages = () => {
         position = event.value
         let c = []
         if (event.value === "all") {
-            AllSections.map((section) => {
+            AllSections &&  AllSections.map((section) => {
                 if (setSortDate(section)) {
                     c.push(section)
                 }
             })
             setSections(c)
         } else {
-            AllSections.map((section) => {
+            AllSections && AllSections.map((section) => {
                 if (section.checkup === event.value && setSortDate(section))
                     c.push(section)
             })
@@ -98,8 +102,8 @@ export const ClientsPages = () => {
 
     const searchId = () => {
         let c = []
-        AllSections.map((section) => {
-            AllClients.map((client) => {
+        AllSections && AllSections.map((section) => {
+            AllClients && AllClients.map((client) => {
                 if (client.id === clientId && section.client === client._id) {
                     c.push(section)
                 }
@@ -110,8 +114,8 @@ export const ClientsPages = () => {
 
     const searchBornDate = () => {
         let c = []
-        AllSections.map((section) => {
-            AllClients.map((client) => {
+        AllSections && AllSections.map((section) => {
+            AllClients && AllClients.map((client) => {
                 let year = born.getFullYear().toString()
                 let month = born.getMonth().toString() < 10 ? "0" + born.getMonth().toString() : born.getMonth().toString()
                 let day = born.getDate().toString() < 10 ? "0" + born.getDate().toString() : born.getDate().toString()
@@ -168,12 +172,25 @@ export const ClientsPages = () => {
 
     }
 
+    useEffect(() => {
+        if (error) {
+            notify(error)
+            clearError()
+        }
+        if (!AllClients) {
+            getClients()
+        }
+        if (!AllSections) {
+            getAllSections()
+        }
+    }, [notify, clearError])
+
     if (loading) {
         return <Loader />
     }
 
     return (
-        <div  className="container m-5"  >
+        <div className="container m-5"  >
             <div style={{ marginTop: "90px" }} className="row mb-3">
                 <div className=" col-lg-2 col-md-4 col-sm-4">
                     <DatePicker className="form-control mb-2" selected={startDate} onChange={(date) => { setStartDate(date) }} />
@@ -238,9 +255,9 @@ export const ClientsPages = () => {
             <div className="overflow-auto" style={{ height: "59vh", minWidth: "1300px" }}>
                 <table className=" table-hover"  >
                     <tbody className="" >
-                        {sections.map((section, key) => {
-                            return AllClients.map(client => {
-                                if (client._id === section.client) {
+                        {sections && sections.map((section, key) => {
+                            return AllClients && AllClients.map(client => {
+                                if (client._id === section.client && (section.position === "offline" || section.position === "kelgan")) {
                                     paid = paid + section.priceCashier
                                     unpaid = unpaid + (section.price - section.priceCashier)
                                     k++
@@ -248,14 +265,14 @@ export const ClientsPages = () => {
                                         <tr key={key} >
                                             <td className="no" >{k}</td>
                                             <td className="date" >{new mongoose.Types.ObjectId(client._id).getTimestamp().toLocaleDateString()}</td>
-                                            <td className="fish text-uppercase" ><Link style={{ fontWeight: "500" }} to={`/doctor/clienthistory/${client._id}`} > {client.lastname} {client.firstname} {client.fathername} </Link></td>
+                                            <td className="fish text-uppercase" ><Link className='text-success' style={{ fontWeight: "700" }} to={`/doctor/clienthistory/${client._id}`} > {client.lastname} {client.firstname} {client.fathername} </Link></td>
                                             <td className="id" >{client.id}</td>
                                             <td className="phone">+{client.phone}</td>
-                                            <td className="section text-uppercase fw-bold text-success">  {section.name}</td>
-                                            <td className="edit"> {section.checkup === "chaqirilmagan" ? "" : <Link to={`/doctor/edit/${section._id}`} > <FontAwesomeIcon icon={faPenAlt} className="text-dark" /> </Link>}   </td>
+                                            <td className="section text-uppercase fw-bold text-success">  {section.name} <br /> <span style={{ fontSize: "10pt" }}>{section.subname}</span></td>
+                                            <td className="edit"> {section.checkup === "chaqirilmagan" ? "" : <Link to={`/doctor/adoption/${section._id}`} > <FontAwesomeIcon icon={faPenAlt} className="text-dark" /> </Link>}   </td>
                                             <td className={
                                                 payment.map((pay) => {
-                                                    if (pay ==="kelgan" && section.checkup === "kelgan") {
+                                                    if (pay === "kelgan" && section.checkup === "kelgan") {
                                                         return " text-success prices text-center"
                                                     }
                                                     if (pay === "kelmagan" && section.checkup === "kelmagan") {
@@ -281,8 +298,8 @@ export const ClientsPages = () => {
                                                 }
                                             </td>
                                             <td className="cek fw-bold"> {section.payment === "to'lanmagan" ? "" : section.price}</td>
-                                            <td className="cek fw-bold text-success"> {section.payment === "to'lanmagan" ? "" :section.priceCashier}</td>
-                                            <td className="cek fw-bold text-warning"> {section.payment === "to'lanmagan" ? "" :section.price - section.priceCashier}</td>
+                                            <td className="cek fw-bold text-success"> {section.payment === "to'lanmagan" ? "" : section.priceCashier}</td>
+                                            <td className="cek fw-bold text-warning"> {section.payment === "to'lanmagan" ? "" : section.price - section.priceCashier}</td>
                                         </tr>
                                     )
                                 }
@@ -337,9 +354,9 @@ export const ClientsPages = () => {
                         </tr>
                     </thead>
                     <tbody className="" >
-                        {sections.map((section, key) => {
-                            return AllClients.map(client => {
-                                if (client._id === section.client) {
+                        {sections &&  sections.map((section, key) => {
+                            return AllClients && AllClients.map(client => {
+                                if (client._id === section.client && (section.position === "offline" || section.position === "kelgan")) {
                                     kk++
                                     return (
                                         <tr key={key} >
@@ -351,12 +368,12 @@ export const ClientsPages = () => {
                                             <td className="phone">+{client.phone}</td>
                                             <td className="section text-uppercase">  {section.name} </td>
                                             <td  >
-                                                {section.payment === "to'lanmagan" ? "" :section.price}
+                                                {section.payment === "to'lanmagan" ? "" : section.price}
                                             </td>
                                             <td >
-                                                {section.payment === "to'lanmagan" ? "" :section.priceCashier}
+                                                {section.payment === "to'lanmagan" ? "" : section.priceCashier}
                                             </td>
-                                            <td className="cek fw-bold text-danger"> {section.payment === "to'lanmagan" ? "" :section.price - section.priceCashier}</td>
+                                            <td className="cek fw-bold text-danger"> {section.payment === "to'lanmagan" ? "" : section.price - section.priceCashier}</td>
                                         </tr>
                                     )
                                 }
@@ -368,7 +385,7 @@ export const ClientsPages = () => {
                     <tfooter className=" ">
                         <tr>
                             <th className="no" colSpan="7" scope="" > Jami </th>
-                            <th scope="" className="prices text-center">{paid+unpaid}</th>
+                            <th scope="" className="prices text-center">{paid + unpaid}</th>
                             <th scope="" className="prices text-center">{paid}</th>
                             <th scope="" className="prices text-center">{unpaid}</th>
                         </tr>

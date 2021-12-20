@@ -6,7 +6,7 @@ const auth = require('../middleware/auth.middleware')
 // ===================================================================================
 // ===================================================================================
 // RESEPTION routes
-// /api/section/reseption/register
+// /api/section/reseption/register/
 router.post('/reseption/register/:id', auth, async (req, res) => {
     try {
         const id = req.params.id
@@ -77,7 +77,7 @@ router.get('/reseption', auth, async (req, res) => {
 })
 
 // /api/section/reseption
-router.get('/reseption/:id', auth, async (req, res) => {
+router.get('/reseption/:id', async (req, res) => {
     try {
         const id = req.params.id
         const sections = await Section.findById(id)
@@ -89,7 +89,7 @@ router.get('/reseption/:id', auth, async (req, res) => {
 })
 
 // /api/section/reseption/clientId //
-router.get('/reseptionid/:id', auth, async (req, res) => {
+router.get('/reseptionid/:id', async (req, res) => {
     try {
         const id = req.params.id
         const sections = await Section.find({ client: id })
@@ -119,6 +119,17 @@ router.put('/reseption/:id', auth, async (req, res) => {
         const edit = await Section.findById(id)
         edit.position = req.body.position
         await edit.save()
+        res.json(edit)
+
+    } catch (e) {
+        res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
+    }
+})
+
+router.delete('/reseption/:id', auth, async (req, res) => {
+    try {
+        const id = req.params.id
+        const edit = await Section.findByIdAndDelete(id)
         res.json(edit)
 
     } catch (e) {
@@ -190,7 +201,7 @@ router.get('/doctoronline/:section', auth, async (req, res) => {
             position: "kelgan",
             payment: { $ne: "to'lanmagan" }
         })
-            .or([{ payment: "to'langan" }, { comment: { $ne: " " } }])
+            .or([{ payment: "to'langan" }, { commentCashier: { $ne: " " } }])
             .and([{ payment: { $ne: "to'lanmagan" } }, {}])
             .sort({ bronTime: 1 })
         let c = []
@@ -215,7 +226,7 @@ router.get('/doctoroffline/:section', auth, async (req, res) => {
             name: req.params.section,
             payment: { $ne: "to'lanmagan" }
         })
-            .or([{ payment: "to'langan" }, { comment: { $ne: " " } }])
+            .or([{ payment: "to'langan" }, { commentCashier: { $ne: " " } }])
             .sort({ turn: 1 })
         let c = []
         sections.map((section) => {
@@ -261,8 +272,11 @@ router.get('/doctorall/:section', auth, async (req, res) => {
     try {
         const section = await Section.find({
             name: req.params.section,
-            payment: { $ne: "to'lanmagan" }
-        }).sort({ _id: -1 })
+            payment: { $ne: "to'lanmagan" },
+
+        })
+            .or([{ payment: "to'langan" }, { commentCashier: { $ne: " " } }])
+            .sort({ _id: -1 })
         res.json(section)
     } catch (e) {
         res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
@@ -289,6 +303,7 @@ router.put('/doctordone/:id', auth, async (req, res) => {
         edit.comment = req.body.comment
         edit.summary = req.body.summary
         edit.done = req.body.done
+        edit.doctor = req.body.doctor
         await edit.save()
         res.json(edit)
 

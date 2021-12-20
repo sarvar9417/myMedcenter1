@@ -260,7 +260,7 @@ export const ClientsPages = () => {
                             <th scope="" className="id text-center">ID <FontAwesomeIcon icon={faSort} /></th>
                             <th scope="" className="turn text-center">Navbati <FontAwesomeIcon icon={faSort} /></th>
                             <th scope="" className="phone text-center">Tel <FontAwesomeIcon icon={faSort} /></th>
-                            <th scope="" className="section text-center">Bo'limi <FontAwesomeIcon icon={faSort} /></th>
+                            <th scope="" className="section text-center">Bo'limi va maqsadi <FontAwesomeIcon icon={faSort} /></th>
                             <th scope="" className="prices text-center">To'lov <FontAwesomeIcon icon={faSort} /></th>
                             <th scope="" className="prices text-center">To'langan <FontAwesomeIcon icon={faSort} /></th>
                             <th scope="" className="prices text-center">Qarz <FontAwesomeIcon icon={faSort} /></th>
@@ -269,9 +269,11 @@ export const ClientsPages = () => {
                     <tbody className="" >
                         {sections && sections.map((section, key) => {
                             return AllClients.map(client => {
-                                if (client._id === section.client) {
-                                    paid = paid + section.priceCashier
-                                    unpaid = unpaid + ( section.price - section.priceCashier)
+                                if (client._id === section.client && (section.bron === "offline" || (section.bron === "online" && section.position ==="kelgan"))) {
+                                    if (section.payment !== "to'lanmagan") {
+                                        paid = paid + section.priceCashier
+                                        unpaid = unpaid + (section.price - section.priceCashier)
+                                    }
                                     kk++
                                     return (
                                         <tr key={key} >
@@ -281,10 +283,10 @@ export const ClientsPages = () => {
                                             <td className="id" >{client.id}</td>
                                             <td className="turn">{section.bron === "offline" ? section.turn :  section.bronTime + " " + new Date(section.bronDay).toLocaleDateString()}</td>
                                             <td className="phone">+{client.phone}</td>
-                                            <td className="section text-uppercase">  {section.name} </td>
-                                            <td >{section.price}</td>
-                                            <td >{section.priceCashier}</td>
-                                            <td >{section.price - section.priceCashier}</td>
+                                            <td className="section text-uppercase">  {section.name}  {section.subname} </td>
+                                            <td >{section.payment === "to'lanmagan" ? "Rad etilgan" : section.price}</td>
+                                            <td >{section.payment === "to'lanmagan" ? "Rad etilgan" : section.priceCashier}</td>
+                                            <td >{section.payment === "to'lanmagan" ? "Rad etilgan" : section.price - section.priceCashier}</td>
                                         </tr>
                                     )
                                 }
@@ -316,7 +318,7 @@ export const ClientsPages = () => {
                     <tbody className="" >
                         {sections &&  sections.map((section, key) => {
                             return AllClients.map(client => {
-                                if (client._id === section.client) {
+                                if (client._id === section.client && (section.bron === "offline" || (section.bron === "online" && section.position === "kelgan")) ) {
                                     k++
                                     return (
                                         <tr key={key}  >
@@ -326,10 +328,10 @@ export const ClientsPages = () => {
                                             <td className="id" >{client.id}</td>
                                             <td className="turn">{section.bron === "offline" ? section.turn : section.bronTime + " " + new Date(section.bronDay).toLocaleDateString()}</td>
                                             <td className="phone">+{client.phone}</td>
-                                            <td className="section text-uppercase"> <Link to={`/reseption/clienthistory/${section._id}`} className={section.summary !== " " ? "prices fw-bold text-success" : "prices fw-bold text-danger"} > {section.name} </Link></td>
+                                            <td className="section text-uppercase"> <Link to={`/reseption/clienthistory/${section._id}`} className={section.summary !== " " ? "prices fw-bold text-success" : "prices fw-bold text-danger"} > {section.name} <br /> <span style={{ fontSize: "10pt" }}>{section.subname}</span> </Link></td>
                                             <td className="edit"> <Link to={`/reseption/edit/${client._id}`} > <FontAwesomeIcon icon={faPenAlt} className="text-dark" /> </Link>  </td>
-                                            <td className="prices fw-bold" >{section.price}</td>
-                                            <td className="prices fw-bold text-success" >{section.priceCashier}</td>
+                                            <td className="prices fw-bold" >{section.payment ==="to'lanmagan"? "Rad etilgan": section.price}</td>
+                                            <td className="prices fw-bold text-success" >{section.payment === "to'lanmagan" ? "Rad etilgan" :section.priceCashier}</td>
                                             <td className="cek"> <Link to={`/reseption/reciept/${client._id}/${section.connector}`} > <FontAwesomeIcon icon={faPrint} className="fa-2x" /> </Link>  </td>
                                         </tr>
                                     )

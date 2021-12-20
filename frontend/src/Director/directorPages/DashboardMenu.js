@@ -2,9 +2,7 @@ import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { AuthContext } from '../context/AuthContext'
 import { useHttp } from '../hooks/http.hook'
-import { AddDoctor } from './Others/AddDoctor'
 import { toast } from "react-toastify"
-import { Loader } from '../components/Loader'
 
 
 export const DashboardMenu = () => {
@@ -57,12 +55,21 @@ export const DashboardMenu = () => {
                 Authorization: `Bearer ${auth.token}`
             })
             let i = 0
+            let k = 0
             let price = 0
             fetch.map((section) => {
                 if (
                     new Date(section.bronDay).toLocaleDateString() === new Date().toLocaleDateString()
+                    &&
+                    section.done === "tasdiqlangan"
                 ) {
                     i++
+                }
+                if (
+                    new Date(section.bronDay).toLocaleDateString() === new Date().toLocaleDateString()
+                    &&
+                    (section.payment === "to'langan" || section.commentCashier.length >6)
+                ) {
                     price = price + section.priceCashier
                 }
             })
