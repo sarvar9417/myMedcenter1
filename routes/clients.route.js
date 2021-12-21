@@ -25,11 +25,12 @@ router.post('/reseption/register', auth, async (req, res) => {
             born,
             phone,
         } = req.body
+        const allClients = await Clients.find()
         const clients = new Clients({
             firstname,
             lastname,
             fathername,
-            id,
+            id: allClients.length + 1000001,
             gender,
             born,
             phone,

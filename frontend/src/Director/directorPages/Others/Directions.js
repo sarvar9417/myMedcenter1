@@ -7,18 +7,6 @@ import { faTrashAlt, faEdit } from '@fortawesome/free-solid-svg-icons'
 import { toast } from "react-toastify"
 import {Loader} from '../../components/Loader'
 
-
-const customStyles = {
-    content: {
-        top: '50%',
-        left: '50%',
-        right: 'auto',
-        bottom: 'auto',
-        marginRight: '-50%',
-        transform: 'translate(-50%, -50%)',
-    },
-}
-
 toast.configure()
 export const Directions = () => {
     const auth = useContext(AuthContext)
@@ -87,6 +75,7 @@ export const Directions = () => {
                                             <th className="text-center">Xizmat nomi</th>
                                             <th className="text-center">Xizmat narxi</th>
                                             <th className="text-center">Xizmat turi</th>
+                                            <th className="text-center">Xizmat xonasi</th>
                                             <th className="text-center">Tahrirlash</th>
                                             <th className="text-center">O'chirish</th>
                                         </tr>
@@ -103,6 +92,7 @@ export const Directions = () => {
                                                         </td>
                                                         <td className="text-center">{direction.price} sum</td>
                                                         <td className="text-center">{direction.subsection}</td>
+                                                        <td className="text-center">{direction.room}</td>
                                                         <td className="text-center"> <Link to={`/director/directionedit/${direction._id}`} className="btn button-success  px-3" ><FontAwesomeIcon icon={faEdit}></FontAwesomeIcon> </Link></td>
                                                         <td className="text-center"> <button onClick={() => { setRemove(direction); window.scrollTo({top:0}) ; setModal(true) }} className="btn button-danger px-3" ><FontAwesomeIcon icon={faTrashAlt}></FontAwesomeIcon> </button></td>
                                                     </tr>)

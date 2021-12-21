@@ -9,20 +9,9 @@ import makeAnimated from "react-select/animated"
 import { CheckClentData } from "./CheckClentData"
 import { AuthContext } from "../../context/AuthContext"
 import '../radio.css'
-import Modal from 'react-modal'
 const mongoose = require("mongoose")
 const animatedComponents = makeAnimated()
 
-const customStyles = {
-  content: {
-    top: '50%',
-    left: '50%',
-    right: 'auto',
-    bottom: 'auto',
-    marginRight: '-50%',
-    transform: 'translate(-50%, -50%)',
-  },
-}
 
 
 toast.configure()
@@ -93,6 +82,11 @@ export const NewClient = () => {
       let turn = 0
       turns.map((sec) => {
         if (checkTurn(sec, section.section)) {
+          turn++
+        }
+      })
+      s.map((sec) => {
+        if (sec.name === section.section) {
           turn++
         }
       })

@@ -78,6 +78,11 @@ export const OldClient = () => {
           turn++
         }
       })
+      s.map((sec) => {
+        if (sec.name === section.section) {
+          turn++
+        }
+      })
       s.push({
         name: section.section,
         subname: section.subsection,
@@ -149,7 +154,7 @@ export const OldClient = () => {
         Authorization: `Bearer ${auth.token}`
       })
 
-      createAllSections( connector._id)
+      createAllSections(connector._id)
     } catch (e) {
       notify(e)
     }
@@ -168,7 +173,7 @@ export const OldClient = () => {
         Authorization: `Bearer ${auth.token}`
       })
       console.log(data)
-    } catch (e) { 
+    } catch (e) {
       notify(e)
     }
   }
@@ -316,7 +321,7 @@ export const OldClient = () => {
               <div className="col-7">
                 <label className="text-muted mandatory"></label>
                 <input
-                disabled
+                  disabled
                   defaultValue={section.price}
                   onChange={createSections}
                   id={key}
@@ -343,72 +348,72 @@ export const OldClient = () => {
 
       <div className="mt-5 text-center" >
         <button
-          onClick={()=>setModal(true)}
+          onClick={() => setModal(true)}
           className="btn btn-primary profile-button"
         >
           Saqlash
         </button>
       </div>
 
-      
+
 
       {/* Modal oynaning ochilishi */}
       <div className={modal ? "modal" : "d-none"}>
         <div className="modal-card">
           <div className="card p-4" style={{ fontFamily: "times" }}>
-          <div className="text-center fs-4 fw-bold text-secondary">
-            <span className="text-dark">Mijoz: </span>  {client.lastname} {client.firstname} {client.fathername}
-          </div>
-          <table className="w-100 mt-3">
-            <thead>
-              <tr style={{ borderBottom: "1px solid #999" }} >
-                <th style={{ width: "10%", textAlign: "center", padding: "10px 0" }}>№</th>
-                <th style={{ width: "30%", textAlign: "center", padding: "10px 0" }}>Bo'limlar</th>
-                <th style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>Hisob</th>
-              </tr>
-            </thead>
-            <tbody style={{ borderBottom: "1px solid #999" }}>
-
-              {
-                sections.map((section, key) => {
-                  allPrice = allPrice + section.price
-                  return (
-                    <tr key={key}>
-                      <td style={{ width: "10%", textAlign: "center", padding: "10px 0" }}>{key + 1}</td>
-                      <td style={{ width: "30%", textAlign: "center", padding: "10px 0" }}>
-                        {section.name}
-                      </td>
-                      <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{section.price}</td>
-                    </tr>
-                  )
-                })
-              }
-
-            </tbody>
-          </table>
-
-          <div className="row m-1 mt-3">
-            <div className="col-6">
-              <div className="fw-bold text-primary">Jami to'lov:</div>
+            <div className="text-center fs-4 fw-bold text-secondary">
+              <span className="text-dark">Mijoz: </span>  {client.lastname} {client.firstname} {client.fathername}
             </div>
-            <div className="col-6">
-              <div className="fw-bold  text-end ">{allPrice}</div>
+            <table className="w-100 mt-3">
+              <thead>
+                <tr style={{ borderBottom: "1px solid #999" }} >
+                  <th style={{ width: "10%", textAlign: "center", padding: "10px 0" }}>№</th>
+                  <th style={{ width: "30%", textAlign: "center", padding: "10px 0" }}>Bo'limlar</th>
+                  <th style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>Hisob</th>
+                </tr>
+              </thead>
+              <tbody style={{ borderBottom: "1px solid #999" }}>
+
+                {
+                  sections.map((section, key) => {
+                    allPrice = allPrice + section.price
+                    return (
+                      <tr key={key}>
+                        <td style={{ width: "10%", textAlign: "center", padding: "10px 0" }}>{key + 1}</td>
+                        <td style={{ width: "30%", textAlign: "center", padding: "10px 0" }}>
+                          {section.name}
+                        </td>
+                        <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{section.price}</td>
+                      </tr>
+                    )
+                  })
+                }
+
+              </tbody>
+            </table>
+
+            <div className="row m-1 mt-3">
+              <div className="col-6">
+                <div className="fw-bold text-primary">Jami to'lov:</div>
+              </div>
+              <div className="col-6">
+                <div className="fw-bold  text-end ">{allPrice}</div>
+              </div>
+              <hr />
+
             </div>
-            <hr />
+            <div className="row m-1">
+              <div className="col-12 text-center">
+                <button onClick={createConnector} className="btn button-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
+                <button onClick={() => setModal(false)} className="btn button-danger" >Qaytish</button>
+              </div>
+            </div>
 
           </div>
-          <div className="row m-1">
-            <div className="col-12 text-center">
-              <button onClick={createConnector} className="btn button-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
-              <button onClick={()=>setModal(false)} className="btn button-danger" >Qaytish</button>
-            </div>
-          </div>
-
-        </div>
         </div>
       </div>
 
-      
+
     </div>
   )
 }

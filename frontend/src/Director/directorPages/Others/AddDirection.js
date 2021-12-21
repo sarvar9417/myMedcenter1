@@ -1,23 +1,11 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { Link, useHistory } from 'react-router-dom'
-import Modal from 'react-modal'
 import { toast } from "react-toastify"
 import { AuthContext } from '../../context/AuthContext'
 import { useHttp } from '../../hooks/http.hook'
 import { CheckDirection } from './CheckDirection'
 import { Loader } from '../../components/Loader'
 
-
-const customStyles = {
-  content: {
-    top: '50%',
-    left: '50%',
-    right: 'auto',
-    bottom: 'auto',
-    marginRight: '-50%',
-    transform: 'translate(-50%, -50%)',
-  },
-}
 toast.configure()
 export const AddDirection = () => {
   const auth = useContext(AuthContext)
@@ -32,7 +20,8 @@ export const AddDirection = () => {
     price: "",
     section: "",
     subsection: " ",
-    label: ""
+    label: "",
+    room: ""
   })
 
   const changeSection = (event) => {
@@ -55,6 +44,10 @@ export const AddDirection = () => {
 
   const changePrice = (event) => {
     setDirection({ ...direction, price: parseInt(event.target.value) })
+  }
+
+  const changeRoom = (event) => {
+    setDirection({ ...direction, room: event.target.value })
   }
 
   const checkDirection = () => {
@@ -105,6 +98,7 @@ export const AddDirection = () => {
                       <th className="text-center">Xizmat nomi</th>
                       <th className="text-center">Xizmat narxi</th>
                       <th className="text-center">Xizmat turi</th>
+                      <th className="text-center">Xizmat xonasi</th>
                       <th className="text-center">Saqlash</th>
                     </tr>
                   </thead>
@@ -117,6 +111,7 @@ export const AddDirection = () => {
                       </td>
                       <td className="text-center"><input defaultValue={direction.price} onChange={changePrice} type="number" name="lastname" className="addDirection" /> sum</td>
                       <td className="text-center"><input defaultValue={direction.subsection} onChange={changeSubsection} name="lastname" className="addDirection" /></td>
+                      <td className="text-center"><input defaultValue={direction.room} onChange={changeRoom} name="room" className="addDirection" /></td>
                       <td className="text-center"><button onClick={checkDirection} className="btn button-success" >Saqlash</button> </td>
                     </tr>
                   </tbody>
@@ -142,6 +137,7 @@ export const AddDirection = () => {
                       <th className="text-center">Xizmat nomi</th>
                       <th className="text-center">Xizmat narxi</th>
                       <th className="text-center">Xizmat turi</th>
+                      <th className="text-center">Xizmat xonasi</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -153,6 +149,7 @@ export const AddDirection = () => {
                       </td>
                       <td className="text-center">{direction.price} sum</td>
                       <td className="text-center">{direction.subsection}</td>
+                      <td className="text-center">{direction.room}</td>
                     </tr>
 
                   </tbody>

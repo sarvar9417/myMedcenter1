@@ -73,7 +73,7 @@ export const Turn = () => {
                     ) {
                         return (
                             <div className="col-lg-3 col-md-4 col-sm-6 mb-2" key={index}>
-                                <DirectionTurn section={direction.section} />
+                                <DirectionTurn section={direction.section} room = {direction.room} />
                             </div>)
                     }
                 })}

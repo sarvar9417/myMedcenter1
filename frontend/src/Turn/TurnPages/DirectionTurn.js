@@ -1,7 +1,7 @@
 import React, { useCallback, useState } from 'react'
 import { useHttp } from '../hooks/http.hook'
 
-export const DirectionTurn = ({ section }) => {
+export const DirectionTurn = ({ section, room }) => {
     const { request } = useHttp()
 
     const [offline, setOffline] = useState(0)
@@ -42,7 +42,7 @@ export const DirectionTurn = ({ section }) => {
                 <div className="col-4" style={{ textAlign: "center" }}>
                     <div className="image">
                         <h5>Xona</h5>
-                        <h1 style={{ color: "#e3342f" }}>7</h1>
+                        <h1 style={{ color: "#e3342f" }}>{room}</h1>
                     </div>
                 </div>
             </div>

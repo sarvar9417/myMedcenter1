@@ -31,7 +31,8 @@ export const EditDirection = () => {
     value: "",
     price: "",
     section: "",
-    subsection: ""
+    subsection: "", 
+    room: ""
   })
   const directionId = useParams().id
 
@@ -44,7 +45,8 @@ export const EditDirection = () => {
         value: data.value,
         price: data.price,
         section: data.section,
-        subsection: data.subsection
+        subsection: data.subsection,
+        room: data.room
       })
     } catch (e) {
       notify(e)
@@ -71,6 +73,10 @@ export const EditDirection = () => {
 
   const changePrice = (event) => {
     setDirection({ ...direction, price: parseInt(event.target.value) })
+  }
+
+  const changeRoom = (event) => {
+    setDirection({ ...direction, room: event.target.value })
   }
 
   const checkDirection = () => {
@@ -128,6 +134,7 @@ export const EditDirection = () => {
                       <th className="text-center">Xizmat nomi</th>
                       <th className="text-center">Xizmat narxi</th>
                       <th className="text-center">Xizmat turi</th>
+                      <th className="text-center">Xizmat xonasi</th>
                       <th className="text-center">Saqlash</th>
                     </tr>
                   </thead>
@@ -140,6 +147,7 @@ export const EditDirection = () => {
                       </td>
                       <td className="text-center"><input defaultValue={direction.price} onChange={changePrice} name="" className="addDirection" /> sum</td>
                       <td className="text-center"><input defaultValue={direction.subsection} onChange={changeSubsection} name="" className="addDirection" /></td>
+                      <td className="text-center"><input defaultValue={direction.room} onChange={changeRoom} name="room" className="addDirection" /></td>
                       <td className="text-center"><button onClick={checkDirection} className="btn button-success" >Saqlash</button> </td>
                     </tr>
                   </tbody>
@@ -165,6 +173,7 @@ export const EditDirection = () => {
                       <th className="text-center">Xizmat nomi</th>
                       <th className="text-center">Xizmat narxi</th>
                       <th className="text-center">Xizmat turi</th>
+                      <th className="text-center">Xizmat xonasi</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -176,6 +185,7 @@ export const EditDirection = () => {
                       </td>
                       <td className="text-center">{direction.price} sum</td>
                       <td className="text-center">{direction.subsection}</td>
+                      <td className="text-center">{direction.room}</td>
                     </tr>
 
                   </tbody>
