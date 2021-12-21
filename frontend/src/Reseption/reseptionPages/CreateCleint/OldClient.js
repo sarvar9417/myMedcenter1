@@ -197,9 +197,6 @@ export const OldClient = () => {
     return false
   }
 
-  if (loading) {
-    return <Loader />
-  }
 
   return (
     <div>

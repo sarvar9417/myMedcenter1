@@ -219,10 +219,6 @@ export const NewClient = () => {
     return false
   }
 
-  if (loading) {
-    return <Loader />
-  }
-
   return (
     <div>
       <div className="row" >

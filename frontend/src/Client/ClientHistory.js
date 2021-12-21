@@ -4,13 +4,12 @@ import { savePDF } from '@progress/kendo-react-pdf'
 import { useHttp } from './hooks/http.hook'
 import { toast } from 'react-toastify'
 import QRCode from 'qrcode'
-import { Loader } from '../Director/components/Loader'
 
 toast.configure()
 export const ClientHistory = () => {
     //
     const clientId = useParams().id
-    const { request, loading, error, clearError } = useHttp()
+    const { request, error, clearError } = useHttp()
     const [sections, setSections] = useState([])
     const [client, setClient] = useState()
     const [baseUrl, setBasuUrl] = useState()
@@ -112,9 +111,6 @@ export const ClientHistory = () => {
         }
     }, [notify, clearError])
 
-    if (loading) {
-        return <Loader />
-    }
     return (
         <div>
             <div className='text-end container pt-3' >
@@ -123,9 +119,9 @@ export const ClientHistory = () => {
             <dl style={{ maxHeight: "100vh", overflow: "auto" }}>
                 <dl style={{ backgroundColor: "#123456" }}>
                     <dl ref={contentArea} style={{ width: "15cm", margin: "0 auto" }} >
-                        {sections.length === 0 ? <h3 className='text-white'>Hurmatli mijoz ma'lumotlari tayyor emas!!!</h3> : sections.map((section) => {
+                        {sections.length === 0 ? <h3 className='text-white'>Hurmatli mijoz hozirgi vaqtda shifokor tomonidan xulosa berilmagan!!!</h3> : sections.map((section) => {
                             return (
-                                <dl style={{ minHeight: "100vh", fontFamily: "times !important", fontSize: "7pt", backgroundColor: "white" }} className="m-2">
+                                <dl style={{ minHeight: "297mm", fontFamily: "times !important", fontSize: "7pt", backgroundColor: "white" }} className="m-2">
                                     <dl className="row">
                                         <dl className="col-8 border-right border-dark text-center  border-5 m-none">
                                             <img alt="logo" src={logo && logo.logo} className="w-50" />
@@ -161,8 +157,8 @@ export const ClientHistory = () => {
                                             <p className="">для получения результата сканируйте здесь</p>
                                         </dl>
                                     </dl>
-                                    <dl className="row">
-                                        <dl className="col-12 fs-6 text-center fw-bold">
+                                    <dl className="row mb-0">
+                                        <dl className="col-12 fs-6 text-center fw-bold mb-0">
                                             {section.name}
                                             <h5 style={{ fontSize: "9pt" }}>
                                                 ({section.subname})
@@ -216,7 +212,7 @@ export const ClientHistory = () => {
 
                                         </dl>
                                     </dl>
-                                    <dl>
+                                    <div style={{ backgroundImage: `${logo && logo.logo}`, backgroundSize: "cover"}}>
                                         <dl className='row'>
                                             <dl className='col-12'>
                                                 <pre style={{ whiteSpace: "pre-wrap" }}>
@@ -227,10 +223,9 @@ export const ClientHistory = () => {
                                                 </pre>
                                             </dl>
                                         </dl>
-                                    </dl>
+                                    </div>
                                 </dl>
                             )
-
                         })
                         }
                     </dl>

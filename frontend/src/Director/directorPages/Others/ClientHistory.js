@@ -5,14 +5,13 @@ import { useHttp } from '../../hooks/http.hook'
 import { toast } from 'react-toastify'
 import { savePDF } from '@progress/kendo-react-pdf'
 import QRCode from 'qrcode'
-import { Loader } from '../../../Doctor/components/Loader'
 
 toast.configure()
 export const ClientHistory = () => {
     const auth = useContext(AuthContext)
 
     const sectionId = useParams().id
-    const { request, loading, error, clearError } = useHttp()
+    const { request, error, clearError } = useHttp()
     const [section, setSection] = useState()
     const [client, setClient] = useState()
     const [baseUrl, setBaseUrl] = useState()
@@ -106,9 +105,6 @@ export const ClientHistory = () => {
         }
     }, [notify, clearError])
 
-    if (loading) {
-        return <Loader />
-    }
     return (
         <div>
             <div className='text-end' >
@@ -117,7 +113,7 @@ export const ClientHistory = () => {
             <dl style={{ maxHeight: "100vh", overflow: "auto" }}>
                 <dl style={{ backgroundColor: "#123456" }}>
                     <dl ref={contentArea} style={{ width: "15cm", margin: "0 auto" }} >
-                        <dl style={{ minHeight: "100vh", fontFamily: "times !important", fontSize: "7pt", backgroundColor: "white" }} className="m-2">
+                        <dl style={{ minHeight: "297mm", fontFamily: "times !important", fontSize: "7pt", backgroundColor: "white" }} className="m-2">
                             <dl className="row">
                                 <dl className="col-8 border-right border-dark text-center  border-5 m-none">
                                     <img alt="logo" src={logo && logo.logo} className="w-50" />

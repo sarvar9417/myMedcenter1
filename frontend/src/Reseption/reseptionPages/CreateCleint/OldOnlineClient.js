@@ -184,10 +184,6 @@ export const OldOnlineClient = () => {
     }
 
 
-    if (loading) {
-        return <Loader />
-    }
-
     return (
         <>
             <div className="row">
@@ -339,7 +335,7 @@ export const OldOnlineClient = () => {
             </div>
             <div className="mt-5 text-center">
                 <button
-                    onClick={()=>setModal(true)}
+                    onClick={() => setModal(true)}
                     className="btn btn-primary profile-button"
                 >
                     Saqlash
@@ -398,7 +394,7 @@ export const OldOnlineClient = () => {
                         <div className="row m-1">
                             <div className="col-12 text-center">
                                 <button onClick={createConnector} className="btn button-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
-                                <button onClick={()=>setModal(false)} className="btn button-danger" >Qaytish</button>
+                                <button onClick={() => setModal(false)} className="btn button-danger" >Qaytish</button>
                             </div>
                         </div>
 
