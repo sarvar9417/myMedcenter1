@@ -166,7 +166,7 @@ router.patch('/director/:id', async (req, res) => {
 router.delete('/director/:id', auth, async (req, res) => {
     try {
         const id = req.params.id
-        const del = await DoctorResume.findByIdAndDelete(id)
+        const del = await Doctor.findByIdAndDelete(id)
         res.json(del)
     } catch (e) {
         res.status(500).json({ message: 'Serverda xatolik yuz berdi' })

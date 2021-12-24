@@ -72,6 +72,7 @@ export const Directions = () => {
                                 <table className="datatable table table-hover table-center mb-0">
                                     <thead>
                                         <tr>
+                                            <th className="text-center">№</th>
                                             <th className="text-center">Xizmat nomi</th>
                                             <th className="text-center">Xizmat narxi</th>
                                             <th className="text-center">Xizmat turi</th>
@@ -82,16 +83,17 @@ export const Directions = () => {
                                     </thead>
                                     <tbody>
                                         {
-                                            directions && directions.map((direction) => {
+                                            directions && directions.map((direction, index) => {
                                                 return (
                                                     <tr>
-                                                        <td className="text-center">
+                                                        <td className="">{index+1}</td>
+                                                        <td className="text-bold">
                                                             <span className="table-avatar">
                                                                 <span href="profile.html">{direction.section}</span>
                                                             </span>
                                                         </td>
                                                         <td className="text-center">{direction.price} sum</td>
-                                                        <td className="text-center">{direction.subsection}</td>
+                                                        <td className="text-bold">{direction.subsection}</td>
                                                         <td className="text-center">{direction.room}</td>
                                                         <td className="text-center"> <Link to={`/director/directionedit/${direction._id}`} className="btn button-success  px-3" ><FontAwesomeIcon icon={faEdit}></FontAwesomeIcon> </Link></td>
                                                         <td className="text-center"> <button onClick={() => { setRemove(direction); window.scrollTo({top:0}) ; setModal(true) }} className="btn button-danger px-3" ><FontAwesomeIcon icon={faTrashAlt}></FontAwesomeIcon> </button></td>

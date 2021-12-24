@@ -23,7 +23,8 @@ function validateDoctor(doctor) {
         section: Joi.string(),
         phone: Joi.number(),
         born: Joi.date(),
-        image: Joi.string()
+        image: Joi.string(),
+        
     })
     return schema.validate(doctor)
 }
