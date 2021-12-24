@@ -1,6 +1,6 @@
 {
     "PORT": 80,
-    "mongoUri": "mongodb://127.0.0.1:27017",
+    "mongoUri": "mongodb://localhost:27017",
     "jwtSecret": "sarvar9417",
-    "baseUrl": "http://31.184.253.218"
+    "baseUrl": "http://80.249.147.195"
 }
