@@ -3,7 +3,7 @@ const router = Router()
 const { Source, validateSource } = require('../models/Source')
 const auth = require('../middleware/auth.middleware')
 
-router.post('/register', auth, async (req, res)=>{
+router.post('/register', auth, async (req, res) => {
     try {
         const { error } = validateSource(req.body)
         if (error) {
@@ -25,7 +25,7 @@ router.post('/register', auth, async (req, res)=>{
     } catch (e) {
         res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
     }
-} )
+})
 
 router.get('/', auth, async (req, res) => {
     try {
@@ -40,6 +40,17 @@ router.get('/:id', auth, async (req, res) => {
     try {
         const source = await Source.findById(req.params.id)
         res.json(source)
+    } catch (e) {
+        res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
+    }
+})
+
+router.patch('/:id', auth, async (req, res) => {
+    try {
+        const id = req.params.id
+        const edit = await Source.findByIdAndUpdate(id, req.body)
+        res.json(edit)
+
     } catch (e) {
         res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
     }

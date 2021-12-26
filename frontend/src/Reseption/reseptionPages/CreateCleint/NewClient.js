@@ -19,21 +19,23 @@ export const NewClient = () => {
   const notify = (e) => {
     toast.error(e)
   }
-  
+
   // Modal oyna funksiyalari
   let allPrice = 0
   const [modal, setModal] = useState(false)
-  
+
   //Avtorizatsiyani olish
   const auth = useContext(AuthContext)
   let s = []
-  
-  
+
+
   // So'rov kutish va xatoliklarni olish
   const { loading, request, error, clearError } = useHttp()
-  
+
+  const [advertisement, setAdvertisement] = useState(false)
   const [counteragents, setCounterAgents] = useState()
   const [counteragent, setCounterAgent] = useState(" ")
+  const [sources, setSources] = useState()
   const [source, setSource] = useState(" ")
   const getCounterAgents = useCallback(async () => {
     try {
@@ -41,7 +43,7 @@ export const NewClient = () => {
         Authorization: `Bearer ${auth.token}`
       })
       let c = []
-      fetch.map((data)=>{
+      fetch.map((data) => {
         c.push({
           label: data.clinic.toUpperCase() + " " + data.lastname + " " + data.firstname + " " + data.fathername,
           value: data.lastname + " " + data.firstname + " " + data.fathername
@@ -51,15 +53,26 @@ export const NewClient = () => {
     } catch (error) {
       notify(error)
     }
-  }, [auth, request, setCounterAgents, notify])
-  
+  }, [auth, request, setCounterAgents])
+
+  const getSources = useCallback(async () => {
+    try {
+      const fetch = await request('/api/source/', 'GET', null, {
+        Authorization: `Bearer ${auth.token}`
+      })
+      setSources(fetch)
+    } catch (error) {
+      notify(error)
+    }
+  }, [auth, request, setSources])
+
   //Navbatni ro'yxatga olish
   const [turns, seTurns] = useState([])
 
   //Registratsiyadan o'tgan bo'limlarni olish
   const [sections, setSections] = useState([])
 
-  
+
 
   //Boshqa sahifaga yo'naltirish yuklanishi
   const history = useHistory()
@@ -97,7 +110,7 @@ export const NewClient = () => {
     setClient({ ...client, born: new Date(event.target.value) })
   }
 
-  const changeCounterAgent = (event)=>{
+  const changeCounterAgent = (event) => {
     setCounterAgent(event.value)
   }
 
@@ -238,6 +251,9 @@ export const NewClient = () => {
     if (!options) {
       getOptions()
     }
+    if (!sources) {
+      getSources()
+    }
     if (!counteragents) {
       getCounterAgents()
     }
@@ -359,15 +375,34 @@ export const NewClient = () => {
           <label className="labels">Telefon raqami</label>
         </div>
       </div>
-      
-      <div className="row m-0 p-0">
-        <p className="m-0">Kontragentni tanlash</p>
+
+      <div className="text-end">
+        {
+          advertisement ?
+            <button onClick={()=>setAdvertisement(false)} className="adver">-</button>
+            :
+            <button onClick={() => setAdvertisement(true)} className="adver">+</button>
+        }
+      </div>
+      <div className={advertisement?"row m-0 p-1 border rounded": "d-none"}>
         <Select
+          placeholder="Kontragentni tanglang"
           className="m-0 p-0"
           onChange={(event) => changeCounterAgent(event)}
           components={animatedComponents}
           options={counteragents && counteragents}
         />
+        <div className="mt-3 text-center p-0" >
+          {
+            sources && sources.map((adver) => {
+              if (adver.name === source) {
+                return <button onClick={() => { setSource(adver.name) }} className="button-change"> {adver.name} </button>
+              } else {
+                return <button onClick={() => { setSource(adver.name); console.log(adver.name); }} className="button">{adver.name}</button>
+              }
+            })
+          }
+        </div>
       </div>
 
       <div className="row pt-3">

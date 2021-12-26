@@ -7,20 +7,9 @@ import { toast } from "react-toastify"
 import Select from "react-select"
 import makeAnimated from "react-select/animated"
 import { AuthContext } from "../../context/AuthContext"
-import Modal from 'react-modal'
 const mongoose = require("mongoose")
 const animatedComponents = makeAnimated()
 
-const customStyles = {
-  content: {
-    top: '50%',
-    left: '50%',
-    right: 'auto',
-    bottom: 'auto',
-    marginRight: '-50%',
-    transform: 'translate(-50%, -50%)',
-  },
-}
 
 
 toast.configure()
@@ -36,8 +25,10 @@ export const OldClient = () => {
     toast.error(e)
   }
 
+  const [advertisement, setAdvertisement] = useState(false)
   const [counteragents, setCounterAgents] = useState()
   const [counteragent, setCounterAgent] = useState(" ")
+  const [sources, setSources] = useState()
   const [source, setSource] = useState(" ")
   const getCounterAgents = useCallback(async () => {
     try {
@@ -56,6 +47,17 @@ export const OldClient = () => {
       notify(error)
     }
   }, [auth, request, setCounterAgents, notify])
+
+  const getSources = useCallback(async () => {
+    try {
+      const fetch = await request('/api/source/', 'GET', null, {
+        Authorization: `Bearer ${auth.token}`
+      })
+      setSources(fetch)
+    } catch (error) {
+      notify(error)
+    }
+  }, [auth, request, setSources])
 
   // Modal oyna funksiyalari
   let allPrice = 0
@@ -218,6 +220,9 @@ export const OldClient = () => {
       notify(error)
       clearError()
     }
+    if (!sources) {
+      getSources()
+    }
     allTurns()
   }, [allClients, allTurns])
 
@@ -335,14 +340,33 @@ export const OldClient = () => {
       </div>
       <div className="row"></div>
       
-      <div className="row m-0 p-0">
-        <p className="m-0">Kontragentni tanlash</p>
+      <div className="text-end">
+        {
+          advertisement ?
+            <button onClick={() => setAdvertisement(false)} className="adver">-</button>
+            :
+            <button onClick={() => setAdvertisement(true)} className="adver">+</button>
+        }
+      </div>
+      <div className={advertisement ? "row m-0 p-1 border rounded" : "d-none"}>
         <Select
+          placeholder="Kontragentni tanglang"
           className="m-0 p-0"
           onChange={(event) => changeCounterAgent(event)}
           components={animatedComponents}
           options={counteragents && counteragents}
         />
+        <div className="mt-3 text-center p-0" >
+          {
+            sources && sources.map((adver) => {
+              if (adver.name === source) {
+                return <button onClick={() => { setSource(adver.name) }} className="button-change"> {adver.name} </button>
+              } else {
+                return <button onClick={() => { setSource(adver.name); console.log(adver.name); }} className="button">{adver.name}</button>
+              }
+            })
+          }
+        </div>
       </div>
 
       <div className="row">

@@ -378,6 +378,23 @@ router.get('/counteragent/:agent', async (req, res) => {
 // ===================================================================================
 // ===================================================================================
 
+// ===================================================================================
+// ===================================================================================
+// Advertisement routes
+router.get('/advertisement/:agent', async (req, res) => {
+    try {
+        const sections = await Section.find({
+            source: req.params.agent
+        }).sort({ bronDay: -1 })
+        res.json(sections)
+    } catch (e) {
+        res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
+    }
+})
+
+// END Advertisement SECTION
+// ===================================================================================
+// ===================================================================================
 
 
 // ===================================================================================
@@ -430,10 +447,6 @@ router.put('/:id', auth, async (req, res) => {
     }
 })
 
-
-
-
-
 router.patch('/:id', auth, async (req, res) => {
     try {
         const id = req.params.id
@@ -444,9 +457,5 @@ router.patch('/:id', auth, async (req, res) => {
         res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
     }
 })
-
-
-
-
 
 module.exports = router

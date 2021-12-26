@@ -24,6 +24,10 @@ import { CounterAgents } from './marketing/counteragents/CounterAgents'
 import { AddCounterAgent } from './marketing/counteragents/AddCounterAgent'
 import { EditCounterAgent } from './marketing/counteragents/EditCounterAgent'
 import { ClientsCounterAgent } from './marketing/counteragents/ClientsCounterAgent'
+import { Advertisements } from './marketing/advertising/Advertisements'
+import { AddAdvertisement } from './marketing/advertising/AddAdvertisement'
+import { EditAdvertisement } from './marketing/advertising/EditAdvertisement'
+import { ClientsAdvertisements } from './marketing/advertising/ClientsAdvertisement'
 
 export const DirectorRoutes = (isAuthenticated) => {
     if (isAuthenticated) {
@@ -86,6 +90,18 @@ export const DirectorRoutes = (isAuthenticated) => {
                     </Route>
                     <Route path='/director/counteragentprocient/:id' >
                         <RouterComponent component={<Marketing component={<ClientsCounterAgent />} />} />
+                    </Route>
+                    <Route path='/director/advertisements' >
+                        <RouterComponent component={<Marketing component={<Advertisements />} />} />
+                    </Route>
+                    <Route path='/director/addadvertisements' >
+                        <RouterComponent component={<Marketing component={<AddAdvertisement />} />} />
+                    </Route>
+                    <Route path='/director/editadvertisement/:id' >
+                        <RouterComponent component={<Marketing component={<EditAdvertisement />} />} />
+                    </Route>
+                    <Route path='/director/clientsadvertisiments/:id' >
+                        <RouterComponent component={<Marketing component={<ClientsAdvertisements />} />} />
                     </Route>
                     <Route path="/sayt" >
                         <Sayt />

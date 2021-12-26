@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 export const CallCenter = () => {
     return (
         <div className="col-lg-3 col-6">
-            <Link to="/director/directions" className="small-box bg-danger">
+            <Link to="/director/callcenter" className="small-box bg-danger">
                 <div className="inner">
                     <h5>Call Center</h5>
                     <p>{new Date().toLocaleDateString()}</p>

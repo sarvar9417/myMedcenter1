@@ -67,3 +67,26 @@
   
 } */
 
+.button{
+  display: inline-block;
+  background-color: #0d6efd;
+  border: none;
+  color: white;
+  padding: 10px 15px;
+}
+
+.button-change {
+  display: inline-block;
+  background-color: rgb(255, 196, 0);
+  border: none;
+  color: black;
+  padding: 10px 15px;
+}
+
+.adver{
+  border: none;
+  background-color: white;
+  font-size: 16pt;
+  color: #777;
+}
+

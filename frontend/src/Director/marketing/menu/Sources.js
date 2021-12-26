@@ -5,7 +5,7 @@ export const Sources = () => {
     return (
         <div className="col-lg-3 col-6">
             {/* small box */}
-            <Link to='/director/doctors' className="small-box bg-warning">
+            <Link to='/director/advertisements' className="small-box bg-warning">
                 <div className="inner text-white">
                     <h5>Reklama</h5>
                     <p>{new Date().toLocaleDateString()}</p>

@@ -23,8 +23,10 @@ export const OldOnlineClient = () => {
         toast.error(e)
     }
 
+    const [advertisement, setAdvertisement] = useState(false)
     const [counteragents, setCounterAgents] = useState()
     const [counteragent, setCounterAgent] = useState(" ")
+    const [sources, setSources] = useState()
     const [source, setSource] = useState(" ")
     const getCounterAgents = useCallback(async () => {
         try {
@@ -43,6 +45,17 @@ export const OldOnlineClient = () => {
             notify(error)
         }
     }, [auth, request, setCounterAgents, notify])
+
+    const getSources = useCallback(async () => {
+        try {
+            const fetch = await request('/api/source/', 'GET', null, {
+                Authorization: `Bearer ${auth.token}`
+            })
+            setSources(fetch)
+        } catch (error) {
+            notify(error)
+        }
+    }, [auth, request, setSources])
 
     // Modal oyna funksiyalari
     let allPrice = 0
@@ -192,6 +205,9 @@ export const OldOnlineClient = () => {
             notify(error)
             clearError()
         }
+        if (!sources) {
+            getSources()
+        }
     }, [allClients])
 
 
@@ -293,15 +309,34 @@ export const OldOnlineClient = () => {
             </div>
             <div className="row">
             </div>
-            
-            <div className="row m-0 p-0 mt-3">
-                <p className="m-0">Kontragentni tanlash</p>
+
+            <div className="text-end">
+                {
+                    advertisement ?
+                        <button onClick={() => setAdvertisement(false)} className="adver">-</button>
+                        :
+                        <button onClick={() => setAdvertisement(true)} className="adver">+</button>
+                }
+            </div>
+            <div className={advertisement ? "row m-0 p-1 border rounded" : "d-none"}>
                 <Select
+                    placeholder="Kontragentni tanglang"
                     className="m-0 p-0"
                     onChange={(event) => changeCounterAgent(event)}
                     components={animatedComponents}
                     options={counteragents && counteragents}
                 />
+                <div className="mt-3 text-center p-0" >
+                    {
+                        sources && sources.map((adver) => {
+                            if (adver.name === source) {
+                                return <button onClick={() => { setSource(adver.name) }} className="button-change"> {adver.name} </button>
+                            } else {
+                                return <button onClick={() => { setSource(adver.name); console.log(adver.name); }} className="button">{adver.name}</button>
+                            }
+                        })
+                    }
+                </div>
             </div>
 
             <div className="row mt-3" >

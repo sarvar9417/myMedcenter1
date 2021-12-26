@@ -1,16 +1,13 @@
 
 import React, { useCallback, useContext, useEffect, useState } from 'react'
-import { Link, useHistory } from 'react-router-dom'
 import { toast } from "react-toastify"
 import { useHttp } from '../hooks/http.hook'
-import { Loader } from '../components/Loader'
 import { AuthContext } from '../context/AuthContext'
 
 export const Menu = () => {
     const [logo, setLogo] = useState()
     const auth = useContext(AuthContext)
-    const { request, error, clearError, loading } = useHttp()
-    const history = useHistory()
+    const { request, error, clearError } = useHttp()
 
     const notify = (e) => {
         toast.error(e)
