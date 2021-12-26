@@ -19,7 +19,10 @@ const section = new Schema({
     bronTime: { type: String },
     position: { type: String },
     checkup: { type: String },
-    doctor: {type: String}
+    doctor: {type: String},
+    source: String,
+    paymentMethod: String,
+    counterAgent: String
 
 
 })
@@ -43,7 +46,10 @@ function validateSection(section) {
         bronTime: Joi.string(),
         position: Joi.string(),
         checkup: Joi.string(),
-        doctor: Joi.string()
+        doctor: Joi.string(),
+        source: Joi.string(),
+        paymentMethod: Joi.string(),
+        counterAgent: Joi.string()
 
     })
     return schema.validate(section)

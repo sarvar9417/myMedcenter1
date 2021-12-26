@@ -5,36 +5,41 @@ import { useHttp } from '../../hooks/http.hook'
 import { toast } from 'react-toastify'
 
 toast.configure()
-export const Doctors = () => {
+export const CounterAgents = () => {
     const auth = useContext(AuthContext)
-    const { request } = useHttp()
-    const [doctors, setDoctors] = useState()
+    const { request, error, clearError } = useHttp()
+    const [counteragents, setCounterAgents] = useState()
     const notify = (e)=>{
         toast.error(e)
     }
 
-    const getDoctors = useCallback(async () => {
+    const getCounterAgents = useCallback(async () => {
         try {
-            const fetch = await request('/api/auth/doctor/director', 'GET', null, {
+            const fetch = await request('/api/counteragent/', 'GET', null, {
                 Authorization: `Bearer ${auth.token}`
             })
-            setDoctors(fetch)
+            setCounterAgents(fetch)
         } catch (error) {
             notify(error)
         }
-    })
+    }, [auth, request, setCounterAgents, notify])
 
     useEffect(() => {
-        if (!doctors) {
-            getDoctors()
+        if (!counteragents) {
+            getCounterAgents()
         }
-    }, [getDoctors])
+        if (error) {
+            notify(error)
+            clearError()
+        }
+    }, [notify, clearError])
+
     return (
         <div>
             <div className="row p-3">
                 <div className="col-12 text-end">
-                    <Link to="/director/adddoctor" className="btn button-success">
-                        Shifokor qo'shish
+                    <Link to="/director/addcounteragent" className="btn button-success">
+                        Kontragent yaratish
                     </Link>
                 </div>
             </div>
@@ -42,30 +47,28 @@ export const Doctors = () => {
                 <table class="table table-hover table-bordered " style={{ borderRadius: "15px !important" }} >
                     <thead style={{ backgroundColor: "#6c7ae0", color: "white" }}>
                         <tr>
-                            <th className="text-center" scope="col">#</th>
-                            <th className="text-center" scope="col">Surati</th>
+                            <th className="text-center" scope="col">№</th>
                             <th className="text-center" scope="col">F.I.SH</th>
                             <th className="text-center" scope="col">Ixtisosligi</th>
-                            <th className="text-center" scope="col">Tu'gilgan yili</th>
+                            <th className="text-center" scope="col">Kilinikasi</th>
                             <th className="text-center" scope="col">Telefon raqami</th>
-                            <th className="text-center" scope="col">Ish haqi (% da)</th>
+                            <th className="text-center" scope="col">Ulushi</th>
                             <th className="text-center" scope="col">Tahrirlash</th>
                         </tr>
                     </thead>
                     <tbody>
                         {
-                            doctors && doctors.map((doctor, index) => {
+                            counteragents && counteragents.map((agent, index) => {
                                 return (
                                     <tr key={index}>
                                         <th className="text-center" >{index+1}</th>
-                                        <td className="text-center"> <img src={doctor.image} width="35px" height="35px" className="rounded-circle" /> </td>
-                                        <td className="text-center"> <Link to={`/director/doctorprocient/${doctor._id}`} >{doctor.lastname} {doctor.firstname} {doctor.fathername}</Link> </td>
-                                        <td className="text-center">{doctor.section}</td>
-                                        <td className="text-center">{new Date(doctor.born).toLocaleDateString()}</td>
-                                        <td className="text-center">+{doctor.phone}</td>
-                                        <td className="text-center">{doctor.procient}%</td>
+                                        <td className="ps-3"> <Link className='text-success' style={{ fontWeight: "600" }} to={`/director/counteragentprocient/${agent._id}`} >{agent.lastname} {agent.firstname} {agent.fathername}</Link> </td>
+                                        <td className="text-center">{agent.section}</td>
+                                        <td className="text-center">{agent.clinic}</td>
+                                        <td className="text-center">+{agent.phone}</td>
+                                        <td className="text-center">{agent.procient} %</td>
                                         <td className="text-center">
-                                            <Link to={`/director/editdoctor/${doctor._id}`} className="btn" style={{ backgroundColor: "rgba(15, 183, 107, 0.12", color: "#26af48"}}>
+                                            <Link to={`/director/editcounteragent/${agent._id}`} className="btn" style={{ backgroundColor: "rgba(15, 183, 107, 0.12", color: "#26af48"}}>
                                                 Tahrirlash
                                             </Link></td>
                                     </tr>

@@ -2,7 +2,6 @@ import React, { useCallback, useContext, useEffect, useState } from "react"
 import { useHistory } from "react-router-dom"
 import { useHttp } from "../../hooks/http.hook"
 import "react-toastify/dist/ReactToastify.css"
-import { Loader } from "../../components/Loader"
 import { toast } from "react-toastify"
 import Select from "react-select"
 import makeAnimated from "react-select/animated"
@@ -16,29 +15,51 @@ const animatedComponents = makeAnimated()
 
 toast.configure()
 export const NewClient = () => {
-
+  //Xatoliklar chiqaruvi
+  const notify = (e) => {
+    toast.error(e)
+  }
+  
   // Modal oyna funksiyalari
   let allPrice = 0
   const [modal, setModal] = useState(false)
-
+  
   //Avtorizatsiyani olish
   const auth = useContext(AuthContext)
   let s = []
-
-
+  
+  
   // So'rov kutish va xatoliklarni olish
   const { loading, request, error, clearError } = useHttp()
-
+  
+  const [counteragents, setCounterAgents] = useState()
+  const [counteragent, setCounterAgent] = useState(" ")
+  const [source, setSource] = useState(" ")
+  const getCounterAgents = useCallback(async () => {
+    try {
+      const fetch = await request('/api/counteragent/', 'GET', null, {
+        Authorization: `Bearer ${auth.token}`
+      })
+      let c = []
+      fetch.map((data)=>{
+        c.push({
+          label: data.clinic.toUpperCase() + " " + data.lastname + " " + data.firstname + " " + data.fathername,
+          value: data.lastname + " " + data.firstname + " " + data.fathername
+        })
+      })
+      setCounterAgents(c)
+    } catch (error) {
+      notify(error)
+    }
+  }, [auth, request, setCounterAgents, notify])
+  
   //Navbatni ro'yxatga olish
   const [turns, seTurns] = useState([])
 
   //Registratsiyadan o'tgan bo'limlarni olish
   const [sections, setSections] = useState([])
 
-  //Xatoliklar chiqaruvi
-  const notify = (e) => {
-    toast.error(e)
-  }
+  
 
   //Boshqa sahifaga yo'naltirish yuklanishi
   const history = useHistory()
@@ -76,6 +97,10 @@ export const NewClient = () => {
     setClient({ ...client, born: new Date(event.target.value) })
   }
 
+  const changeCounterAgent = (event)=>{
+    setCounterAgent(event.value)
+  }
+
   const changeSections = (event) => {
     s = []
     event.map((section) => {
@@ -106,7 +131,10 @@ export const NewClient = () => {
         bronTime: " ",
         position: "offline",
         checkup: "chaqirilmagan",
-        doctor: " "
+        doctor: " ",
+        counterAgent: counteragent,
+        paymentMethod: " ",
+        source: source
       })
     })
     setSections(s)
@@ -192,13 +220,6 @@ export const NewClient = () => {
     }
   }
 
-  useEffect(() => {
-    if (!options) {
-      getOptions()
-    }
-    allClients()
-  }, [allClients])
-
   const checkTurn = (turn, name) => {
     if (
       mongoose.Types.ObjectId(turn._id).getTimestamp().getFullYear() ===
@@ -212,6 +233,20 @@ export const NewClient = () => {
       return true
     return false
   }
+
+  useEffect(() => {
+    if (!options) {
+      getOptions()
+    }
+    if (!counteragents) {
+      getCounterAgents()
+    }
+    allClients()
+    if (error) {
+      notify(error)
+      clearError()
+    }
+  }, [allClients])
 
   return (
     <div>
@@ -321,16 +356,25 @@ export const NewClient = () => {
             className="form-control inp"
             placeholder=""
           />
-          <label className="labels">Telefon raqam</label>
+          <label className="labels">Telefon raqami</label>
         </div>
       </div>
-      <hr className="form-control" />
+      
+      <div className="row m-0 p-0">
+        <p className="m-0">Kontragentni tanlash</p>
+        <Select
+          className="m-0 p-0"
+          onChange={(event) => changeCounterAgent(event)}
+          components={animatedComponents}
+          options={counteragents && counteragents}
+        />
+      </div>
 
-      <div className="row">
+      <div className="row pt-3">
         <div className="col-md-12" >
-          {/* <label className="labels">qayta tanlaganda narx o'chib ketadi</label> */}
+          <p className="m-0 ps-2">Bo'limni tanlang</p>
           <Select
-            className="mt-3"
+            className=""
             onChange={(event) => changeSections(event)}
             closeMenuOnSelect={false}
             components={animatedComponents}

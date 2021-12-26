@@ -30,7 +30,8 @@ export const EditDoctor = () => {
     born: "",
     phone: "",
     section: "",
-    image: ""
+    image: "",
+    procient: 0
   })
 
   const getDoctor = useCallback(async () => {
@@ -46,7 +47,8 @@ export const EditDoctor = () => {
         phone: data.phone,
         born: data.born,
         image: data.image,
-        section: data.section
+        section: data.section,
+        procient: data.procient
       })
     } catch (e) {
     }
@@ -126,6 +128,16 @@ export const EditDoctor = () => {
     } catch (e) {
       notify(e)
     }
+  }
+
+  const changeProcient = (event) => {
+    if (parseInt(event.target.value) > 100) {
+      return notify("Diqqat! Shifokor maoshi ishlagan summasidan ortib ketdi. Iltimos, maosh miqdori 100 foizdan oshmasligiga e'tibor qarating!")
+    }
+    if (parseInt(event.target.value) < 0) {
+      return notify("Diqqat! Shifokor maoshi ishlagan summasining 0 foizidan kam. Iltimos, maosh miqdori 0 foizdan kam emasligiga e'tibor qarating!")
+    }
+    setDoctor({ ...doctor, procient: parseInt(event.target.value) })
   }
 
   const [borderGreen, setBorderGreen] = useState(false)
@@ -215,6 +227,9 @@ export const EditDoctor = () => {
               <br />
               <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Parolni qayta kiriting</label>
               <input type="password" placeholder="Parolni qayta kiriting" onChange={changePassword} className={borderGreen ? `form-control border border-success` : `${borderRed ? "form-control border border-danger" : "form-control border"}`} />
+              <br />
+              <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Ish haqi(foiz - % miqdorida)</label>
+              <input defaultValue={doctor.procient} onChange={changeProcient} name="procient" type="number" className="form-control" />
             </div>
             <div className="col-12 col-md-6 p-4">
               <p className="fs-4"> Qabul bo'lim xodimi ma'lumotlari </p>
@@ -248,7 +263,7 @@ export const EditDoctor = () => {
         </div>
         <div className="card-footer">
           <button className="btn button-success me-4" onClick={checkData}>Saqlash</button>
-          <button className="btn button-danger" onClick={()=>{setModal1(true); window.scrollTo({top:0})}}>O'chirish</button>
+          <button className="btn button-danger" onClick={() => { setModal1(true); window.scrollTo({ top: 0 }) }}>O'chirish</button>
         </div>
       </div>
 
@@ -277,7 +292,9 @@ export const EditDoctor = () => {
                     <br />
                     <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Parol</label>
                     <input disabled placeholder="Parolni kiriting" value={doctor.password} onChange={createPassword} name="password" type="text" className={borderGreen ? `form-control border border-success` : `${borderRed ? "form-control border border-danger" : "form-control border"}`} />
-
+                    <br />
+                    <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Ish haqi(foiz - % miqdorida)</label>
+                    <input defaultValue={doctor.procient} disabled name="procient" type="number" className="form-control" />
                   </div>
                   <div className="col-12 col-md-6 p-4">
                     <p className="fs-4"> Rahbar ma'lumotlari </p>
@@ -325,7 +342,7 @@ export const EditDoctor = () => {
               </div>
               <div className="card-footer text-center">
                 <button onClick={Delete} className="btn button-success mb-2" style={{ marginRight: "30px" }}>Tasdiqlash</button>
-                <button onClick={() => {setModal1(false)}} className="btn button-danger mb-2" >Qaytish</button>
+                <button onClick={() => { setModal1(false) }} className="btn button-danger mb-2" >Qaytish</button>
               </div>
             </div>
           </div>

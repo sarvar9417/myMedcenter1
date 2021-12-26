@@ -1,5 +1,5 @@
 {
-    "PORT": 5000,
+    "PORT": 8000,
     "mongoUri": "mongodb://localhost/medcenter",
     "jwtSecret": "sarvar9417",
     "baseUrl": "http://localhost:5000"

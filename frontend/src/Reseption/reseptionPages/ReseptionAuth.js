@@ -4,6 +4,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import { AuthContext } from '../context/AuthContext'
 import { toast } from 'react-toastify'
 import Reseption from './icons/reseption.png'
+import {useHistory} from 'react-router-dom'
 
 toast.configure()
 export const AuthPage = () => {
@@ -16,6 +17,7 @@ export const AuthPage = () => {
     const notify = (e) => {
         toast.error(e)
     }
+    const history = useHistory()
 
     useEffect(() => {
         if (error) {
@@ -27,14 +29,6 @@ export const AuthPage = () => {
     const changeHandlar = event => {
         setForm({ ...form, [event.target.name]: event.target.value })
     }
-
-    // const registerHandler = async () => {
-    //     try {
-    //         const data = await request('/api/auth/reseption/register', 'POST', { ...form })
-    //     } catch (e) {
-
-    //     }
-    // }
 
     const loginHandler = async () => {
         try {
@@ -93,14 +87,14 @@ export const AuthPage = () => {
                                             >
                                                 Kirish
                                             </button>
-                                            {/* <button
-                                                onClick={registerHandler}
+                                            <button
+                                                onClick={()=>{history.push('/sayt')}}
                                                 className="btn btn-primary btn-block"
                                                 type="button"
                                                 disabled={loading}
                                             >
-                                                Regitratsiya
-                                            </button> */}
+                                                Bosh sahifa
+                                            </button>
                                         </div>
                                         <div className="login-or">
                                             <span className="or-line"></span>

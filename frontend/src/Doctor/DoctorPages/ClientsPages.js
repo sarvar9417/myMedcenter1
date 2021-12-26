@@ -245,7 +245,7 @@ export const ClientsPages = () => {
                                 <th scope="" className="prices text-center">Xulosa <FontAwesomeIcon icon={faSort} /></th>
                                 <th scope="" className="cek text-center"> Summasi <FontAwesomeIcon icon={faSort} /></th>
                                 <th scope="" className="cek text-center"> To'langan <FontAwesomeIcon icon={faSort} /></th>
-                                <th scope="" className="cek text-center"> Qoldiq <FontAwesomeIcon icon={faSort} /></th>
+                                <th scope="" className="cek text-center"> Ish haqi <FontAwesomeIcon icon={faSort} /></th>
                             </tr>
                         </thead>
                     </table>
@@ -299,7 +299,7 @@ export const ClientsPages = () => {
                                             </td>
                                             <td className="cek fw-bold"> {section.payment === "to'lanmagan" ? "" : section.price}</td>
                                             <td className="cek fw-bold text-success"> {section.payment === "to'lanmagan" ? "" : section.priceCashier}</td>
-                                            <td className="cek fw-bold text-warning"> {section.payment === "to'lanmagan" ? "" : section.price - section.priceCashier}</td>
+                                            <td className="cek fw-bold text-warning"> {section.payment === "to'lanmagan" ? "" : section.priceCashier * auth.doctor.procient / 100}</td>
                                         </tr>
                                     )
                                 }
@@ -326,7 +326,7 @@ export const ClientsPages = () => {
                                 <th scope="" className="prices text-center"> </th>
                                 <th scope="" className="cek text-center "> {unpaid + paid}</th>
                                 <th scope="" className="cek text-center text-success"> {paid} </th>
-                                <th scope="" className="cek text-center text-danger">  {unpaid} </th>
+                                <th scope="" className="cek text-center text-danger">  {paid * auth.doctor.procient / 100} </th>
                             </tr>
                         </tfooter>
                     </table>
@@ -350,7 +350,7 @@ export const ClientsPages = () => {
                             <th scope="" className="section text-center">Bo'limi <FontAwesomeIcon icon={faSort} /></th>
                             <th scope="" className="prices text-center">To'lov <FontAwesomeIcon icon={faSort} /></th>
                             <th scope="" className="prices text-center">To'langan <FontAwesomeIcon icon={faSort} /></th>
-                            <th scope="" className="prices text-center">Qoldiq <FontAwesomeIcon icon={faSort} /></th>
+                            <th scope="" className="prices text-center">Ish haqi <FontAwesomeIcon icon={faSort} /></th>
                         </tr>
                     </thead>
                     <tbody className="" >
@@ -373,7 +373,7 @@ export const ClientsPages = () => {
                                             <td >
                                                 {section.payment === "to'lanmagan" ? "" : section.priceCashier}
                                             </td>
-                                            <td className="cek fw-bold text-danger"> {section.payment === "to'lanmagan" ? "" : section.price - section.priceCashier}</td>
+                                            <td className="cek fw-bold text-danger"> {section.payment === "to'lanmagan" ? "" : section.priceCashier * auth.doctor.procient / 100}</td>
                                         </tr>
                                     )
                                 }
@@ -387,7 +387,7 @@ export const ClientsPages = () => {
                             <th className="no" colSpan="7" scope="" > Jami </th>
                             <th scope="" className="prices text-center">{paid + unpaid}</th>
                             <th scope="" className="prices text-center">{paid}</th>
-                            <th scope="" className="prices text-center">{unpaid}</th>
+                            <th scope="" className="prices text-center">{paid * auth.doctor.procient / 100}</th>
                         </tr>
                     </tfooter>
 

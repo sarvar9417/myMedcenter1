@@ -35,7 +35,11 @@ router.post('/reseption/register/:id', auth, async (req, res) => {
             position,
             checkup,
             connector,
-            doctor
+            doctor,
+            source,
+            counterAgent,
+            paymentMethod
+
 
         } = req.body
         const section = new Section({
@@ -56,7 +60,10 @@ router.post('/reseption/register/:id', auth, async (req, res) => {
             position,
             checkup,
             connector,
-            doctor
+            doctor,
+            source,
+            counterAgent,
+            paymentMethod
         })
         await section.save()
         res.status(201).send(section)
@@ -352,6 +359,25 @@ router.get('/director/:index', auth, async (req, res) => {
 // END DIRECTOR SECTION
 // ===================================================================================
 // ===================================================================================
+
+// ===================================================================================
+// ===================================================================================
+// Counteragent routes
+router.get('/counteragent/:agent', async (req, res) => {
+    try {
+        const sections = await Section.find({
+            counterAgent: req.params.agent
+        }).sort({ bronDay: -1 })
+        res.json(sections)
+    } catch (e) {
+        res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
+    }
+})
+
+// END COUNTERAGENT SECTION
+// ===================================================================================
+// ===================================================================================
+
 
 
 // ===================================================================================

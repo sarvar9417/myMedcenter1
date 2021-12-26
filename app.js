@@ -7,7 +7,6 @@ const app = express()
 const PORT = config.get("PORT")
 
 const path = require('path')
-const { patch } = require('./routes/reseptionAuth.route')
 
 app.use(express.json({ extended: true }))
 app.use(express.urlencoded({ extended: true }))
@@ -35,6 +34,10 @@ app.use('/api/companylogo', require('./routes/companylogo.route'))
 app.use('/api/clienthistorys', require('./routes/clientshistory.route'))
 // TemplateDoctor
 app.use('/api/templatedoctor', require('./routes/templateDoctor.route'))
+// Source
+app.use('/api/source', require('./routes/source.route'))
+// CounterAgent
+app.use('/api/counteragent', require('./routes/counteragent.route'))
 
 if (process.env.NODE_ENV === "production") {
     app.use('/', express.static(path.join(__dirname, 'frontend', 'build')))

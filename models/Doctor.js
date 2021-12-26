@@ -10,7 +10,8 @@ const doctor = new Schema({
     phone: { type: Number },
     born: { type: Date },
     section: { type: String },
-    image: { type: String }
+    image: { type: String },
+    procient: {type: Number}
 })
 
 function validateDoctor(doctor) {
@@ -24,6 +25,8 @@ function validateDoctor(doctor) {
         phone: Joi.number(),
         born: Joi.date(),
         image: Joi.string(),
+        procient: Joi.number()
+
         
     })
     return schema.validate(doctor)

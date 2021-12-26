@@ -7,20 +7,8 @@ import { toast } from 'react-toastify'
 import Select from 'react-select'
 import makeAnimated from 'react-select/animated'
 import { AuthContext } from '../../context/AuthContext'
-import Modal from 'react-modal'
 const mongoose = require("mongoose")
 const animatedComponents = makeAnimated()
-
-const customStyles = {
-    content: {
-        top: '50%',
-        left: '50%',
-        right: 'auto',
-        bottom: 'auto',
-        marginRight: '-50%',
-        transform: 'translate(-50%, -50%)',
-    },
-}
 
 toast.configure()
 export const OldOnlineClient = () => {
@@ -34,6 +22,27 @@ export const OldOnlineClient = () => {
     const notify = (e) => {
         toast.error(e)
     }
+
+    const [counteragents, setCounterAgents] = useState()
+    const [counteragent, setCounterAgent] = useState(" ")
+    const [source, setSource] = useState(" ")
+    const getCounterAgents = useCallback(async () => {
+        try {
+            const fetch = await request('/api/counteragent/', 'GET', null, {
+                Authorization: `Bearer ${auth.token}`
+            })
+            let c = []
+            fetch.map((data) => {
+                c.push({
+                    label: data.clinic.toUpperCase() + " " + data.lastname + " " + data.firstname + " " + data.fathername,
+                    value: data.lastname + " " + data.firstname + " " + data.fathername
+                })
+            })
+            setCounterAgents(c)
+        } catch (error) {
+            notify(error)
+        }
+    }, [auth, request, setCounterAgents, notify])
 
     // Modal oyna funksiyalari
     let allPrice = 0
@@ -82,6 +91,10 @@ export const OldOnlineClient = () => {
         setSections(Object.values({ ...sections, [key]: { ...sections[key], bronDay: new Date(event.target.value) } }))
     }
 
+    const changeCounterAgent = (event) => {
+        setCounterAgent(event.value)
+    }
+
     const changeSections = (event) => {
         s = []
         event.map((section) => {
@@ -107,7 +120,10 @@ export const OldOnlineClient = () => {
                 bronTime: " ",
                 position: 'kutilmoqda',
                 checkup: "chaqirilmagan",
-                doctor: " "
+                doctor: " ",
+                counterAgent: counteragent,
+                paymentMethod: " ",
+                source: source
             })
         })
         setSections(s)
@@ -167,9 +183,15 @@ export const OldOnlineClient = () => {
     useEffect(() => {
         if (!options) {
             getOptions()
-
+        }
+        if (!counteragents) {
+            getCounterAgents()
         }
         allClients()
+        if (error) {
+            notify(error)
+            clearError()
+        }
     }, [allClients])
 
 
@@ -182,7 +204,6 @@ export const OldOnlineClient = () => {
         ) return true
         return false
     }
-
 
     return (
         <>
@@ -272,10 +293,20 @@ export const OldOnlineClient = () => {
             </div>
             <div className="row">
             </div>
-            <hr className="form-control" />
+            
+            <div className="row m-0 p-0 mt-3">
+                <p className="m-0">Kontragentni tanlash</p>
+                <Select
+                    className="m-0 p-0"
+                    onChange={(event) => changeCounterAgent(event)}
+                    components={animatedComponents}
+                    options={counteragents && counteragents}
+                />
+            </div>
 
-            <div className="row" >
+            <div className="row mt-3" >
                 <div className="col-md-12" >
+                    <p className="m-0 ps-2">Bo'limni tanlang</p>
                     <Select
                         onChange={(event) => changeSections(event)}
                         closeMenuOnSelect={false}

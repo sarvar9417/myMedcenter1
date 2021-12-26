@@ -25,7 +25,8 @@ router.post('/register', async (req, res) => {
             section,
             born,
             phone,
-            image
+            image,
+            procient
         } = req.body
 
         const candidate = await Doctor.findOne({ login })
@@ -42,7 +43,8 @@ router.post('/register', async (req, res) => {
             section,
             born,
             phone,
-            image
+            image,
+            procient
         })
         await doctor.save()
         res.status(201).json({ message: "Doctor yaratildi" })

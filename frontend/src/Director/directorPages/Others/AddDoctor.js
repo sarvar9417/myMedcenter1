@@ -58,12 +58,22 @@ export const AddDoctor = () => {
     born: "",
     phone: "",
     section: "",
-    image: ""
+    image: "",
+    procient: 0
   })
 
 
   const changeHandler = (event) => {
     setDoctor({ ...doctor, [event.target.name]: event.target.value })
+  }
+  const changeProcient = (event) => {
+    if (parseInt(event.target.value ) > 100) {
+        return notify("Diqqat! Shifokor maoshi ishlagan summasidan ortib ketdi. Iltimos, maosh miqdori 100 foizdan oshmasligiga e'tibor qarating!")
+    }
+    if (parseInt(event.target.value) < 0) {
+      return notify("Diqqat! Shifokor maoshi ishlagan summasining 0 foizidan kam. Iltimos, maosh miqdori 0 foizdan kam emasligiga e'tibor qarating!")
+    }
+    setDoctor({ ...doctor, procient: parseInt(event.target.value) })
   }
 
   const changeDate = (event) => {
@@ -181,6 +191,9 @@ export const AddDoctor = () => {
               <br />
               <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Parolni qayta kiriting</label>
               <input type="password" placeholder="Parolni qayta kiriting" onChange={changePassword} className={borderGreen ? `form-control border border-success` : `${borderRed ? "form-control border border-danger" : "form-control border"}`} />
+              <br/>
+              <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Ish haqi(foiz - % miqdorida)</label>
+              <input defaultValue={doctor.procient} onChange={changeProcient} name="procient" type="number" className="form-control" />
             </div>
             <div className="col-12 col-md-6 p-4">
               <p className="fs-4"> Qabul bo'lim xodimi ma'lumotlari </p>
@@ -242,7 +255,9 @@ export const AddDoctor = () => {
                     <br />
                     <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Parol</label>
                     <input disabled placeholder="Parolni kiriting" value={doctor.password} onChange={createPassword} name="password" type="text" className={borderGreen ? `form-control border border-success` : `${borderRed ? "form-control border border-danger" : "form-control border"}`} />
-
+                    <br />
+                    <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Ish haqi(foiz - % miqdorida)</label>
+                    <input defaultValue={doctor.procient} disabled  name="procient" type="number" className="form-control" />
                   </div>
                   <div className="col-12 col-md-6 p-4">
                     <p className="fs-4"> Rahbar ma'lumotlari </p>

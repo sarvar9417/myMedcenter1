@@ -98,14 +98,14 @@ export const DashboardMenu = () => {
     }, [getAllClients, getAllSections, sections, getAllDirections, getAllDoctors])
 
     return (
-        <div >
-            <div className="row">
+        <div  >
+            <div className="row mt-3">
                 <div className="col-lg-3 col-6">
                     {/* small box */}
                     <Link to={`/director`} className="small-box bg-info">
                         <div className="inner">
                             <h3>{client} <span className="float-end"> </span></h3>
-                            <p>Xizmatlar    {new Date().toLocaleDateString()}</p>
+                            <p>Xizmatlar {new Date().toLocaleDateString()}</p>
                         </div>
 
                         <div className="icon">
