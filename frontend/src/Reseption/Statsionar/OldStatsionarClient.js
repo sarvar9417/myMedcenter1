@@ -1,26 +1,21 @@
 import React, { useCallback, useContext, useEffect, useState } from "react"
 import { useHistory } from "react-router-dom"
-import { useHttp } from "../../hooks/http.hook"
+import { useHttp } from "../hooks/http.hook"
 import "react-toastify/dist/ReactToastify.css"
-import { Loader } from "../../components/Loader"
 import { toast } from "react-toastify"
 import Select from "react-select"
 import makeAnimated from "react-select/animated"
-import { AuthContext } from "../../context/AuthContext"
-const mongoose = require("mongoose")
+import { AuthContext } from "../context/AuthContext"
+import { CheckClentData } from "./CheckClentData"
 const animatedComponents = makeAnimated()
 
-
-
 toast.configure()
-export const OldClient = () => {
+export const OldStatsionarClient = () => {
 
   const auth = useContext(AuthContext)
   let s = []
-  const { loading, request, error, clearError } = useHttp()
-  const [turns, seTurns] = useState([])
+  const { request, error, clearError } = useHttp()
   const [sections, setSections] = useState([])
-  const [clients, setClients] = useState()
   const notify = (e) => {
     toast.error(e)
   }
@@ -86,6 +81,7 @@ export const OldClient = () => {
     phone: "",
     id: 0,
     born: "",
+    address: ""
   })
 
   const changeHandlar = (event) => {
@@ -94,23 +90,35 @@ export const OldClient = () => {
 
   const changeCounterAgent = (event) => {
     setCounterAgent(event.value)
+    sections.map((section, key) => {
+      setSections(
+        Object.values({
+          ...sections,
+          [key]: { ...sections[key], counteragent: event.value },
+        })
+
+      )
+    })
+  }
+
+  const changeSource = (name) => {
+    sections.map((section, key) => {
+      setSections(
+        Object.values({
+          ...sections,
+          [key]: { ...sections[key], source: name },
+        })
+
+      )
+    })
+    setSource(name)
   }
 
   const changeSections = (event) => {
     s = []
     event.map((section) => {
-      let turn = 0
-      turns.map((sec) => {
-        if (checkTurn(sec, section.section)) {
-          turn++
-        }
-      })
-      s.map((sec) => {
-        if (sec.name === section.section) {
-          turn++
-        }
-      })
       s.push({
+        client: client._id,
         name: section.section,
         subname: section.subsection,
         price: section.price,
@@ -120,14 +128,14 @@ export const OldClient = () => {
         summary: " ",
         done: "tasdiqlanmagan",
         payment: "kutilmoqda",
-        turn: turn + 1,
-        bron: "offline",
+        turn: 0,
+        bron: "statsionar",
         bronDay: new Date(),
         bronTime: " ",
-        position: "offline",
+        position: "statsionar",
         checkup: "chaqirilmagan",
         doctor: " ",
-        counterAgent: counteragent,
+        counteragent: counteragent,
         paymentMethod: " ",
         source: source
       })
@@ -135,56 +143,155 @@ export const OldClient = () => {
     setSections(s)
   }
 
-  const createSections = (event) => {
-    let key = parseInt(event.target.id)
-    setSections(
+  const getClient = useCallback(async (id) => {
+    try {
+      const fetch = await request(`/api/clients/reseption/id/${id}`, "GET", null, {
+        Authorization: `Bearer ${auth.token}`
+      })
+      setClient(fetch)
+    } catch (e) {
+      notify(e)
+    }
+  }, [request, auth])
+
+  const searchClient = (id) => {
+    if (id > 1000000) {
+      getClient(id)
+    }
+  }
+
+  // =================================================================================
+  // =================================================================================
+  // Servislar bo'limi
+  const [services, setServices] = useState()
+  const [warehouse, setWarehouse] = useState()
+  const getWarehouse = useCallback(async () => {
+    try {
+      const fetch = await request('/api/warehouse/', 'GET', null, {
+        Authorization: `Bearer ${auth.token}`
+      })
+      setWarehouse(fetch)
+    } catch (error) {
+      notify(error)
+    }
+  }, [auth, request, setWarehouse])
+
+  const changeServices = (event) => {
+    s = []
+    event.map((service) => {
+      s.push({
+        client: client._id,
+        warehouse: service._id,
+        name: service.name,
+        type: service.type,
+        price: service.price,
+        pieces: 1,
+        priceone: service.price,
+        payment: "kutilmoqda",
+        priceCashier: 0,
+        commentCashier: " ",
+        paymentMethod: " "
+      })
+    })
+    setServices(s)
+  }
+  const changePieces = (event) => {
+    const key = parseInt(event.target.id)
+    setServices(
       Object.values({
-        ...sections,
-        [key]: { ...sections[key], price: event.target.value },
-      }),
-      () =>
-        setSections(
-          Object.values({
-            ...sections,
-            [key]: { ...sections[key], turn: parseInt(event.target.name) },
-          })
-        )
+        ...services,
+        [key]: {
+          ...services[key],
+          pieces: parseInt(event.target.value),
+          price: parseInt(services[key].priceone) * parseInt(event.target.value)
+        },
+      })
     )
   }
 
-  const allClients = useCallback(async () => {
-    try {
-      const fetch = await request("/api/clients/reseption", "GET", null, {
-        Authorization: `Bearer ${auth.token}`
-      })
-      setClients(fetch)
-    } catch (e) { }
-  }, [request])
-
-  const allTurns = useCallback(async () => {
-    try {
-      const sec = await request("/api/section/reseption", "GET", null, {
-        Authorization: `Bearer ${auth.token}`
-      })
-      seTurns(sec)
-    } catch (e) { }
-  }, [request])
-
-  const searchClient = (id) => {
-    clients.map((clt) => {
-      if (clt.id === id) {
-        setClient(clt)
-      }
+  const createAllServices = (connector) => {
+    services.map((service) => {
+      createService(service, connector)
     })
   }
 
+  const createService = async (service, connector) => {
+    try {
+      const data = await request(`/api/service/register`, "POST", { ...service, connector }, {
+        Authorization: `Bearer ${auth.token}`
+      })
+    } catch (e) {
+      notify(e)
+    }
+  }
+  // =================================================================================
+  // =================================================================================
+ 
+  // =================================================================================
+  // =================================================================================
+  // ROOMS bo'limi
+
+  const [rooms, setRooms] = useState()
+  const [room, setRoom] = useState()
+  const getRooms = useCallback(async () => {
+    try {
+      const fetch = await request('/api/rooms/', 'GET', null, {
+        Authorization: `Bearer ${auth.token}`
+      })
+      setRooms(fetch)
+    } catch (error) {
+      notify(error)
+    }
+  }, [auth, request, setRooms])
+
+  const changeRooms = (event) => {
+    setRoom({
+      client: client._id,
+      room: event._id,
+      roomname: event.value,
+      beginDay: new Date(),
+      endDay: new Date(),
+      position: "band",
+      bed: event.bed,
+      price: event.price,
+      priceCashier: 0
+    })
+  }
+
+  const createRoom = async (connector) => {
+    try {
+      const data = await request(`/api/usedroom/register`, "POST", { ...room, connector }, {
+        Authorization: `Bearer ${auth.token}`
+      })
+    } catch (e) {
+      notify(e)
+    }
+  }
+  // =================================================================================
+  // =================================================================================
+
+
+  const [prepayment, setPrepayment] = useState(0)
+  const [diagnosis, setDiagnosis] = useState("")
   const createConnector = async () => {
     try {
-      const connector = await request("/api/connector/register", "POST", { client: client._id }, {
+      const connector = await request("/api/connector/register", "POST", {
+        client: client._id,
+        source,
+        counteragent,
+        type: "statsionar",
+        position: "davolanishda",
+        prepayment,
+        diagnosis,
+        bronDay: new Date(),
+        prepaymentCashier: 0,
+      }, {
         Authorization: `Bearer ${auth.token}`
       })
 
       createAllSections(connector._id)
+      createAllServices(connector._id)
+      createRoom(connector._id)
     } catch (e) {
       notify(e)
     }
@@ -202,10 +309,17 @@ export const OldClient = () => {
       const data = await request(`/api/section/reseption/register/${client._id}`, "POST", { ...section, connector }, {
         Authorization: `Bearer ${auth.token}`
       })
-      console.log(data)
     } catch (e) {
       notify(e)
     }
+  }
+
+  const checkData = () => {
+    if (CheckClentData(client, diagnosis)) {
+      return notify(CheckClentData(client, diagnosis))
+    }
+    window.scrollTo({ top: 0 })
+    setModal(true)
   }
 
   useEffect(() => {
@@ -215,7 +329,6 @@ export const OldClient = () => {
     if (!counteragents) {
       getCounterAgents()
     }
-    allClients()
     if (error) {
       notify(error)
       clearError()
@@ -223,24 +336,13 @@ export const OldClient = () => {
     if (!sources) {
       getSources()
     }
-    allTurns()
-  }, [allClients, allTurns])
-
-
-  const checkTurn = (turn, name) => {
-    if (
-      mongoose.Types.ObjectId(turn._id).getTimestamp().getFullYear() ===
-      new Date().getFullYear() &&
-      mongoose.Types.ObjectId(turn._id).getTimestamp().getMonth() ===
-      new Date().getMonth() &&
-      mongoose.Types.ObjectId(turn._id).getTimestamp().getDate() ===
-      new Date().getDate() &&
-      turn.name === name
-    )
-      return true
-    return false
-  }
-
+    if (!warehouse) {
+      getWarehouse()
+    }
+    if (!rooms) {
+      getRooms()
+    }
+  }, [notify, clearError])
 
   return (
     <div>
@@ -273,7 +375,7 @@ export const OldClient = () => {
             placeholder=""
             style={{ fontSize: "14px" }}
           />
-          <label className="labels">Telefon raqami</label>
+          <label className="labels" style={{ top: "-7px", fontSize: "12px", fontWeight: "500" }}>Telefon raqami</label>
         </div>
       </div>
       <div className="row" style={{ padding: "15px 0" }}>
@@ -337,9 +439,51 @@ export const OldClient = () => {
           />
           <label className="labels" style={{ top: "-7px", fontSize: "12px", fontWeight: "500" }}>Tug'ilgan sanasi</label>
         </div>
+        <div className="col-md-6 mb-2 input_box">
+          <input
+            defaultValue={client.address}
+            onChange={changeHandlar}
+            name="address"
+            type="text"
+            className="form-control inp"
+            placeholder="Mijozning manzili"
+          />
+          <label className="labels" style={{ top: "-7px", fontSize: "12px", fontWeight: "500" }}>Mijoz manzili</label>
+        </div>
+        <div className="col-md-6 mb-2 input_box">
+          <input
+            defaultValue={prepayment}
+            onChange={(event) => { setPrepayment(parseInt(event.target.value)) }}
+            name="prepayment"
+            type="number"
+            className="form-control inp"
+            placeholder="Oldindan to'lov"
+          />
+          <label className="labels" style={{ top: "-7px", fontSize: "12px", fontWeight: "500" }}>Oldindan to'lov</label>
+        </div>
+        <div className="col-6 mb-2 input_box">
+          <textarea
+            defaultValue={diagnosis}
+            onChange={(event) => { setDiagnosis((event.target.value)) }}
+            name="prepayment"
+            type="text"
+            className="form-control inp"
+            placeholder="Tashxisni kiritish"
+          />
+          <label className="labels" style={{ top: "-7px", fontSize: "12px", fontWeight: "500" }}>Mijozga qo'yilgan tashxis</label>
+        </div>
+        <div className="col-6 mb-2 input_box">
+          <Select
+            placeholder="Mijoz xonasi"
+            className="m-0 p-0"
+            onChange={(event) => changeRooms(event)}
+            components={animatedComponents}
+            options={rooms && rooms}
+            escapeClearsValue="true"
+          />
+        </div>
       </div>
-      <div className="row"></div>
-      
+
       <div className="text-end">
         {
           advertisement ?
@@ -358,67 +502,97 @@ export const OldClient = () => {
         />
         <div className="mt-3 text-center p-0" >
           {
-            sources && sources.map((adver) => {
+            sources && sources.map((adver, key) => {
               if (adver.name === source) {
-                return <button onClick={() => { setSource(adver.name) }} className="button-change"> {adver.name} </button>
+                return <button onClick={() => changeSource(adver.name)} className="button-change"> {adver.name} </button>
               } else {
-                return <button onClick={() => { setSource(adver.name); console.log(adver.name); }} className="button">{adver.name}</button>
+                return <button onClick={() => changeSource(adver.name)} className="button">{adver.name}</button>
               }
             })
           }
+          <button onClick={() => { setSource(" ") }} className="button" style={{ backgroundColor: "Red" }}>X</button>
         </div>
       </div>
 
-      <div className="row">
-        <div className="col-md-12">
-          <p className="m-0 ps-2 mt-3">Bo'limni tanlang</p>
+      <div className="row pt-3">
+        <div className="col-12" >
+          <p className="m-0 ps-2">Bo'limni tanlang</p>
           <Select
             className=""
             onChange={(event) => changeSections(event)}
             closeMenuOnSelect={false}
             components={animatedComponents}
             isMulti
-            options={options}
+            options={options && options}
           />
+          {sections && sections.map((section, key) => {
+            return (
+              <div className="row">
+                <div className="col-6">
+                  <input
+                    disabled
+                    value={section.name + " " + section.subname}
+                    id={key}
+                    className="form-control mt-2"
+                  />
+                </div>
+                <div className="col-6">
+                  <input
+                    disabled
+                    value={section.price}
+                    id={key}
+                    className="form-control mt-2"
+                  />
+                </div>
+              </div>
+            )
+          })}
         </div>
-      </div>
-      <div className="row">
-        {sections.map((section, key) => {
-          return (
-            <>
-              <div className="col-7">
-                <label className="text-muted mandatory"></label>
-                <input
-                  disabled
-                  defaultValue={section.price}
-                  onChange={createSections}
-                  id={key}
-                  type="number"
-                  name={section.name}
-                  className="form-control mt-2"
-                  placeholder={section.name + " summasi"}
-                />
+        <div className="col-12 mt-5" >
+          <p className="m-0 ps-2">Xizmatni tanlang</p>
+          <Select
+            className=""
+            onChange={(event) => changeServices(event)}
+            closeMenuOnSelect={false}
+            components={animatedComponents}
+            isMulti
+            options={warehouse && warehouse}
+          />
+          {services && services.map((service, key) => {
+            return (
+              <div className="row">
+                <div className="col-4">
+                  <input
+                    disabled
+                    value={service.name + " " + service.type}
+                    id={key}
+                    className="form-control mt-2"
+                  />
+                </div>
+                <div className="col-4">
+                  <input
+                    onChange={changePieces}
+                    defaultValue={service.pieces}
+                    id={key}
+                    className="form-control mt-2"
+                  />
+                </div>
+                <div className="col-4">
+                  <input
+                    disabled
+                    value={service.price}
+                    id={key}
+                    className="form-control mt-2"
+                  />
+                </div>
               </div>
-              <div className="col-5">
-                <label className="text-muted mandatory">{ } navbati</label>
-                <input
-                  type="number"
-                  className="form-control"
-                  placeholder="section"
-                  value={section.turn}
-                  disabled
-                />
-              </div>
-            </>
-          )
-        })}
+            )
+          })}
+        </div>
       </div>
 
       <div className="mt-5 text-center" >
-        <button
-          onClick={() => setModal(true)}
-          className="btn btn-primary profile-button"
-        >
+        <button onClick={checkData} className="btn btn-primary profile-button mb-5">
           Saqlash
         </button>
       </div>
@@ -432,7 +606,7 @@ export const OldClient = () => {
             <div className="text-center fs-4 fw-bold text-secondary">
               <span className="text-dark">Mijoz: </span>  {client.lastname} {client.firstname} {client.fathername}
             </div>
-            <table className="w-100 mt-3">
+            <table className="w-100 mt-3" style={{ overflow: "auto" }}>
               <thead>
                 <tr style={{ borderBottom: "1px solid #999" }} >
                   <th style={{ width: "10%", textAlign: "center", padding: "10px 0" }}>№</th>
@@ -443,15 +617,29 @@ export const OldClient = () => {
               <tbody style={{ borderBottom: "1px solid #999" }}>
 
                 {
-                  sections.map((section, key) => {
+                  sections && sections.map((section, key) => {
                     allPrice = allPrice + section.price
                     return (
                       <tr key={key}>
                         <td style={{ width: "10%", textAlign: "center", padding: "10px 0" }}>{key + 1}</td>
                         <td style={{ width: "30%", textAlign: "center", padding: "10px 0" }}>
-                          {section.name}
+                          {section.name} {section.subname}
                         </td>
                         <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{section.price}</td>
+                      </tr>
+                    )
+                  })
+                }
+                {
+                  services && services.map((service, key) => {
+                    allPrice = allPrice + service.price
+                    return (
+                      <tr key={key}>
+                        <td style={{ width: "10%", textAlign: "center", padding: "10px 0" }}>{key + 1}</td>
+                        <td style={{ width: "30%", textAlign: "center", padding: "10px 0" }}>
+                          {service.name} {service.type}
+                        </td>
+                        <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{service.price}</td>
                       </tr>
                     )
                   })

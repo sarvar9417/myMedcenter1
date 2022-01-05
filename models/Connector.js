@@ -3,11 +3,27 @@ const Joi = require('joi')
 
 const connector = new Schema({
     client: { type: Types.ObjectId, ref: "Clients" },
+    counteragent: String,
+    source: String,
+    type: String,
+    position: String,
+    prepayment: Number,
+    prepaymentCashier: Number,
+    diagnosis: String,
+    bronDay: Date
 })
 
 function validateConnector(connector) {
     const schema = Joi.object({
-        client: Joi.string()
+        client: Joi.string(),
+        counteragent: Joi.string(),
+        source: Joi.string(),
+        type: Joi.string(),
+        position: Joi.string(),
+        prepayment: Joi.number(),
+        prepaymentCashier: Joi.number(),
+        diagnosis: Joi.string(),
+        bronDay: Joi.date()
     })
     return schema.validate(connector)
 }

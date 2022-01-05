@@ -20,7 +20,7 @@ export const Navbar = () => {
         history.push('/cashier')
     }
 
-    const goBack = ()=>{
+    const goBack = () => {
         history.push('/sayt')
         window.location.reload()
     }
@@ -38,26 +38,14 @@ export const Navbar = () => {
                         <li className="nav-item">
                             <Link className="nav-link a aktive" to="/cashier">Bosh sahifa</Link>
                         </li>
-                        {/* <li className="nav-item" >
-                            <Link className="nav-link a" to="/reseption/onlineqabul">Online qabul</Link>
-                        </li>
-                        <li className="nav-item" >
-                            <Link className="nav-link a" to="/reseption/onlineclients">Online mijozlar</Link>
-                        </li>
-                        <li className="nav-item" >
-                            <Link className="nav-link a" to="/reseption/clients">Mijozlar</Link>
-                        </li> */}
-                        {/* <li className="nav-item">
-                            <Link className="nav-link" to="/reseption/cost">Xarajat</Link>
-                        </li>
                         <li className="nav-item">
-                            <Link className="nav-link" to="/reseption/costs">Xarajatlar</Link>
-                        </li> */}
-                        
+                            <Link className="nav-link a" to="/cashier/statsionar">Statsionar</Link>
+                        </li>
+
                     </ul>
                     <li className="nav-item ll" >
-                            <span style={{ backgroundColor: "#EA5353" }} className="nav-link btn text-white" href="" onClick={logoutHandler} >Chiqish</span>
-                        </li>
+                        <span style={{ backgroundColor: "#EA5353" }} className="nav-link btn text-white" href="" onClick={logoutHandler} >Chiqish</span>
+                    </li>
                 </div>
             </div>
         </nav>

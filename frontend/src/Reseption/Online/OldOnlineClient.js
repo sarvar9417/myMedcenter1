@@ -1,33 +1,27 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
-import { useHttp } from '../../hooks/http.hook'
+import { useHttp } from '../hooks/http.hook'
 import 'react-toastify/dist/ReactToastify.css'
 import { toast } from 'react-toastify'
 import Select from 'react-select'
 import makeAnimated from 'react-select/animated'
+import { AuthContext } from '../context/AuthContext'
 import { CheckClentData } from './CheckClentData'
-import '../radio.css'
-import { AuthContext } from '../../context/AuthContext'
 const mongoose = require("mongoose")
 const animatedComponents = makeAnimated()
 
-
 toast.configure()
-export const NewOnlineClient = () => {
-    //Avtorizatsiyani olish
+export const OldOnlineClient = () => {
     const auth = useContext(AuthContext)
     let s = []
     const { loading, request, error, clearError } = useHttp()
     const [turns, seTurns] = useState([])
     const [sections, setSections] = useState([])
+
+    const [clients, setClients] = useState()
     const notify = (e) => {
         toast.error(e)
     }
-    const history = useHistory()
-
-    // Modal oyna funksiyalari
-    let allPrice = 0
-    const [modal, setModal] = useState(false)
 
     const [advertisement, setAdvertisement] = useState(false)
     const [counteragents, setCounterAgents] = useState()
@@ -39,7 +33,10 @@ export const NewOnlineClient = () => {
             const fetch = await request('/api/counteragent/', 'GET', null, {
                 Authorization: `Bearer ${auth.token}`
             })
-            let c = []
+            let c = [{
+                label: "Tanlanmagan",
+                value: " "
+            }]
             fetch.map((data) => {
                 c.push({
                     label: data.clinic.toUpperCase() + " " + data.lastname + " " + data.firstname + " " + data.fathername,
@@ -63,6 +60,10 @@ export const NewOnlineClient = () => {
         }
     }, [auth, request, setSources])
 
+    // Modal oyna funksiyalari
+    let allPrice = 0
+    const [modal, setModal] = useState(false)
+
     // Bo'limlar
     const [options, setOptions] = useState()
     const getOptions = useCallback(async () => {
@@ -76,14 +77,18 @@ export const NewOnlineClient = () => {
         }
     }, [auth, request, setOptions])
 
+
+    const history = useHistory()
     const [client, setClient] = useState({
+        _id: '',
         firstname: '',
         lastname: '',
         fathername: '',
         gender: '',
         phone: '',
-        id: 0,
-        born: ''
+        id: "",
+        born: '',
+        address: ""
     })
 
     const changeHandlar = event => {
@@ -97,10 +102,6 @@ export const NewOnlineClient = () => {
         setSections(Object.values({ ...sections, [key]: { ...sections[key], bronTime: event.target.value } }))
     }
 
-    const changeDate = (event) => {
-        setClient({ ...client, born: new Date(event.target.value) })
-    }
-
     const changeBronDate = (event) => {
         let key = parseInt(event.target.id)
         setSections(Object.values({ ...sections, [key]: { ...sections[key], bronDay: new Date(event.target.value) } }))
@@ -108,6 +109,28 @@ export const NewOnlineClient = () => {
 
     const changeCounterAgent = (event) => {
         setCounterAgent(event.value)
+        sections.map((section, key) => {
+            setSections(
+                Object.values({
+                    ...sections,
+                    [key]: { ...sections[key], counteragent: event.value },
+                })
+
+            )
+        })
+    }
+
+    const changeSource = (name) => {
+        sections.map((section, key) => {
+            setSections(
+                Object.values({
+                    ...sections,
+                    [key]: { ...sections[key], source: name },
+                })
+
+            )
+        })
+        setSource(name)
     }
 
     const changeSections = (event) => {
@@ -122,8 +145,8 @@ export const NewOnlineClient = () => {
             s.push({
                 name: section.section,
                 subname: section.subsection,
-                price: section.price,
                 priceCashier: 0,
+                price: section.price,
                 commentCashier: " ",
                 comment: " ",
                 summary: " ",
@@ -136,7 +159,7 @@ export const NewOnlineClient = () => {
                 position: 'kutilmoqda',
                 checkup: "chaqirilmagan",
                 doctor: " ",
-                counterAgent: counteragent,
+                counteragent: counteragent,
                 paymentMethod: " ",
                 source: source
             })
@@ -144,66 +167,75 @@ export const NewOnlineClient = () => {
         setSections(s)
     }
 
+    const checkData = () => {
+        if (CheckClentData(client)) {
+            return notify(CheckClentData(client))
+        }
+        sections.map((section) => {
+            if (section.bronTime === " ") {
+                return notify("Mijozning bron vaqtini kiriting iltimos!")
+            }
+        })
+        window.scrollTo({ top: 0 })
+        setModal(true)
+    }
+
     const createSections = event => {
         let key = parseInt(event.target.id)
         setSections(Object.values({ ...sections, [key]: { ...sections[key], price: event.target.value } }), () => setSections(Object.values({ ...sections, [key]: { ...sections[key], turn: parseInt(event.target.name) } })))
     }
 
-    const allClients = useCallback(async () => {
+    const getClient = useCallback(async (id) => {
         try {
-            const fetch = await request('/api/clients/reseption', 'GET', null, {
+            const fetch = await request(`/api/clients/reseption/id/${id}`, "GET", null, {
                 Authorization: `Bearer ${auth.token}`
             })
-            const sec = await request('/api/section/reseption', 'GET', null, {
-                Authorization: `Bearer ${auth.token}`
-            })
-            seTurns(sec)
-            client.id = fetch.length + 1000001
-        } catch (e) { }
+            setClient(fetch)
+        } catch (e) {
+            notify(e)
+        }
     }, [request, auth])
 
-
-    const checkData = () => {
-        if (CheckClentData(client)) {
-            return notify(CheckClentData(client))
+    const searchClient = (id) => {
+        if (id > 1000000) {
+            getClient(id)
         }
-        window.scrollTo({top:0})
-        setModal(true)
     }
 
-    const createHandler = async () => {
+    const createConnector = async () => {
         try {
-            const data = await request('/api/clients/reseption/register', 'POST', { ...client }, {
+            const connector = await request("/api/connector/register", "POST", {
+                client: client._id,
+                source,
+                counteragent,
+                type: "online",
+                position: " ",
+                prepayment: 0,
+                diagnosis: " ",
+                bronDay: sections[0].bronDay,
+                prepaymentCashier: 0,
+            }, {
                 Authorization: `Bearer ${auth.token}`
             })
-            createConnector(data._id)
-        } catch (e) { }
-    }
-
-    const createConnector = async (client) => {
-        try {
-            const connector = await request("/api/connector/register", "POST", { client }, {
-                Authorization: `Bearer ${auth.token}`
-            })
-
-            createAllSections(client, connector._id)
+            createAllSections(connector._id)
         } catch (e) {
             notify(e)
         }
     }
 
-    const createAllSections = (id, connector) => {
+    const createAllSections = (connector) => {
         sections.map((section) => {
-            create(id, section, connector)
+            create(section, connector)
         })
-        history.push(`/reseption/reciept/${id}/${connector}`)
+        history.push(`/reseption/reciept/${client._id}/${connector}`)
     }
 
-    const create = async (id, section, connector) => {
+    const create = async (section, connector) => {
         try {
-            const data = await request(`/api/section/reseption/register/${id}`, "POST", { ...section, connector }, {
+            const data = await request(`/api/section/reseption/register/${client._id}`, "POST", { ...section, connector }, {
                 Authorization: `Bearer ${auth.token}`
             })
+            console.log(data)
         } catch (e) {
             notify(e)
         }
@@ -216,15 +248,15 @@ export const NewOnlineClient = () => {
         if (!counteragents) {
             getCounterAgents()
         }
-        if (!sources) {
-            getSources()
-        }
-        allClients()
+        getClient()
         if (error) {
             notify(error)
             clearError()
         }
-    }, [allClients])
+        if (!sources) {
+            getSources()
+        }
+    }, [getClient])
 
 
     const checkTurn = (turn, name) => {
@@ -237,112 +269,26 @@ export const NewOnlineClient = () => {
         return false
     }
 
-
     return (
-        <div>
+        <>
             <div className="row">
                 <div className="col-12 mt-3 d-flex justify-content-center align-items-center">
                     <h4 className="text-right">Mijozning ma'lumotlarini kiritish</h4>
                 </div>
             </div>
             <div className="row">
-                <div className="col-md-6 input_box mb-2" >
+                <div className="col-md-6 input_box mb-2">
                     <input
-                        defaultValue={client.lastname}
-                        onChange={changeHandlar}
-                        name='lastname'
-                        type="text"
+                        defaultValue={client.id}
+                        onChange={(event) => searchClient(parseInt(event.target.value))}
+                        name='ID'
+                        type="number"
                         className="form-control inp"
                         placeholder=""
                     />
-                    <label className="labels">Familiya</label>
+                    <label className="labels" >Mijoznig ID raqami</label>
                 </div>
-                <div className="col-md-6 input_box" >
-                    <input
-                        defaultValue={client.firstname}
-                        onChange={changeHandlar}
-                        name="firstname"
-                        type="text"
-                        className="form-control inp"
-                        placeholder="" />
-                    <label className="labels">Ism</label>
-                </div>
-            </div>
-            <div className="row" style={{ padding: "15px 0" }}>
-                <div className="col-md-6 input_box mb-2" >
-                    <input
-                        defaultValue={client.fathername}
-                        onChange={changeHandlar}
-                        name="fathername"
-                        type="text"
-                        className="form-control inp"
-                        placeholder=""
-                    />
-                    <label className="labels">Otasining ismi</label>
-                </div>
-                <div className="col-md-6 input_box" >
-                    <input
-                        defaultValue={new Date(client.born).getFullYear().toString() +
-                            "-" +
-                            (new Date(client.born).getMonth() < 9
-                                ? "0" + (new Date(client.born).getMonth() + 1).toString()
-                                : (new Date(client.born).getMonth() + 1).toString()) +
-                            "-" +
-                            (new Date(client.born).getDate() < 10
-                                ? "0" + new Date(client.born).getDate().toString()
-                                : new Date(client.born).getDate().toString())}
-                        onChange={changeDate}
-                        type="date"
-                        name='born'
-                        className="form-control inp"
-                        placeholder=""
-                        style={{ color: "#999" }}
-                    />
-                    <label className="labels">Tug'ilgan kuni</label>
-                </div>
-            </div>
-            <div className="row">
-                <div className="col-md-6" >
-                    <div className="form-group">
-                        <div className="btn-group" >
-                            <div className="wrapp">
-                                <input
-                                    className="input"
-                                    id="erkak"
-                                    onChange={changeHandlar}
-                                    name="gender"
-                                    type="radio"
-                                    defaultValue="man"
-                                    check={client.gender === "man" ? true : false}
-                                />
-                                <label
-                                    className={client.gender === "man" ? "label clabel" : "label"}
-                                    for="erkak"
-                                >
-                                    Erkak
-                                </label>
-                                <input
-                                    check={client.gender === "woman" ? true : false}
-                                    className="input"
-                                    type="radio"
-                                    id="ayol"
-                                    onChange={changeHandlar}
-                                    name="gender"
-                                    defaultValue="woman"
-                                />
-                                <label
-                                    className={
-                                        client.gender === "woman" ? "label clabel" : "label"
-                                    }
-                                    for="ayol"
-                                >
-                                    Ayol
-                                </label>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div className="col-md-6 input_box" >
+                <div className="col-md-6 input_box ">
                     <input
                         defaultValue={client.phone}
                         onChange={changeHandlar}
@@ -353,10 +299,76 @@ export const NewOnlineClient = () => {
                         className="form-control inp"
                         placeholder=""
                     />
-                    <label className="labels">Telefon raqami</label>
+                    <label className="labels" style={{ top: "-7px", fontSize: "12px", fontWeight: "500" }}>Telefon raqami</label>
+
                 </div>
             </div>
-            
+            <div className="row" style={{ padding: "15px 0" }}>
+                <div className="col-md-6 input_box mb-2">
+                    <input
+                        value={client.lastname}
+                        disabled
+                        name='lastname'
+                        type="text"
+                        className="form-control inp"
+                        placeholder=""
+                        style={{ background: "#fff" }}
+                    />
+                    <label className="labels" style={{ top: "-7px", fontSize: "12px", fontWeight: "500" }} style={{ top: "-7px", fontSize: "12px", fontWeight: "500" }}>Familiya</label>
+                </div>
+                <div className="col-md-6 input_box">
+                    <input
+                        disabled
+                        value={client.firstname}
+                        name="firstname"
+                        type="text"
+                        className="form-control inp"
+                        placeholder=""
+                        style={{ background: "#fff" }}
+                    />
+                    <label className="labels" style={{ top: "-7px", fontSize: "12px", fontWeight: "500" }} style={{ top: "-7px", fontSize: "12px", fontWeight: "500" }}>Ism</label>
+                </div>
+            </div>
+            <div className="row">
+                <div className="col-md-6 input_box mb-2">
+                    <input
+                        disabled
+                        value={client.fathername}
+                        name="fathername"
+                        type="text"
+                        className="form-control inp"
+                        placeholder=""
+                        style={{ background: "#fff" }}
+                    />
+                    <label className="labels" style={{ top: "-7px", fontSize: "12px", fontWeight: "500" }} style={{ top: "-7px", fontSize: "12px", fontWeight: "500" }}>Otasining ismi</label>
+                </div>
+                <div className="col-md-6 input_box">
+                    <input
+                        disabled
+                        value={new Date(client.born).getFullYear().toString() + '-' + (new Date(client.born).getMonth() < 9 ? "0" + (new Date(client.born).getMonth() + 1).toString() : (new Date(client.born).getMonth() + 1).toString()) + '-' + (new Date(client.born).getDate() < 10 ? "0" + (new Date(client.born).getDate()).toString() : (new Date(client.born).getDate()).toString())}
+                        type="date"
+                        name='born'
+                        className="form-control inp"
+                        placeholder=""
+                        style={{ background: "#fff", color: "#999" }}
+                    />
+                    <label className="labels" style={{ top: "-7px", fontSize: "12px", fontWeight: "500" }} style={{ top: "-7px", fontSize: "12px", fontWeight: "500" }}>Tug'ilgan sanasi</label>
+                </div>
+                <div className="col-12 mt-3">
+                    <input
+                        defaultValue={client.address}
+                        onChange={changeHandlar}
+                        name="address"
+                        type="text"
+                        className="form-control inp"
+                        placeholder="Mijozning manzili"
+                    />
+                    <label className="labels" style={{ top: "-7px", fontSize: "12px", fontWeight: "500" }}>Mijoz manzili</label>
+                </div>
+            </div>
+            <div className="row">
+            </div>
+
             <div className="text-end">
                 {
                     advertisement ?
@@ -375,27 +387,27 @@ export const NewOnlineClient = () => {
                 />
                 <div className="mt-3 text-center p-0" >
                     {
-                        sources && sources.map((adver) => {
+                        sources && sources.map((adver, key) => {
                             if (adver.name === source) {
-                                return <button onClick={() => { setSource(adver.name) }} className="button-change"> {adver.name} </button>
+                                return <button onClick={() => changeSource(adver.name)} className="button-change"> {adver.name} </button>
                             } else {
-                                return <button onClick={() => { setSource(adver.name); console.log(adver.name); }} className="button">{adver.name}</button>
+                                return <button onClick={() => changeSource(adver.name)} className="button">{adver.name}</button>
                             }
                         })
                     }
+                    <button onClick={() => { setSource(" ") }} className="button" style={{ backgroundColor: "Red" }}>X</button>
                 </div>
             </div>
 
-            <div className="row" >
-                <div className="col-md-12"  >
-                    <p className="m-0 ps-2 mt-3">Bo'limni tanlang</p>
+            <div className="row mt-3" >
+                <div className="col-md-12" >
+                    <p className="m-0 ps-2">Bo'limni tanlang</p>
                     <Select
-                        className=""
                         onChange={(event) => changeSections(event)}
                         closeMenuOnSelect={false}
                         components={animatedComponents}
                         isMulti
-                        options={options && options}
+                        options={options}
                     />
                 </div>
             </div>
@@ -404,21 +416,22 @@ export const NewOnlineClient = () => {
                     sections.map((section, key) => {
                         return (
                             <>
-                                <div className="col-4" >
+                                <div className="col-md-4 col-sm-6 mt-2" >
                                     <label className=""></label>
                                     <input
                                         disabled
-                                        defaultValue={section.price}
+                                        value={section.price}
                                         onChange={createSections}
                                         id={key}
                                         type="number"
                                         name={section.name}
-                                        className="form-control mt-2"
+                                        className="form-control"
                                         placeholder={section.name + " summasi"}
                                     />
                                 </div>
-                                <div className="col-4">
-                                    <label style={{ fontWeight: "100" }}> Kuni</label>
+                                <div className="col-md-4 col-sm-6">
+                                    <label style={{ fontWeight: "100" }} > Kuni
+                                    </label>
                                     <input
                                         id={key}
                                         onChange={changeBronDate}
@@ -427,7 +440,7 @@ export const NewOnlineClient = () => {
                                         className="form-control"
                                     />
                                 </div>
-                                <div className="col-4">
+                                <div className="col-md-4 col-sm-6">
                                     <label style={{ fontWeight: "100" }}>Vaqti</label>
                                     <input
                                         id={key}
@@ -455,66 +468,65 @@ export const NewOnlineClient = () => {
                 </button>
             </div>
 
-
             {/* Modal oynaning ochilishi */}
             <div className={modal ? "modal" : "d-none"}>
                 <div className="modal-card">
                     <div className="card p-4" style={{ fontFamily: "times" }}>
-                    <div className="text-center fs-4 fw-bold text-secondary">
-                        <span className="text-dark">Mijoz: </span>  {client.lastname} {client.firstname} {client.fathername}
-                    </div>
-                    <table className="w-100 mt-3">
-                        <thead>
-                            <tr style={{ borderBottom: "1px solid #999" }} >
-                                <th style={{ width: "10%", textAlign: "center", padding: "10px 0" }}>№</th>
-                                <th style={{ width: "30%", textAlign: "center", padding: "10px 0" }}>Bo'limlar</th>
-                                <th style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>Hisob</th>
-                                <th style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>Kuni</th>
-                                <th style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>Soati</th>
-                            </tr>
-                        </thead>
-                        <tbody style={{ borderBottom: "1px solid #999" }}>
-
-                            {
-                                sections.map((section, key) => {
-                                    allPrice = allPrice + section.price
-                                    return (
-                                        <tr key={key}>
-                                            <td style={{ width: "10%", textAlign: "center", padding: "10px 0" }}>{key + 1}</td>
-                                            <td style={{ width: "30%", textAlign: "center", padding: "10px 0" }}>
-                                                {section.name}
-                                            </td>
-                                            <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{section.price}</td>
-                                            <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{new Date(section.bronDay).toLocaleDateString()}</td>
-                                            <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{section.bronTime}</td>
-                                        </tr>
-                                    )
-                                })
-                            }
-
-                        </tbody>
-                    </table>
-
-                    <div className="row m-1 mt-3">
-                        <div className="col-6">
-                            <div className="fw-bold text-primary">Jami to'lov:</div>
+                        <div className="text-center fs-4 fw-bold text-secondary">
+                            <span className="text-dark">Mijoz: </span>  {client.lastname} {client.firstname} {client.fathername}
                         </div>
-                        <div className="col-6">
-                            <div className="fw-bold  text-end ">{allPrice}</div>
+                        <table className="w-100 mt-3">
+                            <thead>
+                                <tr style={{ borderBottom: "1px solid #999" }} >
+                                    <th style={{ width: "10%", textAlign: "center", padding: "10px 0" }}>№</th>
+                                    <th style={{ width: "30%", textAlign: "center", padding: "10px 0" }}>Bo'limlar</th>
+                                    <th style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>Hisob</th>
+                                    <th style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>Kuni</th>
+                                    <th style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>Soati</th>
+                                </tr>
+                            </thead>
+                            <tbody style={{ borderBottom: "1px solid #999" }}>
+
+                                {
+                                    sections.map((section, key) => {
+                                        allPrice = allPrice + section.price
+                                        return (
+                                            <tr key={key}>
+                                                <td style={{ width: "10%", textAlign: "center", padding: "10px 0" }}>{key + 1}</td>
+                                                <td style={{ width: "30%", textAlign: "center", padding: "10px 0" }}>
+                                                    {section.name}
+                                                </td>
+                                                <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{section.price}</td>
+                                                <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{new Date(section.bronDay).toLocaleDateString()}</td>
+                                                <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{section.bronTime}</td>
+                                            </tr>
+                                        )
+                                    })
+                                }
+
+                            </tbody>
+                        </table>
+
+                        <div className="row m-1 mt-3">
+                            <div className="col-6">
+                                <div className="fw-bold text-primary">Jami to'lov:</div>
+                            </div>
+                            <div className="col-6">
+                                <div className="fw-bold  text-end ">{allPrice}</div>
+                            </div>
+                            <hr />
+
                         </div>
-                        <hr />
+                        <div className="row m-1">
+                            <div className="col-12 text-center">
+                                <button onClick={createConnector} className="btn button-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
+                                <button onClick={() => setModal(false)} className="btn button-danger" >Qaytish</button>
+                            </div>
+                        </div>
 
                     </div>
-                    <div className="row m-1">
-            `            <div className="col-12 text-center">
-                            <button onClick={createHandler} className="btn button-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
-                            <button onClick={()=>setModal(false)} className="btn button-danger" >Qaytish</button>
-                        </div>
-                    </div>
-
-                </div>
                 </div>
             </div>
-        </div>
+        </>
     )
 }

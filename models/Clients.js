@@ -9,7 +9,8 @@ const clients = new Schema({
     id: { type: Number, required: true },
     gender: { type: String, required: true },
     phone: { type: Number },
-    born: { type: Date },    
+    born: { type: Date }, 
+    address: String   
 })
 
 function validateClients(clients) {
@@ -20,7 +21,8 @@ function validateClients(clients) {
         id: Joi.number(),
         gender: Joi.string(),
         phone: Joi.number(),
-        born: Joi.date()
+        born: Joi.date(),
+        address: Joi.string()
     })
     return schema.validate(clients)
 }

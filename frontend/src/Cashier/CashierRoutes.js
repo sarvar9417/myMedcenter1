@@ -6,6 +6,8 @@ import { Home } from './cashierPages/Home'
 import { Sayt } from '../Sayt/sayt'
 import { EditCheck } from './cashierPages/EditCheck'
 import { Reciept } from './cashierPages/Reciept'
+import { RecieptAll } from './cashierPages/RecieptAll'
+import { ClientsStatsionarPages } from './cashierPages/ClientsStatsionarPages'
 
 
 export const CashierRoutes = (isAuthenticated) => {
@@ -22,8 +24,14 @@ export const CashierRoutes = (isAuthenticated) => {
                     <Route path="/cashier/payedit/:id" >
                         <EditCheck />
                     </Route>
-                    <Route path="/cashier/reciept/:id" >
+                    <Route path="/cashier/reciept/:id/:connector" >
                         <Reciept />
+                    </Route>
+                    <Route path="/cashier/recieptall/:id" >
+                        <RecieptAll />
+                    </Route>
+                    <Route path="/cashier/statsionar" >
+                        <ClientsStatsionarPages />
                     </Route>
                     <Route path="/sayt" >
                         <Sayt />
@@ -36,6 +44,9 @@ export const CashierRoutes = (isAuthenticated) => {
         <Switch>
             <Route path="/cashier" >
                 <AuthPage />
+            </Route>
+            <Route path="/sayt" >
+                <Sayt />
             </Route>
             <Redirect to="/cashier" />
         </Switch>

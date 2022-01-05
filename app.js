@@ -24,8 +24,6 @@ app.use('/api/clients', require('./routes/clients.route'))
 app.use('/api/section', require('./routes/section.route'))
 // Sections
 app.use('/api/direction', require('./routes/direction.route'))
-// Cost
-app.use('/api/cost', require('./routes/cost.route'))
 // Connector
 app.use('/api/connector', require('./routes/connector.route'))
 // CompanyLogo
@@ -38,7 +36,20 @@ app.use('/api/templatedoctor', require('./routes/templateDoctor.route'))
 app.use('/api/source', require('./routes/source.route'))
 // CounterAgent
 app.use('/api/counteragent', require('./routes/counteragent.route'))
-
+// CallCenter
+app.use('/api/callcenter', require('./routes/callcenter.route'))
+// Operator
+app.use('/api/auth/operator', require('./routes/operatorAuth.route'))
+// wareHouse
+app.use('/api/warehouse', require('./routes/warehouse.route'))
+// Rooms
+app.use('/api/rooms', require('./routes/rooms.route'))
+// Rooms
+app.use('/api/usedroom', require('./routes/usedroom.route'))
+// Service
+app.use('/api/service', require('./routes/sevices.route'))
+// Payment
+app.use('/api/payment', require('./routes/payment.route'))
 if (process.env.NODE_ENV === "production") {
     app.use('/', express.static(path.join(__dirname, 'frontend', 'build')))
 

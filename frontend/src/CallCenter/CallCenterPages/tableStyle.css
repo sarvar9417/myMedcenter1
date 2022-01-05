@@ -1,5 +1,5 @@
 .no {
-    width: 50px;
+    width: 70px;
 }
 
 .date {
@@ -9,6 +9,19 @@
 .fish {
     width: 200px !important;
     text-align: left;
+}
+
+.fish-call {
+    width: 250px !important;
+    text-align: left;
+}
+
+.illness {
+    width: 250px !important;
+}
+
+.voucher{
+    width: 150px !important;
 }
 
 .id {
@@ -59,7 +72,7 @@ tr:nth-child(even) {
     background-color: #eee;
 }
 
-td{
+td {
     padding: 10px 0 !important;
 }
 
@@ -68,13 +81,13 @@ td:nth-child(1) {
     text-align: center;
 }
 
-.come{
+.come {
     background-color: rgba(15, 183, 107, 0.12);
 
     color: #26aa48 !important;
 }
 
-.dontcome{
+.dontcome {
     background-color: rgba(242, 17, 54, 0.12);
     color: #e63c3c !important;
 }

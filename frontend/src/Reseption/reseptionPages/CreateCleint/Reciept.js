@@ -21,11 +21,28 @@ export const Reciept = () => {
     const clientId = useParams().id
     const connectorId = useParams().connector
     const today = (new Date().toLocaleDateString() + " " + new Date().toLocaleTimeString())
-    const [sections, setSections] = useState([])
+    const [sections, setSections] = useState()
     let price = 0
     let k = 0
     let l = 0
     const [client, setClient] = useState()
+
+    // =================================================================================
+    // =================================================================================
+    // Servislar bo'limi
+    const [services, setServices] = useState()
+    const getServices = useCallback(async () => {
+        try {
+            const data = await request(`/api/service/reseption/${connectorId}`, 'GET', null, {
+                Authorization: `Bearer ${auth.token}`
+            })
+            setServices(data)
+        } catch (e) {
+        }
+    }, [request, connectorId, auth, setServices])
+    // =================================================================================
+    // =================================================================================
+
 
     const getSections = useCallback(async () => {
         try {
@@ -36,6 +53,8 @@ export const Reciept = () => {
         } catch (e) {
         }
     }, [request, clientId, auth])
+
+
 
     const getClient = useCallback(async () => {
         try {
@@ -48,12 +67,13 @@ export const Reciept = () => {
     }, [request, clientId, auth])
 
     useEffect(() => {
-
-        if (sections.length === 0) {
+        if (!sections) {
             getSections()
         }
-
-    }, [getSections, sections])
+        if (!services) {
+            getServices()
+        }
+    }, [])
 
     const notify = (e) => {
         toast.error(e)
@@ -176,10 +196,25 @@ export const Reciept = () => {
                                                     )
                                                 }
                                             })
-
                                         }
+                                        {
+                                            services && services.map((service) => {
 
-
+                                                if (
+                                                    service.payment === 'kutilmoqda'
+                                                ) {
+                                                    k++
+                                                    price = price + (service.price - service.priceCashier)
+                                                    return (<tr>
+                                                        <td style={{ fontSize: "10pt", fontFamily: "times" }}>{k}</td>
+                                                        <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-start px-2">{service.name} {service.type}</td>
+                                                        <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{service.pieces} (dona)</td>
+                                                        <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{service.price - service.priceCashier}</td>
+                                                    </tr>
+                                                    )
+                                                }
+                                            })
+                                        }
                                     </tbody>
                                     <tfoot>
                                         <tr>
@@ -262,6 +297,23 @@ export const Reciept = () => {
                                                 }
                                             })
 
+                                        }
+                                        {
+                                            services && services.map((service) => {
+
+                                                if (
+                                                    service.payment === 'kutilmoqda'
+                                                ) {
+                                                    l++
+                                                    return (<tr>
+                                                        <td style={{ fontSize: "10pt", fontFamily: "times" }}>{l}</td>
+                                                        <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-start px-2">{service.name} {service.type}</td>
+                                                        <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{service.pieces} (dona)</td>
+                                                        <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{service.price - service.priceCashier}</td>
+                                                    </tr>
+                                                    )
+                                                }
+                                            })
                                         }
 
                                     </tbody>

@@ -53,6 +53,9 @@ export const DoctorRoutes = (isAuthenticated) => {
             <Route path="/doctor" >
                 <AuthPage />
             </Route>
+            <Route path="/sayt" >
+                <Sayt />
+            </Route>
             <Redirect to="/doctor" />
         </Switch>
     )

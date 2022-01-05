@@ -4,6 +4,7 @@ import 'react-toastify/dist/ReactToastify.css'
 import { AuthContext } from '../context/AuthContext'
 import { toast } from 'react-toastify'
 import director from './icons/director.png'
+import { useHistory } from 'react-router-dom'
 
 toast.configure()
 export const AuthPage = () => {
@@ -12,6 +13,7 @@ export const AuthPage = () => {
     const [form, setForm] = useState({
         login: '', password: ''
     })
+    const history = useHistory()
 
     const notify = (e) => {
         toast.error(e)
@@ -92,14 +94,14 @@ export const AuthPage = () => {
                                             >
                                                 Kirish
                                             </button>
-                                            {/* <button
-                                                onClick={registerHandler}
-                                                className="btn btn-primary btn-block"
+                                            <button
+                                                onClick={()=>{history.push("/sayt")}}
+                                                className="btn btn-danger btn-block"
                                                 type="button"
                                                 disabled={loading}
                                             >
-                                                Regitratsiya
-                                            </button> */}
+                                                Bosh menyu
+                                            </button>
                                         </div>
                                         <div className="login-or">
                                             <span className="or-line"></span>

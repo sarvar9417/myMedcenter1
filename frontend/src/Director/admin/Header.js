@@ -18,6 +18,7 @@ export const Header = () => {
     return (
         <nav class="main-header navbar navbar-expand-md navbar-light bg-light">
             <div class="container-fluid">
+
                 <a className="nav-link" data-widget="pushmenu" role="button"><i className="fas fa-bars" /></a>
                 <button className="btn nav-link a aktive" onClick={goBack} >Bosh menyu</button>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
@@ -26,7 +27,7 @@ export const Header = () => {
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <ul className="navbar-nav">
                         <li className="nav-item">
-                            <Link className="btn nav-link a aktive" to="/director" >Hisobot</Link>
+                            <Link className="btn nav-link a aktive" to="/director" >Statistika</Link>
                         </li>
                         <li className="nav-item  dropdown">
                             <button class="w-100 nav-link dropdown-toggle btn a" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -34,16 +35,37 @@ export const Header = () => {
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <li>
-                                    <Link className="dropdown-item aktive" to="/director/editdirector" >Direktor</Link>
+                                    <Link className="dropdown-item " to="/director/directions" >Xizmat turlari</Link>
                                 </li>
                                 <li>
-                                    <Link className="dropdown-item aktive" to="/director/editreseption" >Qabul</Link>
+                                    <Link className="dropdown-item " to="/director/doctors" >Shifokorlar</Link>
                                 </li>
                                 <li>
-                                    <Link className="dropdown-item aktive" to="/director/editcashier" >Kassa</Link>
+                                    <Link className="dropdown-item " to="/director/warehouse" >Omborxona</Link>
+                                </li>
+                                <li>
+                                    <Link className="dropdown-item " to="/director/rooms" >Statsionar xonalar</Link>
                                 </li>
                             </ul>
-
+                        </li>
+                        <li className="nav-item  dropdown">
+                            <button class="w-100 nav-link dropdown-toggle btn a" id="navbarDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                Login-parol
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
+                                <li>
+                                    <Link className="dropdown-item " to="/director/editdirector" >Direktor</Link>
+                                </li>
+                                <li>
+                                    <Link className="dropdown-item " to="/director/editreseption" >Qabul</Link>
+                                </li>
+                                <li>
+                                    <Link className="dropdown-item " to="/director/editcashier" >Kassa</Link>
+                                </li>
+                                <li>
+                                    <Link className="dropdown-item " to="/director/editcallcenter" >CallCenter</Link>
+                                </li>
+                            </ul>
                         </li>
                         <li className="nav-item">
                             <Link className="btn nav-link a aktive" to="/director/marketing" >Marketing</Link>
@@ -59,6 +81,7 @@ export const Header = () => {
                             <span style={{ backgroundColor: "#EA5353" }} className="nav-link btn text-white" href="" onClick={logoutHandler} >Chiqish</span>
                         </li>
                     </ul>
+
                 </div>
             </div>
         </nav>

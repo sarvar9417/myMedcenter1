@@ -7,9 +7,12 @@ import './cashier.css'
 import { AuthContext } from '../context/AuthContext'
 import { toast } from "react-toastify"
 import { useHttp } from '../hooks/http.hook'
+const mongoose = require('mongoose')
 
 toast.configure()
 export const CheckHistory = () => {
+    let num = 0
+    let num2 = 0
     const auth = useContext(AuthContext)
     const history = useHistory()
     const { request, error, clearError } = useHttp()
@@ -25,6 +28,7 @@ export const CheckHistory = () => {
     const [clientId, setClientId] = useState(useParams().id)
     const [clientid, setClientid] = useState(useParams().id)
     const [sections, setSections] = useState()
+    const [services, setServices] = useState()
     const [client, setClient] = useState()
 
     const getClient = useCallback(async () => {
@@ -36,7 +40,7 @@ export const CheckHistory = () => {
         } catch (e) {
             notify(e)
         }
-    }, [request, clientId])
+    }, [request, clientId, setClient, auth])
 
 
     const getAllSections = useCallback(async () => {
@@ -48,12 +52,22 @@ export const CheckHistory = () => {
         } catch (e) {
             notify(e)
         }
-    }, [request, clientId])
+    }, [request, clientId, setSections, auth])
+
+    const getAllServices = useCallback(async () => {
+        try {
+            const fetch = await request(`/api/service/cashier/${clientId}`, 'GET', null, {
+                Authorization: `Bearer ${auth.token}`
+            })
+            setServices(fetch)
+        } catch (e) {
+            notify(e)
+        }
+    }, [request, clientId, setServices, auth])
 
     const setPayments = () => {
         history.push({
-            pathname: `/cashier/reciept/${clientId}`,
-            state: sections
+            pathname: `/cashier/recieptall/${clientId}`,
         })
     }
 
@@ -79,6 +93,9 @@ export const CheckHistory = () => {
         }
         if (!client) {
             getClient()
+        }
+        if (!services) {
+            getAllServices()
         }
     }, [notify, clearError])
 
@@ -128,13 +145,12 @@ export const CheckHistory = () => {
                             sections && sections.map((section, key) => {
                                 allPrice = allPrice + section.price
                                 paymented = paymented + section.priceCashier
-
                                 if (section.payment === "to'lanmagan") {
                                     back = back + section.price
                                 }
                                 return (
                                     <tr >
-                                        <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{key + 1}</td>
+                                        <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{++num}</td>
                                         <td style={{ width: "30%", textAlign: "", padding: "10px 0" }}>
                                             {section.name} {section.subname}
                                         </td>
@@ -147,6 +163,34 @@ export const CheckHistory = () => {
                                         </td>
                                         <td style={{ textAlign: "center", padding: "10px 0"}}>
                                             {new Date(section.bronDay).toLocaleDateString()}
+                                        </td>
+                                    </tr>
+                                )
+                            })
+                        }
+                        {
+                            services && services.map((service, key) => {
+                                allPrice = allPrice + service.price
+                                paymented = paymented + service.priceCashier
+
+                                if (service.payment === "to'lanmagan") {
+                                    back = back + service.price
+                                }
+                                return (
+                                    <tr >
+                                        <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{++num}</td>
+                                        <td style={{ width: "30%", textAlign: "", padding: "10px 0" }}>
+                                            {service.name} {service.type}
+                                        </td>
+                                        <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{service.payment !== "to'lanmagan" ? service.price : "Rad etilgan"}</td>
+                                        <td style={{ width: "20%", padding: "10px 0", textAlign: "center" }}>
+                                            {service.payment !== "to'lanmagan" ? service.priceCashier : "Rad etilgan"}
+                                        </td>
+                                        <td style={{ textAlign: "center", padding: "10px 0", color: "green" }}>
+                                            {service.payment !== "to'lanmagan" ? service.price - service.priceCashier : "Rad etilgan"}
+                                        </td>
+                                        <td style={{ textAlign: "center", padding: "10px 0" }}>
+                                            {new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleDateString()}
                                         </td>
                                     </tr>
                                 )
@@ -237,6 +281,25 @@ export const CheckHistory = () => {
                                                     </td>
                                                     <td style={{ textAlign: "center", padding: "10px 0", color: "green" }}>
                                                         {section.payment !== "to'lanmagan" ? section.price - section.priceCashier : "Rad etilgan"}
+                                                    </td>
+                                                </tr>
+                                            )
+                                        })
+                                    }
+                                    {
+                                        services && services.map((service, key) => {
+                                            return (
+                                                <tr >
+                                                    <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{++num}</td>
+                                                    <td style={{ width: "30%", textAlign: "", padding: "10px 0" }}>
+                                                        {service.name} {service.type}
+                                                    </td>
+                                                    <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{service.payment !== "to'lanmagan" ? service.price : "Rad etilgan"}</td>
+                                                    <td style={{ width: "20%", padding: "10px 0", textAlign: "center" }}>
+                                                        {service.payment !== "to'lanmagan" ? service.priceCashier : "Rad etilgan"}
+                                                    </td>
+                                                    <td style={{ textAlign: "center", padding: "10px 0", color: "green" }}>
+                                                        {service.payment !== "to'lanmagan" ? service.price - service.priceCashier : "Rad etilgan"}
                                                     </td>
                                                 </tr>
                                             )

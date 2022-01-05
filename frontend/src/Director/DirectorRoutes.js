@@ -28,6 +28,13 @@ import { Advertisements } from './marketing/advertising/Advertisements'
 import { AddAdvertisement } from './marketing/advertising/AddAdvertisement'
 import { EditAdvertisement } from './marketing/advertising/EditAdvertisement'
 import { ClientsAdvertisements } from './marketing/advertising/ClientsAdvertisement'
+import { EditCallCenter } from './directorPages/Others/EditCallCenter'
+import { WareHouse } from './directorPages/WareHouse/WareHouse'
+import { CreateWare } from './directorPages/WareHouse/CreateWare'
+import { AddWare } from './directorPages/WareHouse/AddWare'
+import { HistoryWare } from './directorPages/WareHouse/HistoryWare'
+import { Rooms } from './directorPages/Rooms/Rooms'
+import { CreateRoom } from './directorPages/Rooms/CreateRoom'
 
 export const DirectorRoutes = (isAuthenticated) => {
     if (isAuthenticated) {
@@ -41,7 +48,7 @@ export const DirectorRoutes = (isAuthenticated) => {
                         <RouterComponent component={<ClientsPages />} menu={true} />
                     </Route>
                     <Route path='/director/doctors' >
-                        <RouterComponent component={<Doctors />} menu={true}/>
+                        <RouterComponent component={<Doctors />} menu={true} />
                     </Route>
                     <Route path='/director/adddoctor' >
                         <RouterComponent component={<AddDoctor />} menu={true} />
@@ -56,7 +63,7 @@ export const DirectorRoutes = (isAuthenticated) => {
                         <RouterComponent component={<AddDirection />} menu={true} />
                     </Route>
                     <Route path='/director/directionedit/:id' >
-                        <RouterComponent component={<EditDirection />} menu={true}/>
+                        <RouterComponent component={<EditDirection />} menu={true} />
                     </Route>
                     <Route path='/director/clientallhistory/:id' >
                         <RouterComponent component={<ClientAllHistory />} menu={true} />
@@ -73,17 +80,20 @@ export const DirectorRoutes = (isAuthenticated) => {
                     <Route path='/director/editcashier' >
                         <RouterComponent component={<EditCashier />} />
                     </Route>
+                    <Route path='/director/editcallcenter' >
+                        <RouterComponent component={<EditCallCenter />} />
+                    </Route>
                     <Route path='/director/doctorprocient/:id' >
                         <RouterComponent component={<ClientsDoctor />} menu={true} />
                     </Route>
                     <Route path='/director/marketing' >
-                        <RouterComponent component={<Marketing component={<Doctors/>} />}  />
+                        <RouterComponent component={<Marketing component={<Doctors />} />} />
                     </Route>
                     <Route path='/director/counteragents' >
                         <RouterComponent component={<Marketing component={<CounterAgents />} />} />
                     </Route>
                     <Route path='/director/addcounteragent' >
-                        <RouterComponent component={<Marketing component={<AddCounterAgent/>} />} />
+                        <RouterComponent component={<Marketing component={<AddCounterAgent />} />} />
                     </Route>
                     <Route path='/director/editcounteragent/:id' >
                         <RouterComponent component={<Marketing component={<EditCounterAgent />} />} />
@@ -103,6 +113,24 @@ export const DirectorRoutes = (isAuthenticated) => {
                     <Route path='/director/clientsadvertisiments/:id' >
                         <RouterComponent component={<Marketing component={<ClientsAdvertisements />} />} />
                     </Route>
+                    <Route path='/director/warehouse' >
+                        <RouterComponent component={<WareHouse />} menu={true} />
+                    </Route>
+                    <Route path='/director/createware' >
+                        <RouterComponent component={<CreateWare />} menu={true} />
+                    </Route>
+                    <Route path='/director/addware/:id' >
+                        <RouterComponent component={<AddWare />} menu={true} />
+                    </Route>
+                    <Route path='/director/warehistory/:ware' >
+                        <RouterComponent component={<HistoryWare />} menu={true} />
+                    </Route>
+                    <Route path='/director/rooms' >
+                        <RouterComponent component={<Rooms />} menu={true} />
+                    </Route>
+                    <Route path='/director/createroom' >
+                        <RouterComponent component={<CreateRoom />} menu={true} />
+                    </Route>
                     <Route path="/sayt" >
                         <Sayt />
                     </Route>
@@ -115,6 +143,9 @@ export const DirectorRoutes = (isAuthenticated) => {
         <Switch>
             <Route path="/director"  >
                 <AuthPage />
+            </Route>
+            <Route path="/sayt" >
+                <Sayt />
             </Route>
             <Redirect to="/director" />
         </Switch>

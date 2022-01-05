@@ -4,7 +4,7 @@ import { useHttp } from '../hooks/http.hook'
 import { toast } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css'
 import { Loader } from '../components/Loader'
-import { CheckClentData } from './CreateCleint/CheckClentData'
+import { CheckClentData } from '../Online/CheckClentData'
 import { AuthContext } from '../context/AuthContext'
 
 
@@ -21,6 +21,7 @@ export const EditClient = () => {
         phone: "",
         id: 0,
         born: "",
+        address: " "
     })
 
     const getClient = useCallback(async () => {
@@ -36,7 +37,8 @@ export const EditClient = () => {
                 gender: data.gender,
                 phone: data.phone,
                 id: data.id,
-                born: data.born
+                born: data.born,
+                address: data.address
             })
         } catch (e) {
         }
@@ -92,13 +94,13 @@ export const EditClient = () => {
     return (
         <div className="container rounded bg-white mt-5 mb-5">
             <div className="row">
-                <div className="col-md-5 offset-3">
+                <div className="col-lg-6 offset-lg-3">
                     <div className="p-3 py-5">
                         <div className="d-flex justify-content-between align-items-center mb-3">
                             <h4 className="text-right">Mijozning ma'lumotlarini kiritish</h4>
                         </div>
                         <div className="row mt-2">
-                            <div className="col-md-6 input_box" >
+                            <div className="col-md-6 input_box mb-3" >
                                 <input
                                     defaultValue={form.lastname}
                                     onChange={changeHandlar}
@@ -109,7 +111,7 @@ export const EditClient = () => {
                                 />
                                 <label className="labels">Familiya</label>
                             </div>
-                            <div className="col-md-6 input_box" >
+                            <div className="col-md-6 input_box mb-3" >
                                 <input
                                     defaultValue={form.firstname}
                                     onChange={changeHandlar}
@@ -121,7 +123,7 @@ export const EditClient = () => {
                             </div>
                         </div>
                         <div className="row mt-3">
-                            <div className="col-md-6 input_box" >
+                            <div className="col-md-6 input_box mb-3" >
                                 <input
                                     defaultValue={form.fathername}
                                     onChange={changeHandlar}
@@ -171,7 +173,7 @@ export const EditClient = () => {
                             </div>
                         </div>
                         <div className="row mt-3">
-                            <div className="col-md-6 input_box" >
+                            <div className="col-md-6 input_box mb-3" >
 
 
                                 <input
@@ -186,7 +188,7 @@ export const EditClient = () => {
                                     Telefon raqami
                                 </label>
                             </div>
-                            <div className="col-md-6 input_box" >
+                            <div className="col-md-6 input_box mb-3" >
                                 <input
                                     onChange={changeDate}
                                     value={new Date(form.born).getFullYear().toString() + '-' + (new Date(form.born).getMonth() < 9 ? "0" + (new Date(form.born).getMonth() + 1).toString() : (new Date(form.born).getMonth() + 1).toString()) + '-' + (new Date(form.born).getDate() < 10 ? "0" + (new Date(form.born).getDate()).toString() : (new Date(form.born).getDate()).toString())}
@@ -199,9 +201,20 @@ export const EditClient = () => {
                                     Tug'ilgan kuni
                                 </label>
                             </div>
+                            <div className="col-12 mt-3">
+                                <input
+                                    defaultValue={form.address}
+                                    onChange={changeHandlar}
+                                    name="address"
+                                    type="text"
+                                    className="form-control inp"
+                                    placeholder="Mijozning manzili"
+                                />
+                                <label className="labels">Mijoz manzili</label>
+                            </div>
 
                         </div>
-                        <div className="mt-5 text-center">
+                        <div className="mt-5 text-center ">
                             <button
                                 onClick={checkData}
                                 className="btn btn-primary profile-button"

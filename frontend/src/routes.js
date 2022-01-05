@@ -1,5 +1,6 @@
 import React from 'react'
 import { Switch, Redirect, Route } from 'react-router-dom'
+import { CallCenter } from './CallCenter/CallCenter'
 import { Cashier } from './Cashier/Cashier'
 import { ClientHistory } from './Client/ClientHistory'
 import { Director } from './Director/Director'
@@ -26,6 +27,9 @@ export const useRoutes = () => {
             </Route>
             <Route path="/turn" >
                 <Turn />
+            </Route>
+            <Route path="/callcenter" >
+                <CallCenter />
             </Route>
             <Route path="/registerdirector" >
                 <RegistorDirector />

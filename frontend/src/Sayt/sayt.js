@@ -10,6 +10,7 @@ import { Cashier } from './Sections/Cashier'
 import { Doctor } from './Sections/Doctor'
 import { Director } from './Sections/Director'
 import { Turn } from './Turn'
+import { CallCenter } from './CallCenter'
 
 export const Sayt = () => {
 
@@ -42,6 +43,7 @@ export const Sayt = () => {
                 <Doctor />
             </div>
             <Turn />
+            <CallCenter/>
         </div>
 
     )

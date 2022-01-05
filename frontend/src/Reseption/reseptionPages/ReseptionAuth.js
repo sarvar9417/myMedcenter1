@@ -89,7 +89,7 @@ export const AuthPage = () => {
                                             </button>
                                             <button
                                                 onClick={()=>{history.push('/sayt')}}
-                                                className="btn btn-primary btn-block"
+                                                className="btn btn-danger btn-block"
                                                 type="button"
                                                 disabled={loading}
                                             >

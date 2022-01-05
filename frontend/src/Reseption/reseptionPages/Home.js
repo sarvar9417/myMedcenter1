@@ -1,6 +1,5 @@
 import React from 'react'
-import { CreateClient } from './CreateClient';
-
+import { CreateClient } from '../Offline/CreateClient'
 export const Home = () => {
 
     return (

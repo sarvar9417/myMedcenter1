@@ -37,10 +37,8 @@ router.post('/reseption/register/:id', auth, async (req, res) => {
             connector,
             doctor,
             source,
-            counterAgent,
+            counteragent,
             paymentMethod
-
-
         } = req.body
         const section = new Section({
             client: id,
@@ -62,12 +60,24 @@ router.post('/reseption/register/:id', auth, async (req, res) => {
             connector,
             doctor,
             source,
-            counterAgent,
+            counteragent,
             paymentMethod
         })
         await section.save()
         res.status(201).send(section)
 
+    } catch (e) {
+        res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
+    }
+})
+
+// /api/section/reseption
+router.get('/reseption/turn', auth, async (req, res) => {
+    try {
+        const section = await Section.find({
+            bronDay: { $gte: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()), $lt: new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1) }
+        }).sort({ _id: -1 })
+        res.json(section)
     } catch (e) {
         res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
     }
@@ -82,6 +92,7 @@ router.get('/reseption', auth, async (req, res) => {
         res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
     }
 })
+
 
 // /api/section/reseption
 router.get('/reseption/:id', async (req, res) => {
@@ -157,6 +168,21 @@ router.get('/cashier', auth, async (req, res) => {
     try {
         const section = await Section.find().sort({ _id: -1 })
         res.json(section)
+    } catch (e) {
+        res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
+    }
+})
+
+// /api/section/
+router.get('/cashierconnector/:id', auth, async (req, res) => {
+    try {
+        const id = req.params.id
+        const sections = await Section.find({ 
+            connector: id,
+            payment: "kutilmoqda"
+        }).sort({ _id: -1 })
+        res.json(sections)
+
     } catch (e) {
         res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
     }
@@ -451,6 +477,17 @@ router.patch('/:id', auth, async (req, res) => {
     try {
         const id = req.params.id
         const edit = await Section.findByIdAndUpdate(id, req.body)
+        res.json(edit)
+
+    } catch (e) {
+        res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
+    }
+})
+
+router.delete('/:id', auth, async (req, res) => {
+    try {
+        const id = req.params.id
+        const edit = await Section.findByIdAndDelete(id, req.body)
         res.json(edit)
 
     } catch (e) {

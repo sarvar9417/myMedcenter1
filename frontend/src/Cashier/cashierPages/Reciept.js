@@ -16,8 +16,8 @@ export const Reciept = () => {
         content: () => componentRef.current,
     })
     const clientId = useParams().id
+    const connectorId = useParams().connector
     const today = (new Date().getDate().toString() + "." + (new Date().getMonth() + 1).toString() + "." + new Date().getFullYear().toString() + " " + new Date().getHours().toString() + ":" + new Date().getMinutes().toString() + ":" + new Date().getSeconds().toString())
-    const sections = useLocation().state
 
     let unpaid = 0
     let paid = 0
@@ -26,8 +26,7 @@ export const Reciept = () => {
     let l = 0
     const [client, setClient] = useState()
     const { loading, request , error, clearError} = useHttp()
-
-
+    const [sections, setSections] = useState()
     const getClient = useCallback(async () => {
         try {
             const data = await request(`/api/clients/reseption/${clientId}`, 'GET', null, {
@@ -62,6 +61,32 @@ export const Reciept = () => {
         }
     }, [request, setLogo])
 
+    // =================================================================================
+    // =================================================================================
+    // Servislar bo'limi
+    const [services, setServices] = useState()
+    const getServices = useCallback(async () => {
+        try {
+            const data = await request(`/api/service/reseption/${connectorId}`, 'GET', null, {
+                Authorization: `Bearer ${auth.token}`
+            })
+            setServices(data)
+        } catch (e) {
+        }
+    }, [request, connectorId, auth, setServices])
+    // =================================================================================
+    // =================================================================================
+
+
+    const getSections = useCallback(async () => {
+        try {
+            const data = await request(`/api/section/reseptionid/${clientId}/${connectorId}`, 'GET', null, {
+                Authorization: `Bearer ${auth.token}`
+            })
+            setSections(data)
+        } catch (e) {
+        }
+    }, [request, clientId, auth])
 
     const [qr, setQr] = useState()
     useEffect(() => {
@@ -83,6 +108,12 @@ export const Reciept = () => {
         }
         if (!baseUrl) {
             getBaseUrl()
+        }
+        if (!sections) {
+            getSections()
+        }
+        if (!services) {
+            getServices()
         }
     }, [ error, clearError])
 
@@ -163,6 +194,23 @@ export const Reciept = () => {
 
                                             })
 
+                                        }
+                                        {
+                                            services && services.map((service, index) => {
+                                                paid = paid + service.priceCashier
+                                                service.payment === "to'lanmagan" ? unpaid = unpaid : unpaid = unpaid + (service.price - service.priceCashier)
+                                                k++
+                                                price = price + (service.price - service.priceCashier)
+                                                return (<tr>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }}>{index + 1}</td>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="ps-3">{service.name} {service.type}</td>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{service.pieces} (dona)</td>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{service.price}</td>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{service.priceCashier}</td>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center"> {service.price - service.priceCashier}</td>
+                                                </tr>
+                                                )
+                                            })
                                         }
 
 
@@ -248,10 +296,20 @@ export const Reciept = () => {
                                                 </tr>
                                                 )
                                             })
-
                                         }
-
-
+                                        {
+                                            services && services.map((service, index) => {
+                                                return (<tr>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }}>{index + 1}</td>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="ps-3">{service.name} {service.type}</td>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{service.pieces} (dona)</td>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{service.price}</td>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{service.priceCashier}</td>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center"> {service.price - service.priceCashier}</td>
+                                                </tr>
+                                                )
+                                            })
+                                        }
                                     </tbody>
                                     <tfoot>
                                         <tr>

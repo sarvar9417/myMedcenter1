@@ -1,20 +1,22 @@
 import React, { useCallback, useContext, useEffect, useState } from "react"
-import { useHistory } from "react-router-dom"
-import { useHttp } from "../../hooks/http.hook"
+import { useHistory, useParams } from "react-router-dom"
+import { useHttp } from "../hooks/http.hook"
 import "react-toastify/dist/ReactToastify.css"
 import { toast } from "react-toastify"
 import Select from "react-select"
 import makeAnimated from "react-select/animated"
-import { CheckClentData } from "./CheckClentData"
-import { AuthContext } from "../../context/AuthContext"
-import '../radio.css'
+import { CheckClentData } from "../Online/CheckClentData"
+import { AuthContext } from "../context/AuthContext"
+import '../CSS/radio.css'
 const mongoose = require("mongoose")
 const animatedComponents = makeAnimated()
 
 
 
 toast.configure()
-export const NewClient = () => {
+export const AddServices = () => {
+  const connectorId = useParams().connector
+  const clientId = useParams().client
   //Xatoliklar chiqaruvi
   const notify = (e) => {
     toast.error(e)
@@ -30,7 +32,7 @@ export const NewClient = () => {
 
 
   // So'rov kutish va xatoliklarni olish
-  const { loading, request, error, clearError } = useHttp()
+  const { request, error, clearError } = useHttp()
 
   const [advertisement, setAdvertisement] = useState(false)
   const [counteragents, setCounterAgents] = useState()
@@ -42,12 +44,16 @@ export const NewClient = () => {
       const fetch = await request('/api/counteragent/', 'GET', null, {
         Authorization: `Bearer ${auth.token}`
       })
-      let c = []
+      let c = [{
+        label: "Tanlanmagan",
+        value: " "
+      }]
       fetch.map((data) => {
         c.push({
           label: data.clinic.toUpperCase() + " " + data.lastname + " " + data.firstname + " " + data.fathername,
           value: data.lastname + " " + data.firstname + " " + data.fathername
         })
+
       })
       setCounterAgents(c)
     } catch (error) {
@@ -99,7 +105,31 @@ export const NewClient = () => {
     phone: "",
     id: 0,
     born: "",
+    address: ""
   })
+
+  const getClient = useCallback(async () => {
+    try {
+      const data = await request(`/api/clients/reseption/${clientId}`, "GET", null, {
+        Authorization: `Bearer ${auth.token}`
+      })
+      setClient(data)
+    } catch (e) {
+      notify(e)
+    }
+  }, [auth, request, setClient, clientId])
+
+  const [connector, setConnector] = useState()
+  const getConnector = useCallback(async () => {
+    try {
+      const data = await request(`/api/connector/${connectorId}`, "GET", null, {
+        Authorization: `Bearer ${auth.token}`
+      })
+      setConnector(data)
+    } catch (e) {
+      notify(e)
+    }
+  }, [auth, request, setConnector, connectorId])
 
 
   const changeHandlar = (event) => {
@@ -110,10 +140,6 @@ export const NewClient = () => {
     setClient({ ...client, born: new Date(event.target.value) })
   }
 
-  const changeCounterAgent = (event) => {
-    setCounterAgent(event.value)
-  }
-
   const changeSections = (event) => {
     s = []
     event.map((section) => {
@@ -122,13 +148,17 @@ export const NewClient = () => {
         if (checkTurn(sec, section.section)) {
           turn++
         }
+
       })
       s.map((sec) => {
         if (sec.name === section.section) {
           turn++
         }
+
       })
       s.push({
+        client: client && client._id,
+        connector: connector && connector._id,
         name: section.section,
         subname: section.subsection,
         price: section.price,
@@ -145,45 +175,99 @@ export const NewClient = () => {
         position: "offline",
         checkup: "chaqirilmagan",
         doctor: " ",
-        counterAgent: counteragent,
+        counteragent: connector && connector.counteragent,
         paymentMethod: " ",
-        source: source
+        source: connector && connector.source
       })
+
     })
     setSections(s)
   }
 
-  const createSections = (event) => {
-    let key = parseInt(event.target.id)
-    setSections(
-      Object.values({
-        ...sections,
-        [key]: { ...sections[key], price: event.target.value },
-      }),
-      () =>
-        setSections(
-          Object.values({
-            ...sections,
-            [key]: { ...sections[key], turn: parseInt(event.target.name) },
-          })
-        )
-    )
-  }
-
   const allClients = useCallback(async () => {
     try {
-      const fetch = await request("/api/clients/reseption", "GET", null, {
+      const fetch = await request("/api/clients/reseption/length", "GET", null, {
         Authorization: `Bearer ${auth.token}`
       })
-      const sec = await request("/api/section/reseption", "GET", null, {
+      const sec = await request("/api/section/reseption/turn", "GET", null, {
         Authorization: `Bearer ${auth.token}`
       })
       seTurns(sec)
-      client.id = fetch.length + 1000001
+      client.id = fetch + 1000001
     } catch (e) {
       notify(e)
     }
-  }, [request, auth])
+  }, [request, auth, client])
+
+
+  // =================================================================================
+  // =================================================================================
+  // Servislar bo'limi
+  const [services, setServices] = useState()
+  const [warehouse, setWarehouse] = useState()
+  const getWarehouse = useCallback(async () => {
+    try {
+      const fetch = await request('/api/warehouse/', 'GET', null, {
+        Authorization: `Bearer ${auth.token}`
+      })
+      setWarehouse(fetch)
+    } catch (error) {
+      notify(error)
+    }
+  }, [auth, request, setWarehouse])
+
+  const changeServices = (event) => {
+    s = []
+    event.map((service) => {
+      s.push({
+        connector: connector && connector._id,
+        client: client && client._id,
+        warehouse: service._id,
+        name: service.name,
+        type: service.type,
+        price: service.price,
+        pieces: 1,
+        priceone: service.price,
+        payment: "kutilmoqda",
+        priceCashier: 0,
+        commentCashier: " ",
+        paymentMethod: " "
+      })
+    })
+    setServices(s)
+  }
+  const changePieces = (event) => {
+    const key = parseInt(event.target.id)
+    setServices(
+      Object.values({
+        ...services,
+        [key]: {
+          ...services[key],
+          pieces: parseInt(event.target.value),
+          price: parseInt(services[key].priceone) * parseInt(event.target.value)
+        },
+      })
+    )
+  }
+
+  const createAllServices = () => {
+    services.map((service) => {
+      createService(service)
+    })
+  }
+
+  const createService = async (service) => {
+    try {
+      const data = await request(`/api/service/register`, "POST", { ...service }, {
+        Authorization: `Bearer ${auth.token}`
+      })
+    } catch (e) {
+      notify(e)
+    }
+  }
+  // =================================================================================
+  // =================================================================================
+
 
   const checkData = () => {
     if (CheckClentData(client)) {
@@ -196,21 +280,16 @@ export const NewClient = () => {
 
   const createHandler = async () => {
     try {
-      const data = await request("/api/clients/reseption/register", "POST", { ...client }, {
-        Authorization: `Bearer ${auth.token}`
-      })
-      createConnector(data._id)
+      createConnector()
     } catch (e) {
       notify(e)
     }
   }
 
-  const createConnector = async (client) => {
+  const createConnector = async () => {
     try {
-      const connector = await request("/api/connector/register", "POST", { client }, {
-        Authorization: `Bearer ${auth.token}`
-      })
-      createAllSections(client, connector._id)
+      createAllSections(client._id, connector._id)
+      createAllServices()
     } catch (e) {
       notify(e)
     }
@@ -257,18 +336,29 @@ export const NewClient = () => {
     if (!counteragents) {
       getCounterAgents()
     }
-    allClients()
     if (error) {
       notify(error)
       clearError()
     }
-  }, [allClients])
+    if (client.lastname === "") {
+      getClient()
+    }
+    if (!connector) {
+      getConnector()
+    }
+    if (!warehouse) {
+      getWarehouse()
+    }
+    if (client.id === 0) {
+      allClients()
+    }
+  }, [notify, clearError])
 
   return (
     <div>
       <div className="row" >
         <div className="col-12 mt-3 d-flex justify-content-center align-items-center">
-          <h4 className="text-right">Mijozning ma'lumotlarini kiritish</h4>
+          <h4 className="text-right">Mijozning ma'lumotlari</h4>
         </div>
       </div>
       <div className="row">
@@ -281,7 +371,7 @@ export const NewClient = () => {
             className="form-control inp"
             placeholder=""
           />
-          <label className="labels">Familiya</label>
+          <label className="labels" style={{ top: "-7px", fontSize: "12px", fontWeight: "500" }}>Familiya</label>
         </div>
         <div className="col-md-6 mb-2 input_box" >
           <input
@@ -292,7 +382,7 @@ export const NewClient = () => {
             className="form-control inp"
             placeholder=""
           />
-          <label className="labels">Ism</label>
+          <label className="labels" style={{ top: "-7px", fontSize: "12px", fontWeight: "500" }}>Ism</label>
         </div>
       </div>
       <div className="row" style={{ padding: "15px 0" }}>
@@ -305,11 +395,11 @@ export const NewClient = () => {
             className="form-control inp"
             placeholder=""
           />
-          <label className="labels">Otasining ismi</label>
+          <label className="labels" style={{ top: "-7px", fontSize: "12px", fontWeight: "500" }}>Otasining ismi</label>
         </div>
         <div className="col-md-6 mb-2 input_box" >
           <input
-            defaultValue={new Date(client.born).getFullYear().toString() + '-' + (new Date(client.born).getMonth() < 9 ? "0" + (new Date(client.born).getMonth() + 1).toString() : (new Date(client.born).getMonth() + 1).toString()) + '-' + (new Date(client.born).getDate() < 10 ? "0" + (new Date(client.born).getDate()).toString() : (new Date(client.born).getDate()).toString())}
+            value={new Date(client.born).getFullYear().toString() + '-' + (new Date(client.born).getMonth() < 9 ? "0" + (new Date(client.born).getMonth() + 1).toString() : (new Date(client.born).getMonth() + 1).toString()) + '-' + (new Date(client.born).getDate() < 10 ? "0" + (new Date(client.born).getDate()).toString() : (new Date(client.born).getDate()).toString())}
             onChange={changeDate}
             type="date"
             name="born"
@@ -317,7 +407,7 @@ export const NewClient = () => {
             placeholder=""
             style={{ color: "#999" }}
           />
-          <label className="labels">Tug'ilgan sanasi</label>
+          <label className="labels" style={{ top: "-7px", fontSize: "12px", fontWeight: "500" }}>Tug'ilgan sanasi</label>
         </div>
       </div>
       <div className="row">
@@ -372,41 +462,23 @@ export const NewClient = () => {
             className="form-control inp"
             placeholder=""
           />
-          <label className="labels">Telefon raqami</label>
+          <label className="labels" style={{ top: "-7px", fontSize: "12px", fontWeight: "500" }}>Telefon raqami</label>
         </div>
-      </div>
-
-      <div className="text-end">
-        {
-          advertisement ?
-            <button onClick={()=>setAdvertisement(false)} className="adver">-</button>
-            :
-            <button onClick={() => setAdvertisement(true)} className="adver">+</button>
-        }
-      </div>
-      <div className={advertisement?"row m-0 p-1 border rounded": "d-none"}>
-        <Select
-          placeholder="Kontragentni tanglang"
-          className="m-0 p-0"
-          onChange={(event) => changeCounterAgent(event)}
-          components={animatedComponents}
-          options={counteragents && counteragents}
-        />
-        <div className="mt-3 text-center p-0" >
-          {
-            sources && sources.map((adver) => {
-              if (adver.name === source) {
-                return <button onClick={() => { setSource(adver.name) }} className="button-change"> {adver.name} </button>
-              } else {
-                return <button onClick={() => { setSource(adver.name); console.log(adver.name); }} className="button">{adver.name}</button>
-              }
-            })
-          }
+        <div className="col-12">
+          <input
+            defaultValue={client.address}
+            onChange={changeHandlar}
+            name="address"
+            type="text"
+            className="form-control inp"
+            placeholder="Mijozning manzili"
+          />
+          <label className="labels" style={{ top: "-7px", fontSize: "12px", fontWeight: "500" }}>Mijoz manzili</label>
         </div>
       </div>
 
       <div className="row pt-3">
-        <div className="col-md-12" >
+        <div className="col-12" >
           <p className="m-0 ps-2">Bo'limni tanlang</p>
           <Select
             className=""
@@ -416,39 +488,70 @@ export const NewClient = () => {
             isMulti
             options={options && options}
           />
+          {sections && sections.map((section, key) => {
+            return (
+              <div className="row">
+                <div className="col-6">
+                  <input
+                    disabled
+                    value={section.name + " " + section.subname}
+                    id={key}
+                    className="form-control mt-2"
+                  />
+                </div>
+                <div className="col-6">
+                  <input
+                    disabled
+                    value={section.price}
+                    id={key}
+                    className="form-control mt-2"
+                  />
+                </div>
+              </div>
+            )
+          })}
         </div>
-      </div>
-      <div className="row">
-        {sections.map((section, key) => {
-          return (
-            <div key={key} className="row">
-              <div className="col-7" >
-                <label className="text-muted mandatory"> { }</label>
-                <input
-                  disabled
-                  defaultValue={section.price}
-                  onChange={createSections}
-                  id={key}
-                  type="number"
-                  name={section.name}
-                  className="form-control mt-2"
-                  placeholder={section.name + " summasi"}
-                />
+        <div className="col-12 mt-5" >
+          <p className="m-0 ps-2">Xizmatni tanlang</p>
+          <Select
+            className=""
+            onChange={(event) => changeServices(event)}
+            closeMenuOnSelect={false}
+            components={animatedComponents}
+            isMulti
+            options={warehouse && warehouse}
+          />
+          {services && services.map((service, key) => {
+            return (
+              <div className="row">
+                <div className="col-4">
+                  <input
+                    disabled
+                    value={service.name + " " + service.type}
+                    id={key}
+                    className="form-control mt-2"
+                  />
+                </div>
+                <div className="col-4">
+                  <input
+                    onChange={changePieces}
+                    defaultValue={service.pieces}
+                    id={key}
+                    className="form-control mt-2"
+                  />
+                </div>
+                <div className="col-4">
+                  <input
+                    disabled
+                    value={service.price}
+                    id={key}
+                    className="form-control mt-2"
+                  />
+                </div>
               </div>
-              <div className="col-5">
-                <label className="text-muted mandatory" style={{ fontWeight: "100" }}> navbati</label>
-                <input
-                  // onChange={changeHandlar}
-                  type="number"
-                  className="form-control"
-                  placeholder="section"
-                  value={section.turn}
-                  disabled
-                />
-              </div>
-            </div>
-          )
-        })}
+            )
+          })}
+        </div>
       </div>
 
       <div className="mt-5 text-center" >
@@ -484,6 +587,20 @@ export const NewClient = () => {
                           {section.name} {section.subname}
                         </td>
                         <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{section.price}</td>
+                      </tr>
+                    )
+                  })
+                }
+                {
+                  services && services.map((service, key) => {
+                    allPrice = allPrice + service.price
+                    return (
+                      <tr key={key}>
+                        <td style={{ width: "10%", textAlign: "center", padding: "10px 0" }}>{key + 1}</td>
+                        <td style={{ width: "30%", textAlign: "center", padding: "10px 0" }}>
+                          {service.name} {service.type}
+                        </td>
+                        <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{service.price}</td>
                       </tr>
                     )
                   })
