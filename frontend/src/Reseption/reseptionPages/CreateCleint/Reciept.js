@@ -49,6 +49,7 @@ export const Reciept = () => {
             const data = await request(`/api/section/reseptionid/${clientId}/${connectorId}`, 'GET', null, {
                 Authorization: `Bearer ${auth.token}`
             })
+            console.log(data)
             setSections(data)
         } catch (e) {
         }
@@ -65,15 +66,6 @@ export const Reciept = () => {
         } catch (e) {
         }
     }, [request, clientId, auth])
-
-    useEffect(() => {
-        if (!sections) {
-            getSections()
-        }
-        if (!services) {
-            getServices()
-        }
-    }, [])
 
     const notify = (e) => {
         toast.error(e)
@@ -119,8 +111,14 @@ export const Reciept = () => {
         if (!baseUrl) {
             getBaseUrl()
         }
+        if (!sections) {
+            getSections()
+        }
+        if (!services) {
+            getServices()
+        }
 
-    }, [getClient, client, notify, clearError])
+    }, [notify, clearError])
 
     if (loading) {
         return <Loader />
@@ -181,38 +179,31 @@ export const Reciept = () => {
                                     <tbody>
                                         {
                                             sections && sections.map((section) => {
+                                                k++
+                                                price = price + (section.price)
+                                                return (<tr>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }}>{k}</td>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-start px-2">{section.name} {section.subname}</td>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.bron === 'offline' ? section.turn : section.bronTime}</td>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.price}</td>
+                                                </tr>
+                                                )
 
-                                                if (
-                                                    section.payment === 'kutilmoqda' && section.position !== "kelmagan"
-                                                ) {
-                                                    k++
-                                                    price = price + (section.price - section.priceCashier)
-                                                    return (<tr>
-                                                        <td style={{ fontSize: "10pt", fontFamily: "times" }}>{k}</td>
-                                                        <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-start px-2">{section.name} {section.subname}</td>
-                                                        <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.bron === 'offline' ? section.turn : section.bronTime}</td>
-                                                        <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.price - section.priceCashier}</td>
-                                                    </tr>
-                                                    )
-                                                }
                                             })
                                         }
                                         {
                                             services && services.map((service) => {
 
-                                                if (
-                                                    service.payment === 'kutilmoqda'
-                                                ) {
-                                                    k++
-                                                    price = price + (service.price - service.priceCashier)
-                                                    return (<tr>
-                                                        <td style={{ fontSize: "10pt", fontFamily: "times" }}>{k}</td>
-                                                        <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-start px-2">{service.name} {service.type}</td>
-                                                        <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{service.pieces} (dona)</td>
-                                                        <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{service.price - service.priceCashier}</td>
-                                                    </tr>
-                                                    )
-                                                }
+                                                k++
+                                                price = price + (service.price - service.priceCashier)
+                                                return (<tr>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }}>{k}</td>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-start px-2">{service.name} {service.type}</td>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{service.pieces} (dona)</td>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{service.price - service.priceCashier}</td>
+                                                </tr>
+                                                )
+
                                             })
                                         }
                                     </tbody>
@@ -283,36 +274,31 @@ export const Reciept = () => {
                                         {
                                             sections && sections.map((section) => {
 
-                                                if (
-                                                    section.payment === 'kutilmoqda' && section.position !== "kelmagan"
-                                                ) {
-                                                    l++
-                                                    return (<tr>
-                                                        <td style={{ fontSize: "10pt", fontFamily: "times" }}>{l}</td>
-                                                        <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-start px-2">{section.name} {section.subname}</td>
-                                                        <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.bron === 'offline' ? section.turn : section.bronTime}</td>
-                                                        <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.price - section.priceCashier}</td>
-                                                    </tr>
-                                                    )
-                                                }
+                                                l++
+                                                return (<tr>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }}>{l}</td>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-start px-2">{section.name} {section.subname}</td>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.bron === 'offline' ? section.turn : section.bronTime}</td>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.price}</td>
+                                                </tr>
+                                                )
+
                                             })
 
                                         }
                                         {
                                             services && services.map((service) => {
 
-                                                if (
-                                                    service.payment === 'kutilmoqda'
-                                                ) {
-                                                    l++
-                                                    return (<tr>
-                                                        <td style={{ fontSize: "10pt", fontFamily: "times" }}>{l}</td>
-                                                        <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-start px-2">{service.name} {service.type}</td>
-                                                        <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{service.pieces} (dona)</td>
-                                                        <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{service.price - service.priceCashier}</td>
-                                                    </tr>
-                                                    )
-                                                }
+
+                                                l++
+                                                return (<tr>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }}>{l}</td>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-start px-2">{service.name} {service.type}</td>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{service.pieces} (dona)</td>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{service.price - service.priceCashier}</td>
+                                                </tr>
+                                                )
+
                                             })
                                         }
 
