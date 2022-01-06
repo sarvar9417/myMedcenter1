@@ -379,7 +379,7 @@ export const EditCheckCashier = () => {
                         <div className="card-footer">
                             <div className="row ">
                                 <div className="col-12 text-center">
-                                    <button onClick={setPayments} className="btn button-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
+                                    <button onClick={setPayments} disabled={loading} className="btn button-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
                                     <button onClick={() => setModal(false)} className="btn button-danger" >Qaytish</button>
                                 </div>
                             </div>

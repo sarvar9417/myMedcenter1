@@ -462,7 +462,6 @@ router.get('/endstatsionar/:id', async (req, res) => {
 // /api/auth/connector/
 router.get('/statsionar', async (req, res) => {
     try {
-        console.log("Salom");
         const connectors = await Connector.find({
             type: "statsionar",
             position: "davolanishda"
@@ -559,7 +558,7 @@ router.get('/:id', async (req, res) => {
 
 
 
-router.patch('/:id', async (req, res) => {
+router.patch('/cashier/:id', async (req, res) => {
     try {
         const id = req.params.id
         const edit = await Connector.findByIdAndUpdate(id, req.body)

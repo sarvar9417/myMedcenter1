@@ -54,6 +54,9 @@ export const Header = () => {
                             </button>
                             <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                                 <li>
+                                    <Link className="dropdown-item " to="/director/addlogo" >Shifoxona</Link>
+                                </li>
+                                <li>
                                     <Link className="dropdown-item " to="/director/editdirector" >Direktor</Link>
                                 </li>
                                 <li>

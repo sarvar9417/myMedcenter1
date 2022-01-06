@@ -219,6 +219,7 @@ export const EditClient = () => {
                                 onClick={checkData}
                                 className="btn btn-primary profile-button"
                                 type="button"
+                                disabled={loading}
                             >
                                 O'zgartirishni saqlash
                             </button>

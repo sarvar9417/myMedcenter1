@@ -14,7 +14,7 @@ export const OldStatsionarClient = () => {
 
   const auth = useContext(AuthContext)
   let s = []
-  const { request, error, clearError } = useHttp()
+  const { request, error, clearError, loading } = useHttp()
   const [sections, setSections] = useState([])
   const notify = (e) => {
     toast.error(e)

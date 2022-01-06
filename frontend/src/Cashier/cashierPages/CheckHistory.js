@@ -15,7 +15,7 @@ export const CheckHistory = () => {
     let num2 = 0
     const auth = useContext(AuthContext)
     const history = useHistory()
-    const { request, error, clearError } = useHttp()
+    const { request, error, clearError, loading } = useHttp()
     const notify = (e) => {
         toast.error(e)
     }
@@ -88,7 +88,7 @@ export const CheckHistory = () => {
             notify(error)
             clearError()
         }
-        if (!sections ) {
+        if (!sections) {
             getAllSections()
         }
         if (!client) {
@@ -114,7 +114,7 @@ export const CheckHistory = () => {
                             onChange={getchangeSections}
                         />
                         <label className="labels">Mijoznig ID raqami</label>
-                        <button onClick={()=>{getClient(); getAllSections()}} className="btn text-white" style={{ backgroundColor: "#45D3D3", marginLeft: "5px" }}><FontAwesomeIcon icon={faSearch} /></button>
+                        <button onClick={() => { getClient(); getAllSections() }} className="btn text-white" style={{ backgroundColor: "#45D3D3", marginLeft: "5px" }}><FontAwesomeIcon icon={faSearch} /></button>
                     </div>
                     <div className="col-sm-6 col-lg-4 input_box" >
                         <input
@@ -161,7 +161,7 @@ export const CheckHistory = () => {
                                         <td style={{ textAlign: "center", padding: "10px 0", color: "green" }}>
                                             {section.payment !== "to'lanmagan" ? section.price - section.priceCashier : "Rad etilgan"}
                                         </td>
-                                        <td style={{ textAlign: "center", padding: "10px 0"}}>
+                                        <td style={{ textAlign: "center", padding: "10px 0" }}>
                                             {new Date(section.bronDay).toLocaleDateString()}
                                         </td>
                                     </tr>
@@ -239,7 +239,7 @@ export const CheckHistory = () => {
                     </div>
                     <div className="row">
                         <div className="col-12 text-center">
-                            <button className="btn button-success" onClick={()=>{setModal(true)}}>Chekni chop etish</button>
+                            <button className="btn button-success" onClick={() => { setModal(true) }}>Chekni chop etish</button>
                         </div>
                     </div>
                 </div>
@@ -351,7 +351,7 @@ export const CheckHistory = () => {
                         <div className="card-footer">
                             <div className="row ">
                                 <div className="col-12 text-center">
-                                    <button onClick={setPayments} className="btn button-success" style={{ marginRight: "30px" }}>Chekka chiqarish</button>
+                                    <button onClick={setPayments} disabled={loading} className="btn button-success" style={{ marginRight: "30px" }}>Chekka chiqarish</button>
                                     <button onClick={() => setModal(false)} className="btn button-danger" >Qaytish</button>
                                 </div>
                             </div>

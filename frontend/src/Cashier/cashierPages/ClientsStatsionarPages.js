@@ -273,7 +273,7 @@ export const ClientsStatsionarPages = () => {
                                         <td className="phone">+{all && all.clients[key].phone}</td>
                                         <td className="diagnos ">  {connector.diagnosis} </td>
                                         <td scope="" className="fish text-center">
-                                            {connector.position === "davolanishda" ? <Link className='btn button-success' to={`/reseption/addstatsionar/${connector._id}`}> Qo'shish</Link> : "Xizmat yakunlangan"}
+                                            {connector.position === "davolanishda" ? <Link className='btn button-success' to={`/cashier/prepayment/${all.clients[key]._id}/${connector._id}`}> Qo'shish</Link> : "Xizmat yakunlangan"}
                                         </td>
                                         <td scope="" className="cek text-center">
                                             {connector.position === "yakunlangan" ? <button onClick={() => { setClient(all.clients[key]); setConnectorId(connector._id); setModal(true) }} className='btn button-danger' >Qabul qilish </button> : "Xizmat yakunlanmagan"}

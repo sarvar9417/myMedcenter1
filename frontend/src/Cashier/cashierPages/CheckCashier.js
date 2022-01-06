@@ -31,7 +31,7 @@ export const CheckCashier = () => {
     const [services, setServices] = useState()
     const [connector, setConnector] = useState()
     const [client, setClient] = useState()
-    const { request, error, clearError } = useHttp()
+    const { request, error, clearError, loading } = useHttp()
 
     const [payment, setPayment] = useState({
         client: clientId,
@@ -124,7 +124,6 @@ export const CheckCashier = () => {
         }
     }, [request, connectorId, auth, setConnector])
 
-    console.log(payment.position)
     const getSections = useCallback(async () => {
         try {
             const fetch = await request(`/api/section/cashierconnector/${connectorId}`, 'GET', null, {
@@ -711,7 +710,7 @@ export const CheckCashier = () => {
                         <div className="card-footer">
                             <div className="row ">
                                 <div className="col-12 text-center">
-                                    <button onClick={setPayments} className="btn button-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
+                                    <button onClick={setPayments} disabled={loading} className="btn button-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
                                     <button onClick={() => setModal1(false)} className="btn button-danger" >Qaytish</button>
                                 </div>
                             </div>
@@ -735,7 +734,7 @@ export const CheckCashier = () => {
                         <div className="card-footer">
                             <div className="row ">
                                 <div className="col-12 text-center">
-                                    <button onClick={DeleteService} className="btn button-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
+                                    <button onClick={DeleteService} disabled={loading} className="btn button-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
                                     <button onClick={() => setModal2(false)} className="btn button-danger" >Qaytish</button>
                                 </div>
                             </div>
@@ -759,7 +758,7 @@ export const CheckCashier = () => {
                         <div className="card-footer">
                             <div className="row ">
                                 <div className="col-12 text-center">
-                                    <button onClick={DeleteSection} className="btn button-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
+                                    <button onClick={DeleteSection} disabled={loading} className="btn button-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
                                     <button onClick={() => setModal3(false)} className="btn button-danger" >Qaytish</button>
                                 </div>
                             </div>

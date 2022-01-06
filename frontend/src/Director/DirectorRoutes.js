@@ -11,6 +11,7 @@ import { ClientsDoctor } from './directorPages/Others/ClientsDoctor'
 import { Doctors } from './directorPages/Others/Doctors'
 import { ClientsPages } from './directorPages/Others/ClientsPages'
 import { AddDoctor } from './directorPages/Others/AddDoctor'
+import { AddLogo } from './directorPages/Others/AddLogo'
 import { EditDoctor } from './directorPages/Others/EditDoctor'
 import { Directions } from './directorPages/Others/Directions'
 import { AddDirection } from './directorPages/Others/AddDirection'
@@ -52,6 +53,9 @@ export const DirectorRoutes = (isAuthenticated) => {
                     </Route>
                     <Route path='/director/adddoctor' >
                         <RouterComponent component={<AddDoctor />} menu={true} />
+                    </Route>
+                    <Route path='/director/addlogo' >
+                        <RouterComponent component={<AddLogo />} menu={true} />
                     </Route>
                     <Route path='/director/editdoctor/:id' >
                         <RouterComponent component={<EditDoctor />} menu={true} />

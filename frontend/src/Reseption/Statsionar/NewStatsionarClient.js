@@ -29,7 +29,7 @@ export const NewStatsionarClient = () => {
 
 
   // So'rov kutish va xatoliklarni olish
-  const { request, error, clearError } = useHttp()
+  const { request, error, clearError, loading } = useHttp()
   const [advertisement, setAdvertisement] = useState(false)
   const [counteragents, setCounterAgents] = useState()
   const [counteragent, setCounterAgent] = useState(" ")
@@ -690,7 +690,7 @@ export const NewStatsionarClient = () => {
             </div>
             <div className="row m-1">
               <div className="col-12 text-center">
-                <button onClick={createHandler} className="btn button-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
+                <button onClick={createHandler} disabled={loading} className="btn button-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
                 <button onClick={() => setModal(false)} className="btn button-danger" >Qaytish</button>
               </div>
             </div>
