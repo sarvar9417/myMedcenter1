@@ -34,11 +34,8 @@ export const AddServices = () => {
   // So'rov kutish va xatoliklarni olish
   const { request, error, clearError, loading } = useHttp()
 
-  const [advertisement, setAdvertisement] = useState(false)
   const [counteragents, setCounterAgents] = useState()
-  const [counteragent, setCounterAgent] = useState(" ")
   const [sources, setSources] = useState()
-  const [source, setSource] = useState(" ")
   const getCounterAgents = useCallback(async () => {
     try {
       const fetch = await request('/api/counteragent/', 'GET', null, {
