@@ -102,9 +102,9 @@ export const ClientsPages = () => {
         }
     }, [notify, clearError])
 
-    if (loading) {
-        return <Loader />
-    }
+    // if (loading) {
+    //     return <Loader />
+    // }
 
     return (
         <div className="container m-5 mx-auto" style={{ minWidth: "1250px" }}  >

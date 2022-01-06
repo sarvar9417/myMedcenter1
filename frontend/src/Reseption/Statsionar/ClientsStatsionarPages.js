@@ -108,7 +108,7 @@ export const ClientsStatsionarPages = () => {
             const fetch = await request(`/api/connector/endstatsionar/${connectorId}`, 'GET', null, {
                 Authorization: `Bearer ${auth.token}`
             })
-            // history.pushState(`/reseption/endstatsionar/${connectorId}`)
+            window.location.reload()
         } catch (e) {
             notify(e)
         }
@@ -124,9 +124,9 @@ export const ClientsStatsionarPages = () => {
         }
     }, [notify, clearError])
 
-    if (loading) {
-        return <Loader />
-    }
+    // if (loading) {
+    //     return <Loader />
+    // }
 
     return (
         <div className="container m-5 mx-auto" style={{ minWidth: "1250px" }}  >
@@ -218,10 +218,10 @@ export const ClientsStatsionarPages = () => {
                                             {connector.position}
                                         </td>
                                         <td scope="" className="cek text-center">
-                                            {new Date(all.rooms[key].beginDay).toLocaleDateString()}
+                                            {all.rooms[key] !== null && new Date(all.rooms[key].beginDay).toLocaleDateString()}
                                         </td>
                                         <td scope="" className="cek text-center">
-                                            {new Date(all.rooms[key].endDay).toLocaleDateString()}
+                                            {all.rooms[key] !== null && new Date(all.rooms[key].endDay).toLocaleDateString()}
                                         </td>
                                     </tr>
                                 )
@@ -240,10 +240,10 @@ export const ClientsStatsionarPages = () => {
                                                 {connector.position}
                                             </td>
                                             <td scope="" className="cek text-center">
-                                                {new Date(all.rooms[key].beginDay).toLocaleDateString()}
+                                                {all.rooms[key]!== null && new Date(all.rooms[key].beginDay).toLocaleDateString()}
                                             </td>
                                             <td scope="" className="cek text-center">
-                                                {new Date(all.rooms[key].endDay).toLocaleDateString()}
+                                                {all.rooms[key] !== null && new Date(all.rooms[key].endDay).toLocaleDateString()}
                                             </td>
                                         </tr>
                                     )
@@ -326,7 +326,7 @@ export const ClientsStatsionarPages = () => {
                         </div>
                         <div className="row m-1">
                             <div className="col-12 text-center">
-                                <button onClick={endStatsionar} className="btn button-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
+                                <button onClick={endStatsionar} disabled={loading} className="btn button-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
                                 <button onClick={() => setModal(false)} className="btn button-danger" >Qaytish</button>
                             </div>
                         </div>

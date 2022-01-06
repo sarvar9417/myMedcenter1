@@ -37,7 +37,7 @@ export const Directions = () => {
             const data = await request(`/api/direction/${id}`, "DELETE", null, {
                 Authorization: `Bearer ${auth.token}`
             })
-            history.push('/director')
+            history.push('/director/directions')
         } catch (e) {
             notify(e)
         }
@@ -56,12 +56,10 @@ export const Directions = () => {
         }
     }, [getAllDirections, notify, clearError])
 
-    if (loading) {
-        return <Loader />
-    }
+    
     return (
         <div>
-            <div className="row">
+            <div className="row" style={{height: "40vh"}}>
                 <div className="col-sm-12">
                     <div className="card">
                         <div className="card-body">

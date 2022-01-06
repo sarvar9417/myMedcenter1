@@ -210,7 +210,7 @@ export const OldStatsionarClient = () => {
   }
 
   const createAllServices = (connector) => {
-    services.map((service) => {
+    services && services.map((service) => {
       createService(service, connector)
     })
   }
@@ -226,7 +226,7 @@ export const OldStatsionarClient = () => {
   }
   // =================================================================================
   // =================================================================================
- 
+
   // =================================================================================
   // =================================================================================
   // ROOMS bo'limi
@@ -235,7 +235,7 @@ export const OldStatsionarClient = () => {
   const [room, setRoom] = useState()
   const getRooms = useCallback(async () => {
     try {
-      const fetch = await request('/api/rooms/', 'GET', null, {
+      const fetch = await request('/api/rooms/reseption', 'GET', null, {
         Authorization: `Bearer ${auth.token}`
       })
       setRooms(fetch)
@@ -289,8 +289,8 @@ export const OldStatsionarClient = () => {
         Authorization: `Bearer ${auth.token}`
       })
 
-      createAllSections(connector._id)
-      createAllServices(connector._id)
+      sections && createAllSections(connector._id)
+      services && createAllServices(connector._id)
       createRoom(connector._id)
     } catch (e) {
       notify(e)
@@ -298,7 +298,7 @@ export const OldStatsionarClient = () => {
   }
 
   const createAllSections = (connector) => {
-    sections.map((section) => {
+    sections && sections.map((section) => {
       create(section, connector)
     })
     history.push(`/reseption/reciept/${client._id}/${connector}`)

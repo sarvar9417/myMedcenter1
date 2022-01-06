@@ -7,7 +7,7 @@ import { AuthContext } from '../context/AuthContext'
 import { toast } from "react-toastify"
 
 toast.configure()
-export const CheckCashier = () => {
+export const CheckStatsionar = () => {
     const auth = useContext(AuthContext)
     const history = useHistory()
     const notify = (e) => {
@@ -16,10 +16,8 @@ export const CheckCashier = () => {
     let num = 0
     let num2 = 0
     const [modal1, setModal1] = useState(false)
-    const [modal2, setModal2] = useState(false)
-    const [modal3, setModal3] = useState(false)
-    const [delSection, setDelSection] = useState()
-    const [delService, setDelService] = useState()
+    const [debitor, setDebitor] = useState(0)
+    const [pay, setPays] = useState(0)
     let allPrice = 0
     let paymented = 0
     let back = 0
@@ -41,7 +39,7 @@ export const CheckCashier = () => {
         cash: 0,
         card: 0,
         transfer: 0,
-        position: ""
+        position: "statsionar"
     })
 
     const setPay = (event) => {
@@ -74,37 +72,37 @@ export const CheckCashier = () => {
         if (event.target.id === "card") {
             setPayment({
                 ...payment,
-                total: paymented,
+                total: debitor,
                 type: event.target.id,
                 cash: 0,
                 transfer: 0,
-                [event.target.id]: paymented,
+                [event.target.id]: debitor,
             })
         }
         if (event.target.id === "cash") {
             setPayment({
                 ...payment,
-                total: paymented,
+                total: debitor,
                 type: event.target.id,
                 card: 0,
                 transfer: 0,
-                [event.target.id]: paymented,
+                [event.target.id]: debitor,
             })
         }
         if (event.target.id === "transfer") {
             setPayment({
                 ...payment,
-                total: paymented,
+                total: debitor,
                 type: event.target.id,
                 cash: 0,
                 card: 0,
-                [event.target.id]: paymented,
+                [event.target.id]: debitor,
             })
         }
         if (event.target.id === "mixed") {
             setPayment({
                 ...payment,
-                total: paymented,
+                total: debitor,
                 type: event.target.id,
                 cash: 0,
                 card: 0,
@@ -129,12 +127,14 @@ export const CheckCashier = () => {
             const fetch = await request(`/api/connector/${connectorId}`, 'GET', null, {
                 Authorization: `Bearer ${auth.token}`
             })
+            setDebitor(fetch.prepayment)
+            setPays(fetch.prepayment)
             setConnector(fetch)
             setPayment({ ...payment, position: fetch.type })
         } catch (e) {
             notify(e)
         }
-    }, [request, connectorId, auth, setConnector])
+    }, [request, connectorId, auth, setConnector, setPays, setDebitor])
 
     const getSections = useCallback(async () => {
         try {
@@ -198,81 +198,11 @@ export const CheckCashier = () => {
         }
     }
 
-    const inputCommentSection = (event, key) => {
-        setSections(
-            Object.values({
-                ...sections,
-                [key]: { ...sections[key], commentCashier: event.target.value },
-            }))
-    }
-
-    const inputCommentService = (event, key) => {
-        console.log(services)
-        setServices(
-            Object.values({
-                ...services,
-                [key]: { ...services[key], commentCashier: event.target.value },
-            }))
-    }
-
-    const changePaymentSection = (key) => {
-        setDelSection(sections[key])
-        setModal3(true)
-    }
-
-    const changePaymentService = (key) => {
-        setDelService(services[key])
-        setModal2(true)
-    }
-
-    const checkboxSection = (event, key) => {
-        if (event.target.checked) {
-            setSections(
-                Object.values({
-                    ...sections,
-                    [key]: { ...sections[key], priceCashier: sections[key].price, payment: "to'langan" },
-                }))
-        } else {
-            setSections(
-                Object.values({
-                    ...sections,
-                    [key]: { ...sections[key], priceCashier: 0, payment: "kutilmoqda", commentCashier: " " },
-                }))
-        }
-    }
-
-    const checkboxService = (event, key) => {
-        if (event.target.checked) {
-            setServices(
-                Object.values({
-                    ...services,
-                    [key]: { ...services[key], priceCashier: services[key].price, payment: "to'langan" },
-                }))
-        } else {
-            setServices(
-                Object.values({
-                    ...services,
-                    [key]: { ...services[key], priceCashier: 0, payment: "kutilmoqda", commentCashier: " " },
-                }))
-        }
-    }
-
     const checkPrices = () => {
         let k = 0
-        sections && sections.map(section => {
-            if (section.price !== section.priceCashier && section.commentCashier.length < 6) {
-                k++
-                return notify("Iltimos mijoz to'lovni bajarolmagani sababini to'liq ko'rsating.")
-            }
-        })
-        services && services.map(service => {
-            if (service.price !== service.priceCashier && service.commentCashier.length < 6) {
-                k++
-                return notify("Iltimos mijoz to'lovni bajarolmagani sababini to'liq ko'rsating.")
-            }
-        })
-        if ((paymented !== payment.cash + payment.card + payment.transfer) || (paymented !== payment.total)) {
-            return notify("Diqqat to'lov turida summani kiritishda xatolikka yo'l qo'ydingiz. Iltimos to'lov turidagi summalarni yana bir bor tekshiring")
+
+        if (payment.total > debitor) {
+            return notify("Diqqat! Iltimos mijozdan umumiy summadan ortiq to'lov qabul qilmang.")
         }
         if (!k) {
             window.scrollTo({ top: 0 })
@@ -309,6 +239,19 @@ export const CheckCashier = () => {
         }
     }, [request, auth, payment])
 
+    const patchConnector = useCallback(async () => {
+        try {
+            setConnector({ ...connector, prepayment: debitor - payment.total })
+            const fetch = await request(`/api/connector/cashier/${connectorId}`, 'PATCH', {
+                ...connector
+            }, {
+                Authorization: `Bearer ${auth.token}`
+            })
+        } catch (e) {
+            notify(e)
+        }
+    }, [request, auth, connectorId, connector, setConnector, payment])
+
     const setPayments = () => {
         sections && sections.map((section) => {
             patchPaymentSections(section)
@@ -316,9 +259,10 @@ export const CheckCashier = () => {
         services && services.map((service) => {
             patchPaymentServices(service)
         })
+        patchConnector()
         createPayment()
         history.push({
-            pathname: `/cashier/reciept/${clientId}/${connectorId}`
+            pathname: `/cashier/recieptstatsionar/${clientId}/${connectorId}`
         })
     }
 
@@ -333,56 +277,23 @@ export const CheckCashier = () => {
         }
     }, [request, clientid, auth, setClientId])
 
-    const DeleteSection = useCallback(async () => {
-        try {
-            const fetch = await request(`/api/section/${delSection && delSection._id}`, 'DELETE', null, {
-                Authorization: `Bearer ${auth.token}`
-            })
-            window.location.reload()
-        } catch (e) {
-            notify(e)
-        }
-    }, [request, auth, delSection])
-
-    const DeleteService = useCallback(async () => {
-        try {
-            const fetch = await request(`/api/service/${delService && delService._id}`, 'DELETE', null, {
-                Authorization: `Bearer ${auth.token}`
-            })
-            window.location.reload()
-        } catch (e) {
-            notify(e)
-        }
-    }, [request, auth, delService])
-
-    const Paymented = (event) => {
-        if (event.target.checked) {
-            let s = [...services]
-            s.map((service, key) => {
-                service.priceCashier = service.price
-                service.payment = "to'langan"
-            })
-            setServices(s)
-            s = [...sections]
-            s.map((section, key) => {
-                section.priceCashier = section.price
-                section.payment = "to'langan"
-            })
-            setSections(s)
-        } else {
-            let s = [...services]
-            s.map((service, key) => {
-                service.priceCashier = 0
-                service.payment = "kutilmoqda"
-            })
-            setServices(s)
-            s = [...sections]
-            s.map((section, key) => {
-                section.priceCashier = 0
-                section.payment = "kutilmoqda"
-            })
-            setSections(s)
-        }
+    const Paymented = () => {
+        let p = 0
+        let s = [...services]
+        s.map((service, key) => {
+            p = p + service.price
+            service.priceCashier = service.price
+            service.payment = "to'langan"
+        })
+        setServices(s)
+        s = [...sections]
+        s.map((section, key) => {
+            p = p + section.price
+            section.priceCashier = section.price
+            section.payment = "to'langan"
+        })
+        setSections(s)
+        connector && setDebitor(p - connector.prepaymentCashier)
     }
 
     useEffect(() => {
@@ -421,6 +332,20 @@ export const CheckCashier = () => {
                         <label className="labels">Mijoznig ID raqami</label>
                         {/* <button onClick={() => { getClient(); getAllSections() }} className="btn text-white" style={{ backgroundColor: "#45D3D3", marginLeft: "5px" }}><FontAwesomeIcon icon={faSearch} /></button> */}
                     </div>
+                    <div className="col-sm-6 col-md-4 input_box" >
+                        <input
+                            disabled
+                            value={connector && connector.prepaymentCashier}
+                            name='ID'
+                            type="number"
+                            className="form-control inp w-75 d-inline-block mr-3 mb-2"
+                            placeholder=""
+                            style={{ background: "#fff" }}
+                            onChange={getchangeSections}
+                        />
+                        <label className="labels">Oldindan to'lov</label>
+                        {/* <button onClick={() => { getClient(); getAllSections() }} className="btn text-white" style={{ backgroundColor: "#45D3D3", marginLeft: "5px" }}><FontAwesomeIcon icon={faSearch} /></button> */}
+                    </div>
                     <div className="col-sm-6 col-lg-4 input_box" >
                         <input
                             value={client && client.lastname + " " + client.firstname + " " + client.fathername}
@@ -441,8 +366,6 @@ export const CheckCashier = () => {
                             <th style={{ width: "35%", textAlign: "center", padding: "10px 0" }}>Bo'limlar</th>
                             <th style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>Hisob</th>
                             <th style={{ width: "25%", textAlign: "center", padding: "10px 0" }}>To'lov <input onChange={Paymented} type="checkbox" className="check" /></th>
-                            <th style={{ width: "10%", textAlign: "center", padding: "10px 0" }}>Holati</th>
-                            <th style={{ width: "10%", textAlign: "center", padding: "10px 0" }}>Sabab</th>
                         </tr>
                     </thead>
                     <tbody style={{ borderBottom: "1px solid #999" }}>
@@ -462,19 +385,9 @@ export const CheckCashier = () => {
                                         </td>
                                         <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{section.price}</td>
                                         <td style={{ width: "25%", padding: "10px 0" }}>
-                                            <input onChange={event => inputPriceSection(event, key)} value={section.priceCashier} type="number" className="form-control" style={{ width: "80%", margin: "auto", display: "inline" }} />
-                                            <input id={`checkbox${key}`} onChange={event => checkboxSection(event, key)} type="checkbox" className="check" style={{ position: "absolute" }} />
+                                            <input disabled onChange={event => inputPriceSection(event, key)} value={section.priceCashier} type="number" className="form-control" style={{ width: "80%", margin: "auto", display: "inline" }} />
                                         </td>
-                                        <td style={{ width: "10%", textAlign: "center", padding: "10px 0", color: "red" }}>
-                                            <div className="wrapp" style={{ justifyContent: "center" }}>
-                                                <button onClick={() => changePaymentSection(key)} className="payment rlabel rclabel">
-                                                    x
-                                                </button>
-                                            </div>
-                                        </td>
-                                        <td style={{ textAlign: "center", padding: "10px 0", color: "green" }}>
-                                            {section.price !== section.priceCashier ? <textarea value={section.commentCashier} onChange={(event) => inputCommentSection(event, key)} key={key} placeholder="To'lov bajarilmagan holatda sababini ko'rsating" className="addDirection" minLength="6" ></textarea> : "To'langan"}
-                                        </td>
+
                                     </tr>
                                 )
                             })
@@ -495,19 +408,9 @@ export const CheckCashier = () => {
                                         </td>
                                         <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{service.price}</td>
                                         <td style={{ width: "25%", padding: "10px 0" }}>
-                                            <input onChange={event => inputPriceService(event, key)} value={service.priceCashier} type="number" className="form-control" style={{ width: "80%", margin: "auto", display: "inline" }} />
-                                            <input id={`checkboxservice${key}`} onChange={event => checkboxService(event, key)} type="checkbox" className="check" style={{ position: "absolute" }} />
+                                            <input disabled onChange={event => inputPriceService(event, key)} value={service.priceCashier} type="number" className="form-control" style={{ width: "80%", margin: "auto", display: "inline" }} />
                                         </td>
-                                        <td style={{ width: "10%", textAlign: "center", padding: "10px 0", color: "red" }}>
-                                            <div className="wrapp" style={{ justifyContent: "center" }}>
-                                                <button onClick={() => changePaymentService(key)} className="payment rlabel rclabel">
-                                                    x
-                                                </button>
-                                            </div>
-                                        </td>
-                                        <td style={{ textAlign: "center", padding: "10px 0", color: "green" }}>
-                                            {service.price !== service.priceCashier ? <textarea value={service.commentCashier} onChange={(event) => inputCommentService(event, key)} key={key} placeholder="To'lov bajarilmagan holatda sababini ko'rsating" className="addDirection" minLength="6" ></textarea> : "To'langan"}
-                                        </td>
+
                                     </tr>
                                 )
                             })
@@ -528,29 +431,28 @@ export const CheckCashier = () => {
                     </div>
                     <div className="row ms-3 me-5">
                         <div className="col-6">
-                            <div className="fw-bold text-success">To'langan:</div>
+                            <div className="fw-bold text-warning">Oldindan to'lov:</div>
                         </div>
                         <div className="col-6">
-                            <div className="fw-bold  text-end text-success">{paymented}</div>
-                        </div>
-                        <hr />
-
-                    </div>
-                    <div className="row ms-3 me-5">
-                        <div className="col-6">
-                            <div className="fw-bold text-warning">Qarz:</div>
-                        </div>
-                        <div className="col-6">
-                            <div className="fw-bold  text-end text-warning">{allPrice - paymented - back}</div>
+                            <div className="fw-bold  text-end text-warning">{connector && connector.prepaymentCashier}</div>
                         </div>
                         <hr />
                     </div>
                     <div className="row ms-3 me-5">
                         <div className="col-6">
-                            <div className="fw-bold text-danger">Rad etilgan:</div>
+                            <div className="fw-bold text-success">To'lanayotgan summa:</div>
                         </div>
                         <div className="col-6">
-                            <div className="fw-bold  text-end text-danger">{back}</div>
+                            <div className="fw-bold  text-end text-success">{payment.card + payment.cash + payment.transfer}</div>
+                        </div>
+                        <hr />
+                    </div>
+                    <div className="row ms-3 me-5">
+                        <div className="col-6">
+                            <div className="fw-bold text-danger">Qarz:</div>
+                        </div>
+                        <div className="col-6">
+                            <div className="fw-bold  text-end text-danger">{debitor + pay - (payment.card + payment.cash + payment.transfer)}</div>
                         </div>
                         <hr />
                     </div>
@@ -692,29 +594,28 @@ export const CheckCashier = () => {
                             </div>
                             <div className="row ms-3 me-5">
                                 <div className="col-6">
-                                    <div className="fw-bold text-success">To'langan:</div>
+                                    <div className="fw-bold text-warning">Oldindan to'lov:</div>
                                 </div>
                                 <div className="col-6">
-                                    <div className="fw-bold  text-end text-success">{paymented}</div>
-                                </div>
-                                <hr />
-
-                            </div>
-                            <div className="row ms-3 me-5">
-                                <div className="col-6">
-                                    <div className="fw-bold text-warning">Qarz:</div>
-                                </div>
-                                <div className="col-6">
-                                    <div className="fw-bold  text-end text-warning">{allPrice - paymented - back}</div>
+                                    <div className="fw-bold  text-end text-warning">{connector && connector.prepaymentCashier}</div>
                                 </div>
                                 <hr />
                             </div>
                             <div className="row ms-3 me-5">
                                 <div className="col-6">
-                                    <div className="fw-bold text-danger">Rad etilgan:</div>
+                                    <div className="fw-bold text-success">To'lanayotgan summa:</div>
                                 </div>
                                 <div className="col-6">
-                                    <div className="fw-bold  text-end text-danger">{back}</div>
+                                    <div className="fw-bold  text-end text-success">{payment.card + payment.cash + payment.transfer}</div>
+                                </div>
+                                <hr />
+                            </div>
+                            <div className="row ms-3 me-5">
+                                <div className="col-6">
+                                    <div className="fw-bold text-danger">Qarz:</div>
+                                </div>
+                                <div className="col-6">
+                                    <div className="fw-bold  text-end text-danger">{debitor - (payment.card + payment.cash + payment.transfer)}</div>
                                 </div>
                                 <hr />
                             </div>
@@ -724,54 +625,6 @@ export const CheckCashier = () => {
                                 <div className="col-12 text-center">
                                     <button onClick={setPayments} disabled={loading} className="btn button-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
                                     <button onClick={() => setModal1(false)} className="btn button-danger" >Qaytish</button>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Modal oynaning ochilishi */}
-            <div className={modal2 ? "modal" : "d-none"}>
-                <div className="modal-card">
-                    <div className="card">
-                        <div className="card-header">
-                            <div className="text-center fs-4 fw-bold text-secondary">
-                                <span className="text-dark">Mijoz: </span>
-                                {client && client.lastname} {client && client.firstname} {client && client.fathername}ga ko'rsatilayotgan
-                                <span className='text-danger'> {delService && delService.name + " " + delService.type}</span> xizmati mijozning xizmatlar bo'limidan o'chiriladi. O'chirishni tasdiqlaysizmi?
-                            </div>
-                        </div>
-                        <div className="card-footer">
-                            <div className="row ">
-                                <div className="col-12 text-center">
-                                    <button onClick={DeleteService} disabled={loading} className="btn button-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
-                                    <button onClick={() => setModal2(false)} className="btn button-danger" >Qaytish</button>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Modal oynaning ochilishi */}
-            <div className={modal3 ? "modal" : "d-none"}>
-                <div className="modal-card">
-                    <div className="card">
-                        <div className="card-header">
-                            <div className="text-center fs-4 fw-bold text-secondary">
-                                <span className="text-dark">Mijoz: </span>
-                                {client && client.lastname} {client && client.firstname} {client && client.fathername}ga ko'rsatilayotgan
-                                <span className='text-danger'> {delSection && delSection.name + " " + delSection.subname}</span> xizmati(yoki ashyosi) mijozning xizmatlar bo'limidan o'chiriladi. O'chirishni tasdiqlaysizmi?
-                            </div>
-                        </div>
-                        <div className="card-footer">
-                            <div className="row ">
-                                <div className="col-12 text-center">
-                                    <button onClick={DeleteSection} disabled={loading} className="btn button-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
-                                    <button onClick={() => setModal3(false)} className="btn button-danger" >Qaytish</button>
                                 </div>
                             </div>
 

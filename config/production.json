@@ -2,5 +2,5 @@
     "PORT": 80,
     "mongoUri": "mongodb+srv://sarvar9417:6622332Sa@cluster0.5zo1w.mongodb.net/myFirstDatabase?retryWrites=true&w=majority",
     "jwtSecret": "sarvar9417",
-    "baseUrl": "http://84.38.180.177"
+    "baseUrl": "http://80.249.147.28"
 }

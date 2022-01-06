@@ -143,7 +143,7 @@ export const NewStatsionarClient = () => {
   const [room, setRoom] = useState()
   const getRooms = useCallback(async () => {
     try {
-      const fetch = await request('/api/rooms/', 'GET', null, {
+      const fetch = await request('/api/rooms/reseption', 'GET', null, {
         Authorization: `Bearer ${auth.token}`
       })
       setRooms(fetch)
@@ -153,7 +153,6 @@ export const NewStatsionarClient = () => {
   }, [auth, request, setRooms])
 
   const changeRooms = (event) => {
-    console.log(event)
     setRoom({
       room: event._id,
       roomname: event.value,
@@ -296,7 +295,6 @@ export const NewStatsionarClient = () => {
   }
 
   const [diagnosis, setDiagnosis] = useState("")
-  const [prepayment, setPrepayment] = useState(0)
 
   const createConnector = async (client) => {
     try {
@@ -306,15 +304,15 @@ export const NewStatsionarClient = () => {
         counteragent,
         type: "statsionar",
         position: "davolanishda",
-        prepayment,
+        prepayment: 0,
         diagnosis,
         bronDay: new Date(),
         prepaymentCashier: 0,
       }, {
         Authorization: `Bearer ${auth.token}`
       })
-      createAllSections(client, connector._id)
-      createAllServices(client, connector._id)
+      sections && createAllSections(client, connector._id)
+      services && createAllServices(client, connector._id)
       createRoom(client, connector._id )
     } catch (e) {
       notify(e)
@@ -481,17 +479,6 @@ export const NewStatsionarClient = () => {
           />
           <label className="labels" style={{ top: "-7px", fontSize: "12px", fontWeight: "500" }}>Mijoz manzili</label>
         </div>
-        <div className="col-md-6 mb-2 input_box">
-          <input
-            defaultValue={prepayment}
-            onChange={(event) => { setPrepayment(parseInt(event.target.value)) }}
-            name="prepayment"
-            type="number"
-            className="form-control inp"
-            placeholder="Oldindan to'lov"
-          />
-          <label className="labels" style={{ top: "-7px", fontSize: "12px", fontWeight: "500" }}>Oldindan to'lov</label>
-        </div>
         <div className="col-6 mb-2 input_box">
           <textarea
             defaultValue={diagnosis}
@@ -505,6 +492,7 @@ export const NewStatsionarClient = () => {
         </div>
         <div className="col-6 mb-2 input_box">
           <Select
+
             placeholder="Mijoz xonasi"
             className="m-0 p-0"
             onChange={(event) => changeRooms(event)}

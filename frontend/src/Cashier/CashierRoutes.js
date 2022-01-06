@@ -9,6 +9,8 @@ import { Reciept } from './cashierPages/Reciept'
 import { RecieptAll } from './cashierPages/RecieptAll'
 import { ClientsStatsionarPages } from './cashierPages/ClientsStatsionarPages'
 import { CreatePrepayment } from './cashierPages/CreatePrepayment'
+import { StatsionarCheckClient } from './cashierPages/StatsionarCheckCreate'
+import { RecieptStatsionar } from './cashierPages/RecieptStatsionar'
 
 
 export const CashierRoutes = (isAuthenticated) => {
@@ -21,6 +23,9 @@ export const CashierRoutes = (isAuthenticated) => {
                     </Route>
                     <Route path="/cashier/pay/:id/:connector" >
                         <CreateCheck />
+                    </Route>
+                    <Route path="/cashier/paystatsionar/:id/:connector" >
+                        <StatsionarCheckClient />
                     </Route>
                     <Route path="/cashier/payedit/:id" >
                         <EditCheck />
@@ -36,6 +41,9 @@ export const CashierRoutes = (isAuthenticated) => {
                     </Route>
                     <Route path="/cashier/prepayment/:client/:connector" >
                         <CreatePrepayment />
+                    </Route>
+                    <Route path="/cashier/recieptstatsionar/:id/:connector" >
+                        <RecieptStatsionar />
                     </Route>
                     <Route path="/sayt" >
                         <Sayt />

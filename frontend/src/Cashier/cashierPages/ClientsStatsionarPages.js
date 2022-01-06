@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState, Component, useContext } from '
 import { Loader } from '../components/Loader'
 import { useHttp } from '../hooks/http.hook'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPenAlt, faSearch, faSort, faPrint, faSyncAlt } from '@fortawesome/free-solid-svg-icons'
+import {  faSearch, faSort, faPrint } from '@fortawesome/free-solid-svg-icons'
 import { Link, useHistory } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import DatePicker from "react-datepicker"
@@ -276,7 +276,7 @@ export const ClientsStatsionarPages = () => {
                                             {connector.position === "davolanishda" ? <Link className='btn button-success' to={`/cashier/prepayment/${all.clients[key]._id}/${connector._id}`}> Qo'shish</Link> : "Xizmat yakunlangan"}
                                         </td>
                                         <td scope="" className="cek text-center">
-                                            {connector.position === "yakunlangan" ? <button onClick={() => { setClient(all.clients[key]); setConnectorId(connector._id); setModal(true) }} className='btn button-danger' >Qabul qilish </button> : "Xizmat yakunlanmagan"}
+                                            {connector.position === "yakunlangan" ? <Link to={`/cashier/paystatsionar/${all.clients[key]._id}/${connector._id}`} className='btn button-danger' >Qabul qilish </Link> : "Xizmat yakunlanmagan"}
                                         </td>
                                         <td scope="" className="cek text-center">
                                             <Link to={`/reseption/statsionarreciept/${all && all.clients[key]._id}/${connector._id}`} > <FontAwesomeIcon icon={faPrint} className="fa-2x" /> </Link>
@@ -295,10 +295,10 @@ export const ClientsStatsionarPages = () => {
                                             <td className="phone">+{all && all.clients[key].phone}</td>
                                             <td className="diagnos ">  {connector.diagnosis} </td>
                                             <td scope="" className="fish text-center">
-                                                {connector.position === "yakunlangan" ? "Xizmat" : <Link className='btn button-success' to={`/reseption/addstatsionar/${connector._id}`}> Qo'shish</Link>}
+                                                {connector.position === "davolanishda" ? <Link className='btn button-success' to={`/cashier/prepayment/${all.clients[key]._id}/${connector._id}`}> Qo'shish</Link> : "Xizmat yakunlangan"}
                                             </td>
                                             <td scope="" className="cek text-center">
-                                                {connector.position === "yakunlangan" ? "yakunlangan" : <button onClick={() => { setClient(all.clients[key]); setConnectorId(connector._id); setModal(true) }} className='btn button-danger' >Tugatish </button>}
+                                                {connector.position === "yakunlangan" ? <Link to={`/cashier/paystatsionar/${all.clients[key]._id}/${connector._id}`} className='btn button-danger' >Qabul qilish </Link> : "Xizmat yakunlanmagan"}
                                             </td>
                                             <td scope="" className="cek text-center">
                                                 <Link to={`/reseption/statsionarreciept/${all && all.clients[key]._id}/${connector._id}`} > <FontAwesomeIcon icon={faPrint} className="fa-2x" /> </Link>

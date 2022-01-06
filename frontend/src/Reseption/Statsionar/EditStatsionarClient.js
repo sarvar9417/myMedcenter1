@@ -30,7 +30,7 @@ export const EditStatsionarClient = () => {
 
 
   // So'rov kutish va xatoliklarni olish
-  const { request, error, clearError } = useHttp()
+  const { request, error, clearError, loading } = useHttp()
 
   //Registratsiyadan o'tgan bo'limlarni olish
   const [sections, setSections] = useState([])
@@ -164,7 +164,7 @@ export const EditStatsionarClient = () => {
   }
 
   const createAllServices = () => {
-    services.map((service) => {
+    services && services.map((service) => {
       createService(service)
     })
   }
@@ -188,10 +188,10 @@ export const EditStatsionarClient = () => {
 
 
   const createAllSections = () => {
-    sections.map((section) => {
+    sections && sections.map((section) => {
       create(section)
     })
-    createAllServices()
+    services && createAllServices()
     history.push(`/reseption/reciept/${client._id}/${connectorId}`)
   }
 
@@ -465,7 +465,7 @@ export const EditStatsionarClient = () => {
             </div>
             <div className="row m-1">
               <div className="col-12 text-center">
-                <button onClick={createAllSections} className="btn button-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
+                <button onClick={createAllSections} disabled={loading} className="btn button-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
                 <button onClick={() => setModal(false)} className="btn button-danger" >Qaytish</button>
               </div>
             </div>
