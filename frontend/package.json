@@ -41,8 +41,7 @@
     "react-to-print": "^2.14.0",
     "react-toastify": "^8.0.3",
     "recharts": "^2.1.6",
-    "web-vitals": "^1.1.2",
-    "xlsx": "^0.17.4"
+    "web-vitals": "^1.1.2"
   },
   "scripts": {
     "start": "react-scripts start",

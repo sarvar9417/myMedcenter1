@@ -28,18 +28,6 @@ export const Directions = () => {
         }
     }, [request, auth, setDirections])
 
-    const createDirection = useCallback(async (direction) => {
-        try {
-            const fetch = await request(`/api/direction/register`, 'POST', { ...direction }, {
-                Authorization: `Bearer ${auth.token}`
-            })
-            window.location.reload()
-        } catch (e) {
-
-        }
-    }, [request, auth])
-
-
     const Delete = async (id) => {
         try {
             const data = await request(`/api/direction/${id}`, "DELETE", null, {
@@ -53,42 +41,6 @@ export const Directions = () => {
 
     const notify = (e) => {
         toast.error(e)
-    }
-
-    const readExcel = (file) => {
-        const promise = new Promise((resolve, reject) => {
-            const fileReader = new FileReader();
-            fileReader.readAsArrayBuffer(file);
-
-            fileReader.onload = (e) => {
-                const bufferArray = e.target.result
-                const wb = XLSX.read(bufferArray, { type: "buffer" })
-                const wsname = wb.SheetNames[0]
-                const ws = wb.Sheets[wsname];
-                const data = XLSX.utils.sheet_to_json(ws)
-                resolve(data)
-            }
-            fileReader.onerror = (error) => {
-                reject(error)
-            }
-        })
-        promise.then(ds => {
-            ds.map((d) => {
-                const direction = {
-                    value: d.value.toString(),
-                    price: d.price,
-                    label: d.label.toString(),
-                    section: d.section.toString(),
-                    subsection: d.subsection.toString(),
-                    room: d.room.toString(),
-                    doctorProcient: d.doctorProcient,
-                    counteragentProcient: d.counteragentProcient,
-                    counterDoctor: d.counterDoctor
-                }
-                createDirection(direction)
-            })
-
-        })
     }
 
     useEffect(() => {
@@ -110,15 +62,6 @@ export const Directions = () => {
                         <div className="card-body">
                             <div className="text-end p-3">
                                 <Link to="/director/adddirection" className=" mx-4 btn button-success">Bo'lim yaratish</Link>
-                                <input
-                                    type="file"
-                                    onChange={(e) => {
-                                        const file = e.target.files[0];
-                                        readExcel(file)
-                                    }}
-                                    className="btn button-success"
-                                    name='Excel fayldan yuklash'
-                                />
                             </div>
                             <div className="table-responsive">
                                 <table className="datatable table table-hover table-center mb-0">
