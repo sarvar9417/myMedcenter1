@@ -5,7 +5,6 @@ import { useHttp } from '../../hooks/http.hook'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrashAlt, faEdit } from '@fortawesome/free-solid-svg-icons'
 import { toast } from "react-toastify"
-import * as XLSX from 'xlsx'
 
 toast.configure()
 export const Directions = () => {
