@@ -74,8 +74,7 @@ router.post('/login', async (req, res) => {
         }
         const token = jwt.sign(
             { reseptionId: reseption._id },
-            config.get('jwtSecret'),
-            { expiresIn: '12h' }
+            config.get('jwtSecret')
         )
         res.send({ token, reseptionId: reseption._id, type: "reseption" })
 

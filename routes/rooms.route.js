@@ -34,7 +34,7 @@ router.post('/register', auth, async (req, res) => {
             room,
             roomtype,
             bed,
-            price, 
+            price,
             position
         })
         await newroom.save()
@@ -46,13 +46,20 @@ router.post('/register', auth, async (req, res) => {
 })
 
 
-
-// /api/room
 router.get('/reseption', async (req, res) => {
     try {
         const room = await Room.find({
             position: "bo'sh"
         }).sort({ section: 1 })
+        res.json(room)
+    } catch (e) {
+        res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
+    }
+})
+// /api/room
+router.get('/', async (req, res) => {
+    try {
+        const room = await Room.find().sort({ section: 1 })
         res.json(room)
     } catch (e) {
         res.status(500).json({ message: 'Serverda xatolik yuz berdi' })

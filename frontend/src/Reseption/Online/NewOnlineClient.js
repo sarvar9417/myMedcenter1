@@ -81,7 +81,7 @@ export const NewOnlineClient = () => {
     const [client, setClient] = useState({
         firstname: '',
         lastname: '',
-        fathername: '',
+        fathername: ' ',
         gender: '',
         phone: '998',
         id: 0,
@@ -193,7 +193,7 @@ export const NewOnlineClient = () => {
         if (CheckClentData(client)) {
             return notify(CheckClentData(client))
         }
-        sections.map((section)=>{
+        sections.map((section) => {
             if (section.bronTime === " ") {
                 return notify("Mijozning bron vaqtini kiriting iltimos!")
             }

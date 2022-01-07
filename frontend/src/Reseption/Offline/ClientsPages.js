@@ -90,7 +90,6 @@ export const ClientsPages = () => {
         getBorn()
     }
 
-
     useEffect(() => {
         if (error) {
             notify(error)

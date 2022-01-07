@@ -35,7 +35,8 @@ export const Menu = () => {
     }, [notify, clearError])
 
     return (
-        <aside className="main-sidebar sidebar-dark-primary elevation-4" >
+
+        <aside className="main-sidebar sidebar-dark-primary elevation-4" style={{ minHeight: "100vh", height: "100% !important" }} >
             {/* Brand Logo */}
             <span className="brand-link">
                 <img src={logo && logo.logo} alt="AdminLTE Logo" className="w-100" />

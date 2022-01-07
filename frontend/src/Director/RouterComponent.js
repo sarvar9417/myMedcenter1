@@ -6,9 +6,9 @@ import { Menu } from './admin/Menu'
 
 export const RouterComponent = (props) => {
     return (
-        <div>
+        <div >
             <Header/>
-            <Menu/>
+            <Menu />
             <Dashboard component={props.component} menu={props.menu}/>
             <Footer/>
         </div>

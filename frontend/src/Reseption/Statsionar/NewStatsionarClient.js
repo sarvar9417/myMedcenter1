@@ -201,7 +201,7 @@ export const NewStatsionarClient = () => {
   const [client, setClient] = useState({
     firstname: "",
     lastname: "",
-    fathername: "",
+    fathername: " ",
     gender: "",
     phone: 998,
     id: 0,

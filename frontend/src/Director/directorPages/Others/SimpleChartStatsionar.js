@@ -3,7 +3,7 @@ import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, Legend, Responsive
 import { AuthContext } from '../../context/AuthContext';
 import { useHttp } from '../../hooks/http.hook';
 
-export const SimpleChart = () => {
+export const SimpleChartStatsionar = () => {
 
   const auth = useContext(AuthContext)
   const { request } = useHttp()
@@ -62,7 +62,7 @@ export const SimpleChart = () => {
 
   const getAllSections = useCallback(async () => {
     try {
-      const fetch = await request(`/api/section/directorproceeds`, 'GET', null, {
+      const fetch = await request(`/api/section/directorproceedsstatsionar`, 'GET', null, {
         Authorization: `Bearer ${auth.token}`
       })
       let d = data
@@ -88,7 +88,7 @@ export const SimpleChart = () => {
   return (
     <div className="card">
       <div className="card-header text-center pt-3">
-        <h4>Daromad (kunduzgi)</h4>
+        <h4>Daromad(Statsionar)</h4>
       </div>
       <div className="card-body p-4">
         <ResponsiveContainer width="100%" height="100%">
@@ -109,7 +109,7 @@ export const SimpleChart = () => {
             <Tooltip />
             <Legend />
             <CartesianGrid strokeDasharray="3 3" />
-            <Bar dataKey="daromad" fill="#28A745" background={{ fill: '#eee' }} />
+            <Bar dataKey="daromad" fill="#FFC007" background={{ fill: '#eee' }} />
           </BarChart>
         </ResponsiveContainer>
       </div>

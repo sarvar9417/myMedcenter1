@@ -47,6 +47,8 @@ router.post('/register', async (req, res) => {
     }
 })
 
+
+
 // /api/auth/connector/
 router.get('/reseption/:start/:end', async (req, res) => {
     try {
@@ -193,6 +195,54 @@ router.get('/cashierstatsionar/:start/:end', async (req, res) => {
             rooms.push(room)
         }
         res.json({ connectors, clients, sections, services, rooms })
+    } catch (e) {
+        res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
+    }
+})
+
+// /api/auth/connector/
+router.get('/director', async (req, res) => {
+    try {
+        let connectors = []
+        for (let i = 0; i < 12; i++) {
+            const connector = await Connector.find({
+                bronDay: {
+                    $gte:
+                        new Date(new Date().getFullYear(), i, 1),
+                    $lt:
+                        new Date(new Date().getFullYear(), i, 32)
+                }
+            })
+                .or([{ type: "offline" }, { type: "online" }, { type: "callcenter" }])
+                .sort({ _id: -1 })
+            connectors.push(connector.length)
+
+        }
+        res.json(connectors)
+    } catch (e) {
+        res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
+    }
+})
+
+// /api/auth/connector/
+router.get('/directorstatsionar', async (req, res) => {
+    try {
+        let connectors = []
+        for (let i = 0; i < 12; i++) {
+            const connector = await Connector.find({
+                bronDay: {
+                    $gte:
+                        new Date(new Date().getFullYear(), i, 1),
+                    $lt:
+                        new Date(new Date().getFullYear(), i, 32)
+                },
+                type: "statsionar"
+            })
+                .sort({ _id: -1 })
+            connectors.push(connector.length)
+
+        }
+        res.json(connectors)
     } catch (e) {
         res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
     }

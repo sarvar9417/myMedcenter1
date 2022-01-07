@@ -12,9 +12,9 @@ export const CheckClentData = (client, diagnosis) => {
     if (client.gender === '') {
         return "Mijoz jinsi tanlanmagan. Iltimos mijoz jinsini belgilang!"
     }
-    if (client.phone.toString().length < 12) {
-        return "Telefon raqami kiritishda xatolikka yo'l qo'yilgan. Iltimos tekshirib qayta kiriting!"
-    }
+    // if (client.phone.toString().length < 12) {
+    //     return "Telefon raqami kiritishda xatolikka yo'l qo'yilgan. Iltimos tekshirib qayta kiriting!"
+    // }
     if (client.born === '') {
         return "Mijozning tug'ilgan yili belgilanmagan. Iltimos mijozning tug'ilgan yilini belgiling!"
     }

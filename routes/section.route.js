@@ -177,7 +177,7 @@ router.get('/cashier', auth, async (req, res) => {
 router.get('/cashierconnector/:id', auth, async (req, res) => {
     try {
         const id = req.params.id
-        const sections = await Section.find({ 
+        const sections = await Section.find({
             connector: id,
             payment: "kutilmoqda"
         }).sort({ _id: -1 })
@@ -353,6 +353,60 @@ router.put('/doctordone/:id', auth, async (req, res) => {
 // ===================================================================================
 // ===================================================================================
 // DIRECTOR routes
+
+router.get('/directorproceeds', auth, async (req, res) => {
+    try {
+        const sections = []
+        for (let i = 0; i < 12; i++) {
+            const section = await Section.find({
+                bronDay: {
+                    $gte:
+                        new Date(new Date().getFullYear(), i, 1),
+                    $lt:
+                        new Date(new Date().getFullYear(), i, 32)
+                }
+            })
+                .or([{ bron: "offline" }, { bron: "online" }, { bron: "callcenter" }])
+                .sort({ _id: -1 })
+            let summ = 0
+            section.map(price => {
+                summ = summ + price.priceCashier
+            })
+            sections.push(summ)
+        }
+
+        res.json(sections)
+    } catch (e) {
+        res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
+    }
+})
+
+router.get('/directorproceedsstatsionar', auth, async (req, res) => {
+    try {
+        const sections = []
+        for (let i = 0; i < 12; i++) {
+            const section = await Section.find({
+                bronDay: {
+                    $gte:
+                        new Date(new Date().getFullYear(), i, 1),
+                    $lt:
+                        new Date(new Date().getFullYear(), i, 32)
+                },
+                bron: "statsionar"
+            })
+                .sort({ _id: -1 })
+            let summ = 0
+            section.map(price => {
+                summ = summ + price.priceCashier
+            })
+            sections.push(summ)
+        }
+
+        res.json(sections)
+    } catch (e) {
+        res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
+    }
+})
 
 router.get('/director', auth, async (req, res) => {
     try {

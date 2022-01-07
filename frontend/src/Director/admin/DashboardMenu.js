@@ -68,7 +68,7 @@ export const DashboardMenu = () => {
                 if (
                     new Date(section.bronDay).toLocaleDateString() === new Date().toLocaleDateString()
                     &&
-                    (section.payment === "to'langan" || section.commentCashier.length >6)
+                    (section.payment === "to'langan" || section.commentCashier.length > 6)
                 ) {
                     price = price + section.priceCashier
                 }
@@ -104,8 +104,8 @@ export const DashboardMenu = () => {
                     {/* small box */}
                     <Link to={`/director`} className="small-box bg-info">
                         <div className="inner">
-                            <h3>{client} <span className="float-end"> </span></h3>
-                            <p>Xizmatlar {new Date().toLocaleDateString()}</p>
+                            <h3>Statistika <span className="float-end"> </span></h3>
+                            <p>Statistika {new Date().toLocaleDateString()}</p>
                         </div>
 
                         <div className="icon">

@@ -74,8 +74,7 @@ router.post('/login', async (req, res) => {
         }
         const token = jwt.sign(
             { operatorId: operator._id },
-            config.get('jwtSecret'),
-            { expiresIn: '12h' }
+            config.get('jwtSecret')
         )
         res.send({ token, operatorId: operator._id, type: "operator" })
 

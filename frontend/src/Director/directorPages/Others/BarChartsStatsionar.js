@@ -3,11 +3,8 @@ import { AreaChart, Area, BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, L
 import { AuthContext } from '../../context/AuthContext';
 import { curveCardinal } from 'd3-shape';
 import { useHttp } from '../../hooks/http.hook';
-import DatePicker from "react-datepicker"
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faSearch, } from '@fortawesome/free-solid-svg-icons'
 
-export const BarCharts = () => {
+export const BarChartsStatsionar = () => {
   const cardinal = curveCardinal.tension(1);
   const auth = useContext(AuthContext)
   const { request } = useHttp()
@@ -66,7 +63,7 @@ export const BarCharts = () => {
 
   const getAllConnectors = useCallback(async (index) => {
     try {
-      const fetch = await request(`/api/connector/director`, 'GET', null, {
+      const fetch = await request(`/api/connector/directorstatsionar`, 'GET', null, {
         Authorization: `Bearer ${auth.token}`
       })
       let d = data
@@ -93,7 +90,7 @@ export const BarCharts = () => {
       <div className="card-header text-center pt-3">
         <div className='row'>
           <div className='col-12'>
-            <h4>Mijozlar oqimi (kunduzgi)</h4>
+            <h4>Mijozlar oqimi (statsionar)</h4>
           </div>
         </div>
       </div>
@@ -114,8 +111,8 @@ export const BarCharts = () => {
             <XAxis dataKey="name" />
             <YAxis dataKey="mijozlar" />
             <Tooltip />
-            <Area type="monotone" dataKey="uv" stroke="#8884d8" fill="#FFC007" fillOpacity={0.3} />
-            <Area type={cardinal} dataKey="mijozlar" stroke="#82ca9d" fill="#82ca9d" fillOpacity={0.3} />
+            <Area type="monotone" dataKey="uv" stroke="#FFC007" fill="#FFC007" fillOpacity={0.3} />
+            <Area type={cardinal} dataKey="mijozlar" stroke="#FFC007" fill="#FFC007" fillOpacity={0.3} />
           </AreaChart>
         </ResponsiveContainer>
       </div>
