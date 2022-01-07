@@ -14,9 +14,6 @@ export const Directions = () => {
     const [directions, setDirections] = useState()
     const [remove, setRemove] = useState()
     const history = useHistory()
-
-
-
     // Modal oyna funksiyalari
     const [modal, setModal] = useState(false)
 

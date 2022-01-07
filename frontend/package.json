@@ -33,7 +33,6 @@
     "react-loaders": "^3.0.1",
     "react-modal": "^3.14.4",
     "react-multilevel-dropdown": "^3.0.3",
-    "react-particles-js": "^3.6.0",
     "react-pro-sidebar": "^0.7.1",
     "react-router-dom": "^5.3.0",
     "react-scripts": "4.0.3",
@@ -41,7 +40,6 @@
     "react-to-pdf": "0.0.14",
     "react-to-print": "^2.14.0",
     "react-toastify": "^8.0.3",
-    "react-tsparticles": "^1.37.4",
     "recharts": "^2.1.6",
     "web-vitals": "^1.1.2",
     "xlsx": "^0.17.4"
