@@ -153,6 +153,7 @@ export const ClientsPages = () => {
                                 <th scope="" className="id text-center">ID <FontAwesomeIcon icon={faSort} /></th>
                                 <th scope="" className="phone text-center">Tel <FontAwesomeIcon icon={faSort} /></th>
                                 <th scope="" className="fish text-center">To'lovni qabul qilish <FontAwesomeIcon icon={faSort} /></th>
+                                <th scope="" className="fish text-center">Tahrirlash <FontAwesomeIcon icon={faSort} /></th>
                                 <th scope="" className="date text-center" >Kelgan vaqti <FontAwesomeIcon icon={faSort} /></th>
                                 <th scope="" className="section text-center">Bo'limi <FontAwesomeIcon icon={faSort} /></th>
                                 <th scope="" className="turn text-center">Navbati <FontAwesomeIcon icon={faSort} /></th>
@@ -434,6 +435,14 @@ export const ClientsPages = () => {
                                                                 Qabul qilish
                                                             </Link>
                                                         </td>
+                                                        <td
+                                                            className="fish text-center"
+                                                            rowSpan={all.sections[key].length + all.services[key].length}
+                                                        >
+                                                            <Link className='btn button-danger text-danger' to={`/cashier/payedit/${all.clients[key]._id}/${connector._id}`} >
+                                                                Tahrirlash
+                                                            </Link>
+                                                        </td>
                                                         <td className="date text-center border-left border-success" >{new mongoose.Types.ObjectId(section._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(section._id).getTimestamp().toLocaleTimeString()}</td>
                                                         <td className="section text-uppercase"> <Link to={`/reseption/clienthistory/${section._id}`} className={section.summary !== " " ? "prices fw-bold text-success" : "prices fw-bold text-danger"} > {section.name} <br /> <span style={{ fontSize: "10pt" }}>{section.subname}</span> </Link></td>
                                                         <td className="turn">{section.bron === "offline" ? section.turn : section.bronTime + " " + new Date(section.bronDay).toLocaleDateString()}</td>
@@ -517,6 +526,14 @@ export const ClientsPages = () => {
                                                                     >
                                                                         <Link className='btn button-success text-success' to={`/cashier/pay/${all.clients[key]._id}/${connector._id}`} >
                                                                             Qabul qilish
+                                                                        </Link>
+                                                                    </td>
+                                                                    <td
+                                                                        className="fish text-center"
+                                                                        rowSpan={all.sections[key].length + all.services[key].length}
+                                                                    >
+                                                                        <Link className='btn button-danger text-danger' to={`/cashier/payedit/${all.clients[key]._id}/${connector._id}`} >
+                                                                            Tahrirlash
                                                                         </Link>
                                                                     </td>
                                                                     <td className="date text-center border-left border-success" >{new mongoose.Types.ObjectId(section._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(section._id).getTimestamp().toLocaleTimeString()}</td>

@@ -275,7 +275,7 @@ export const RecieptStatsionar = () => {
                                         </tr>
                                         <tr>
                                             <td className='w-25 p-1 text-start px-3'>Oldindan to'lov</td>
-                                            <td className='w-75 p-1 px-3'>{connector && connector.prepayment} </td>
+                                            <td className='w-75 p-1 px-3'>{connector && connector.prepaymentCashier} </td>
                                         </tr>
                                         <tr>
                                             <td className='w-25 p-1 text-start px-3'>Tashxiz</td>

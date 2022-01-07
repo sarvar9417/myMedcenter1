@@ -27,7 +27,7 @@ export const CashierRoutes = (isAuthenticated) => {
                     <Route path="/cashier/paystatsionar/:id/:connector" >
                         <StatsionarCheckClient />
                     </Route>
-                    <Route path="/cashier/payedit/:id" >
+                    <Route path="/cashier/payedit/:id/:connector" >
                         <EditCheck />
                     </Route>
                     <Route path="/cashier/reciept/:id/:connector" >

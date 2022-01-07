@@ -8,8 +8,10 @@ const auth = require('../middleware/auth.middleware')
 // ===================================================================================
 // DIRECTOR routes
 // /api/direction/register
+
 router.post('/register', auth, async (req, res) => {
     try {
+        console.log(req.body);
         const { error } = validateDirection(req.body)
         if (error) {
             return res.status(400).json({
@@ -24,8 +26,10 @@ router.post('/register', auth, async (req, res) => {
             label,
             section,
             subsection,
-            room
-
+            room,
+            doctorProcient,
+            counteragentProcient,
+            counterDoctor,
         } = req.body
         const direction = new Direction({
             value,
@@ -33,7 +37,10 @@ router.post('/register', auth, async (req, res) => {
             label,
             section,
             subsection,
-            room
+            room,
+            doctorProcient,
+            counteragentProcient,
+            counterDoctor,
         })
         await direction.save()
         res.status(201).send(direction)

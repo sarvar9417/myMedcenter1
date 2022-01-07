@@ -127,7 +127,7 @@ export const CheckStatsionar = () => {
             const fetch = await request(`/api/connector/${connectorId}`, 'GET', null, {
                 Authorization: `Bearer ${auth.token}`
             })
-            setDebitor(fetch.prepayment)
+            // setDebitor(fetch.prepayment)
             setPays(fetch.prepayment)
             setConnector(fetch)
             setPayment({ ...payment, position: fetch.type })

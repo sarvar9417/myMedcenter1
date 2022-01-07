@@ -76,7 +76,7 @@ export const RecieptStatsionar = () => {
                 Authorization: `Bearer ${auth.token}`
             })
             if (data.position === "band") {
-                setBronDay(Math.abs((new Date(new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()) - new Date(new Date(data.beginDay).getFullYear(), new Date(data.beginDay).getMonth() + 1, new Date(data.beginDay).getDate()) ) / oneDay))
+                setBronDay(Math.abs((new Date(new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()) - new Date(new Date(data.beginDay).getFullYear(), new Date(data.beginDay).getMonth() + 1, new Date(data.beginDay).getDate())) / oneDay))
             } else {
                 setBronDay(Math.abs((new Date(new Date(data.beginDay).getFullYear(), new Date(data.beginDay).getMonth() + 1, new Date(data.endDay).getDate()) - new Date(new Date(data.beginDay).getFullYear(), new Date(data.beginDay).getMonth() + 1, new Date(data.beginDay).getDate())) / oneDay))
             }
@@ -275,7 +275,7 @@ export const RecieptStatsionar = () => {
                                         </tr>
                                         <tr>
                                             <td className='w-25 p-1 text-start px-3'>Oldindan to'lov</td>
-                                            <td className='w-75 p-1 px-3'>{connector && connector.prepayment} </td>
+                                            <td className='w-75 p-1 px-3'>{connector && connector.prepaymentCashier} </td>
                                         </tr>
                                         <tr>
                                             <td className='w-25 p-1 text-start px-3'>Tashxiz</td>

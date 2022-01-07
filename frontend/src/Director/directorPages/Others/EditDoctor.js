@@ -52,7 +52,7 @@ export const EditDoctor = () => {
       })
     } catch (e) {
     }
-  }, [request, doctorId, auth])
+  }, [request, doctorId, auth, setDoctor])
 
 
   // Bo'limlar
@@ -137,9 +137,9 @@ export const EditDoctor = () => {
     if (parseInt(event.target.value) < 0) {
       return notify("Diqqat! Shifokor maoshi ishlagan summasining 0 foizidan kam. Iltimos, maosh miqdori 0 foizdan kam emasligiga e'tibor qarating!")
     }
-    setDoctor({ ...doctor, procient: parseInt(event.target.value) })
+    setDoctor({ ...doctor, procient: event.target.value })
   }
-
+  console.log(doctor.procient)
   const [borderGreen, setBorderGreen] = useState(false)
   const [borderRed, setBorderRed] = useState(false)
   const [pwd, setPwd] = useState(false)

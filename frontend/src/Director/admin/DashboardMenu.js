@@ -104,10 +104,12 @@ export const DashboardMenu = () => {
                     {/* small box */}
                     <Link to={`/director`} className="small-box bg-info">
                         <div className="inner">
-                            <h3>Statistika <span className="float-end"> </span></h3>
-                            <p>Statistika {new Date().toLocaleDateString()}</p>
+                            <h5>Statistika <span className="float-end"> </span></h5>
+                            <div className='row'>
+                                <div className='col-6'> {new Date().toLocaleDateString()}</div>
+                                <div className='col-6'></div>
+                            </div>
                         </div>
-
                         <div className="icon">
                             <i className="ion ion-bag" />
                         </div>
@@ -119,8 +121,11 @@ export const DashboardMenu = () => {
                     {/* small box */}
                     <Link to='/director/info' className="small-box bg-success">
                         <div className="inner">
-                            <h3>{priceToday}</h3>
-                            <p>Tushum {new Date().toLocaleDateString()} </p>
+                            <h5>Kunduzgi</h5>
+                            <div className='row'>
+                                <div className='col-6'> {new Date().toLocaleDateString()}</div>
+                                <div className='col-6 text-end'>{priceToday}</div>
+                            </div>
                         </div>
                         <div className="icon">
                             <i className="ion ion-stats-bars" />
@@ -132,9 +137,12 @@ export const DashboardMenu = () => {
                 <div className="col-lg-3 col-6">
                     {/* small box */}
                     <Link to='/director/doctors' className="small-box bg-warning">
-                        <div className="inner text-white">
-                            <h3>{doctors}</h3>
-                            <p>Shifokorlar</p>
+                        <div className="inner">
+                            <h5>Statsionar</h5>
+                            <div className='row'>
+                                <div className='col-6'> {new Date().toLocaleDateString()}</div>
+                                <div className='col-6 text-end'>{priceToday}</div>
+                            </div>
                         </div>
                         <div className="icon">
                             <i className="ion ion-person-add" />
@@ -145,7 +153,7 @@ export const DashboardMenu = () => {
                 <div className="col-lg-3 col-6">
                     <Link to="/director/directions" className="small-box bg-danger">
                         <div className="inner">
-                            <h3>{directions && directions}</h3>
+                            <h5>{directions && directions}</h5>
                             <p>Xizmat turlari</p>
                         </div>
                         <div className="icon">

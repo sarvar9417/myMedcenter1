@@ -463,7 +463,7 @@ export const CheckCashier = () => {
                                         <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{section.price}</td>
                                         <td style={{ width: "25%", padding: "10px 0" }}>
                                             <input onChange={event => inputPriceSection(event, key)} value={section.priceCashier} type="number" className="form-control" style={{ width: "80%", margin: "auto", display: "inline" }} />
-                                            <input id={`checkbox${key}`} onChange={event => checkboxSection(event, key)} type="checkbox" className="check" style={{ position: "absolute" }} />
+                                            <input defaultChecked={section.priceCashier === section.price ? true : false} id={`checkbox${key}`} onChange={event => checkboxSection(event, key)} type="checkbox" className="check" style={{ position: "absolute" }} />
                                         </td>
                                         <td style={{ width: "10%", textAlign: "center", padding: "10px 0", color: "red" }}>
                                             <div className="wrapp" style={{ justifyContent: "center" }}>

@@ -188,6 +188,22 @@ router.get('/cashierconnector/:id', auth, async (req, res) => {
     }
 })
 
+
+// /api/section/
+router.get('/cashieredit/:id', auth, async (req, res) => {
+    try {
+        const id = req.params.id
+        const sections = await Section.find({
+            connector: id,
+        }).sort({ _id: -1 })
+        res.json(sections)
+
+    } catch (e) {
+        res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
+    }
+})
+
+
 // /api/section/
 router.get('/cashier/:id', auth, async (req, res) => {
     try {
