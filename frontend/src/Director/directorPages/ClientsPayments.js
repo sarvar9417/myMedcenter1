@@ -25,6 +25,7 @@ export const ClientsPayments = () => {
             const fetch = await request(`/api/payment/directorclients`, 'GET', null, {
                 Authorization: `Bearer ${auth.token}`
             })
+            console.log(fetch);
             setAll(fetch)
         } catch (e) {
         }
