@@ -140,7 +140,7 @@ export const DirectorRoutes = (isAuthenticated) => {
                     <Route path='/director/statsionar' >
                         <RouterComponent component={<ClientsStatsionarPages />} menu={true} />
                     </Route>
-                    <Route path='/director/papayments' >
+                    <Route path='/director/payments' >
                         <RouterComponent component={<ClientsPayments />} menu={true} />
                     </Route>
                     <Route path="/sayt" >

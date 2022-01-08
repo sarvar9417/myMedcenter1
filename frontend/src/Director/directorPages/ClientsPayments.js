@@ -11,6 +11,9 @@ const mongoose = require('mongoose')
 
 toast.configure()
 export const ClientsPayments = () => {
+    let cash = 0
+    let transfer = 0
+    let card = 0
     //Avtorizatsiyani olish
     const auth = useContext(AuthContext)
     const [modal, setModal] = useState(false)
@@ -22,7 +25,6 @@ export const ClientsPayments = () => {
             const fetch = await request(`/api/payment/directorclients`, 'GET', null, {
                 Authorization: `Bearer ${auth.token}`
             })
-
             setAll(fetch)
         } catch (e) {
         }
@@ -59,45 +61,55 @@ export const ClientsPayments = () => {
                                 <th scope="" className="cek text-center"> Umumiy <FontAwesomeIcon icon={faSort} /></th>
                             </tr>
                         </thead>
+                        <tbody className="" >
+                            {all && all.clients.map((client, key) => {
+                                cash = cash + parseInt(all && all.payments[key].cash)
+                                card = card + parseInt(all && all.payments[key].card)
+                                transfer = transfer + parseInt(all && all.payments[key].transfer)
+                                k++
+                                return (
+                                    <tr key={key} >
+                                        <td className="no" >{k}</td>
+                                        <td className="date" >{new mongoose.Types.ObjectId(client._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(client._id).getTimestamp().toLocaleTimeString()}</td>
+                                        <td className="fish text-success text-uppercase" style={{ fontWeight: "600" }} > {all && all.clients[key].lastname} {all && all.clients[key].firstname} {all && all.clients[key].fathername}</td>
+                                        <td className="date" >{all && new Date(all.clients[key].born).toLocaleDateString()}</td>
+                                        <td className="id" >{all && all.clients[key].id}</td>
+                                        <td className="phone">+{all && all.clients[key].phone}</td>
+                                        <td className="diagnos text-center">  {all && all.payments[key].cash} </td>
+                                        <td className="diagnos text-center">  {all && all.payments[key].card} </td>
+                                        <td className="diagnos text-center">  {all && all.payments[key].transfer} </td>
+                                        <td className="diagnos text-center">  {all && all.payments[key].cash + all.payments[key].cash + all.payments[key].transfer} </td>
+                                    </tr>
+                                )
+
+                            }
+                            )
+                            }
+                        </tbody>
+                        <tbody className='pt-5 mt-5'>
+
+                            <tr>
+                                <td colSpan={6}>
+                                    Jami:
+                                </td>
+                                <td className="diagnos ">  Naqt </td>
+                                <td className="diagnos ">  Plastik </td>
+                                <td className="diagnos ">  O'tkazma </td>
+                                <td className="diagnos ">  Umumiy </td>
+                            </tr>
+                            <tr>
+                                <td colSpan={6}>
+                                </td>
+                                <td className="diagnos ">  {cash} </td>
+                                <td className="diagnos ">  {card} </td>
+                                <td className="diagnos ">  {transfer} </td>
+                                <td className="diagnos ">  {transfer + card + cash} </td>
+                            </tr>
+                        </tbody>
+
                     </table>
                 </div>
             </div>
-
-
-            <div className="overflow-auto" style={{ height: "65vh", minWidth: "1100px" }}>
-                <table className=" table-hover"  >
-                    <tbody className="" >
-                        {all && all.clients.map((client, key) => {
-                            k++
-                            return (
-                                <tr key={key} >
-                                    <td className="no" >{k}</td>
-                                    <td className="date" >{new mongoose.Types.ObjectId(client._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(client._id).getTimestamp().toLocaleTimeString()}</td>
-                                    <td className="fish text-success text-uppercase" style={{ fontWeight: "600" }} > {all && all.clients[key].lastname} {all && all.clients[key].firstname} {all && all.clients[key].fathername}</td>
-                                    <td className="date" >{all && new Date(all.clients[key].born).toLocaleDateString()}</td>
-                                    <td className="id" >{all && all.clients[key].id}</td>
-                                    <td className="phone">+{all && all.clients[key].phone}</td>
-                                    <td className="diagnos ">  {client.diagnosis} </td>
-                                    <td scope="" className="fish text-center">
-                                        {client.position === "davolanishda" ? <Link className='btn button-success' to={`/cashier/prepayment/${all.clients[key]._id}/${client._id}`}> Qo'shish</Link> : "Xizmat yakunlangan"}
-                                    </td>
-                                    <td scope="" className="cek text-center">
-                                        {client.position === "yakunlangan" ? <Link to={`/cashier/paystatsionar/${all.clients[key]._id}/${client._id}`} className='btn button-danger' >Qabul qilish </Link> : "Xizmat yakunlanmagan"}
-                                    </td>
-                                    <td scope="" className="cek text-center">
-                                        <Link to={`/cashier/reciept/${all && all.clients[key]._id}/${client._id}`} > <FontAwesomeIcon icon={faPrint} className="fa-2x" /> </Link>
-                                    </td>
-                                </tr>
-                            )
-
-                        }
-                        )
-                        }
-                    </tbody>
-
-                </table>
-            </div>
-
         </div>
     )
 }
