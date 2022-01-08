@@ -18,6 +18,10 @@ app.use('/api/auth/reseption', require('./routes/reseptionAuth.route'))
 app.use('/api/auth/cashier', require('./routes/cashierAuth.route'))
 // Doctor
 app.use('/api/auth/doctor', require('./routes/doctorAuth.route'))
+// Medsestra
+app.use('/api/auth/medsestra', require('./routes/medsestraAuth.route'))
+// Fizioterapevt
+app.use('/api/auth/fizioterapevt', require('./routes/fizioterapevtAuth.route'))
 // Clients
 app.use('/api/clients', require('./routes/clients.route'))
 // Section

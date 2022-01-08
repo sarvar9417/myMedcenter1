@@ -323,7 +323,7 @@ export const NewStatsionarClient = () => {
     sections.map((section) => {
       create(id, section, connector)
     })
-    history.push(`/reseption/reciept/${id}/${connector}`)
+    history.push(`/reseption/clientsstatsionar`)
   }
 
   const create = async (id, section, connector) => {

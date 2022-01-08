@@ -51,6 +51,16 @@ router.post('/register', auth, async (req, res) => {
 })
 
 
+router.get('/fizioterapevt', async (req, res) => {
+    try {
+        const direction = await Direction.find({
+            section: "ФИЗИОТЕРАПИЯ"
+        }).sort({ section: 1 })
+        res.json(direction)
+    } catch (e) {
+        res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
+    }
+})
 
 // /api/direction
 router.get('/', async (req, res) => {

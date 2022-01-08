@@ -188,6 +188,19 @@ router.get('/cashierconnector/:id', auth, async (req, res) => {
     }
 })
 
+// /api/section/
+router.get('/cashierconnectorstatsionar/:id', auth, async (req, res) => {
+    try {
+        const id = req.params.id
+        const sections = await Section.find({
+            connector: id
+        }).sort({ _id: -1 })
+        res.json(sections)
+    } catch (e) {
+        res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
+    }
+})
+
 
 // /api/section/
 router.get('/cashieredit/:id', auth, async (req, res) => {
@@ -424,9 +437,17 @@ router.get('/directorproceedsstatsionar', auth, async (req, res) => {
     }
 })
 
-router.get('/director', auth, async (req, res) => {
+router.get('/director/kunduzgi', auth, async (req, res) => {
     try {
-        const sections = await Section.find()
+        const sections = await Section.find({
+            bronDay: {
+                $gte:
+                    new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()),
+                $lt:
+                    new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1)
+            }
+        })
+            .or([{ bron: "online", bron: "offline", bron: "callcenter" }, {}])
         res.json(sections)
     } catch (e) {
         res.status(500).json({ message: 'Serverda xatolik yuz berdi' })

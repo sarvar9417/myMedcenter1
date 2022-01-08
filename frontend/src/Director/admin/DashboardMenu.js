@@ -49,37 +49,39 @@ export const DashboardMenu = () => {
         }
     }, [request, auth, setDoctors])
 
+    const [tushum, setTushum] = useState()
     const getAllSections = useCallback(async () => {
         try {
-            const fetch = await request(`/api/section/director`, 'GET', null, {
+            const fetch = await request(`/api/connector/reseption/${new Date()}/${new Date()}`, 'GET', null, {
                 Authorization: `Bearer ${auth.token}`
             })
-            let i = 0
-            let k = 0
-            let price = 0
-            fetch.map((section) => {
-                if (
-                    new Date(section.bronDay).toLocaleDateString() === new Date().toLocaleDateString()
-                    &&
-                    section.done === "tasdiqlangan"
-                ) {
-                    i++
-                }
-                if (
-                    new Date(section.bronDay).toLocaleDateString() === new Date().toLocaleDateString()
-                    &&
-                    (section.payment === "to'langan" || section.commentCashier.length > 6)
-                ) {
-                    price = price + section.priceCashier
-                }
+            const payments = await request(`/api/payment/director`, 'GET', null, {
+                Authorization: `Bearer ${auth.token}`
             })
+            let t = 0
+            payments.map(p => {
+                t = p.total
+            })
+            setTushum(t)
+            let i = 0
+            let price = 0
+            fetch.sections.map((sections) => {
+                sections.map(section => {
+                    price = price + section.priceCashier
+                })
+            })
+            fetch.services.map((services) => {
+                services.map(service => {
+                    price = price + service.priceCashier
+                })
+            })
+            setSections(fetch.sections)
             setClient(i)
             setPriceToday(price)
-            setSections(fetch)
         } catch (e) {
 
         }
-    }, [request, auth, setSections, setPriceToday])
+    }, [request, auth, setSections, setPriceToday, setTushum])
 
     const notify = (e) => {
         toast.error(e)
@@ -95,7 +97,7 @@ export const DashboardMenu = () => {
             notify()
             clearError()
         }
-    }, [getAllClients, getAllSections, sections, getAllDirections, getAllDoctors])
+    }, [])
 
     return (
         <div  >
@@ -136,8 +138,8 @@ export const DashboardMenu = () => {
                 {/* ./col */}
                 <div className="col-lg-3 col-6">
                     {/* small box */}
-                    <Link to='/director/doctors' className="small-box bg-warning">
-                        <div className="inner">
+                    <Link to='/director/statsionar' className="small-box bg-warning">
+                        <div className="inner text-white">
                             <h5>Statsionar</h5>
                             <div className='row'>
                                 <div className='col-6'> {new Date().toLocaleDateString()}</div>
@@ -151,10 +153,13 @@ export const DashboardMenu = () => {
                     </Link>
                 </div>
                 <div className="col-lg-3 col-6">
-                    <Link to="/director/directions" className="small-box bg-danger">
+                    <Link to="/director/payments" className="small-box bg-danger">
                         <div className="inner">
-                            <h5>{directions && directions}</h5>
-                            <p>Xizmat turlari</p>
+                            <h5>Tushum</h5>
+                            <div className='row'>
+                                <div className='col-6'> {new Date().toLocaleDateString()}</div>
+                                <div className='col-6 text-end'>{tushum && tushum}</div>
+                            </div>
                         </div>
                         <div className="icon">
                             <i className="ion ion-pie-graph" />

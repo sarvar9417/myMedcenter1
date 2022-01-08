@@ -7,10 +7,10 @@ import { Sayt } from '../Sayt/sayt'
 import { EditCheck } from './cashierPages/EditCheck'
 import { Reciept } from './cashierPages/Reciept'
 import { RecieptAll } from './cashierPages/RecieptAll'
-import { ClientsStatsionarPages } from './cashierPages/ClientsStatsionarPages'
-import { CreatePrepayment } from './cashierPages/CreatePrepayment'
-import { StatsionarCheckClient } from './cashierPages/StatsionarCheckCreate'
-import { RecieptStatsionar } from './cashierPages/RecieptStatsionar'
+import { ClientsStatsionarPages } from './cashierPages/statsionar/ClientsStatsionarPages'
+import { CreatePrepayment } from './cashierPages/statsionar/CreatePrepayment'
+import { StatsionarCheckClient } from './cashierPages/statsionar/StatsionarCheckCreate'
+import { RecieptStatsionar } from './cashierPages/statsionar/RecieptStatsionar'
 
 
 export const CashierRoutes = (isAuthenticated) => {

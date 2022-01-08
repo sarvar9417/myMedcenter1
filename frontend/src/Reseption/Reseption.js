@@ -9,6 +9,7 @@ export const Reseption = () => {
     localStorage.removeItem('doctorData')
     localStorage.removeItem('cashierData')
     localStorage.removeItem('callcenterData')
+    localStorage.removeItem('medsestraData')
     const { login, token, logout, reseptionId } = useAuth()
     const isAuthenticated = !!token
     const reseptionRouter = ReseptionRoutes(isAuthenticated)

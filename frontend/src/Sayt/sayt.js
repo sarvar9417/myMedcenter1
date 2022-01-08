@@ -3,7 +3,6 @@ import { Loading } from './components/Loading'
 import './sayt.css'
 import AOS from 'aos'
 import 'aos/dist/aos'
-
 import { useEffect, useState } from 'react'
 import { Reseption } from './Sections/Reseption'
 import { Cashier } from './Sections/Cashier'
@@ -11,6 +10,8 @@ import { Doctor } from './Sections/Doctor'
 import { Director } from './Sections/Director'
 import { Turn } from './Turn'
 import { CallCenter } from './CallCenter'
+import { Medsestra } from './Sections/Medsestra'
+import { Fizioterapevt } from './Sections/Fizioterapevt'
 
 export const Sayt = () => {
 
@@ -21,8 +22,8 @@ export const Sayt = () => {
         AOS.init({
             duration: 2000
         })
-        
-        
+
+
     }, [])
 
     if (loader) {
@@ -42,8 +43,12 @@ export const Sayt = () => {
                 <Cashier />
                 <Doctor />
             </div>
+            <div className='row mt-5'>
+                <Medsestra />
+                <Fizioterapevt />
+            </div>
             <Turn />
-            <CallCenter/>
+            <CallCenter />
         </div>
 
     )

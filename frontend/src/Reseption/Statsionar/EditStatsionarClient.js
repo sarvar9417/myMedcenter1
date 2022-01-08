@@ -192,7 +192,7 @@ export const EditStatsionarClient = () => {
       create(section)
     })
     services && createAllServices()
-    history.push(`/reseption/reciept/${client._id}/${connectorId}`)
+    history.push(`/reseption/clientsstatsionar`)
   }
 
   const create = async (section) => {

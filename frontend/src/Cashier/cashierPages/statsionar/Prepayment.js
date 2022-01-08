@@ -1,9 +1,9 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { useParams } from 'react-router'
-import { useHttp } from '../hooks/http.hook'
-import './cashier.css'
-import { AuthContext } from '../context/AuthContext'
+import { useHttp } from '../../hooks/http.hook'
+import '../cashier.css'
+import { AuthContext } from '../../context/AuthContext'
 import { toast } from "react-toastify"
 
 toast.configure()
@@ -247,7 +247,7 @@ export const Prepayment = () => {
                             <div className="fw-bold text-warning">Jami:</div>
                         </div>
                         <div className="col-6">
-                            <div className="fw-bold  text-end text-warning">{paymented  && paymented + old}</div>
+                            <div className="fw-bold  text-end text-warning">{paymented && paymented + old}</div>
                         </div>
                         <hr />
                     </div>
@@ -375,7 +375,7 @@ export const Prepayment = () => {
                             <div className="row ">
                                 <div className="col-12 text-center">
                                     <button onClick={setPayments} className="btn button-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
-                                    <button onClick={() => { setConnector({ ...connector, prepaymentCashier: old }); setModal1(false)}} className="btn button-danger" >Qaytish</button>
+                                    <button onClick={() => { setConnector({ ...connector, prepaymentCashier: old }); setModal1(false) }} className="btn button-danger" >Qaytish</button>
                                 </div>
                             </div>
 

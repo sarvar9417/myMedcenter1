@@ -498,6 +498,7 @@ router.get('/endstatsionar/:id', async (req, res) => {
             connector: id
         })
         usedroom.position = "yakunlangan"
+        usedroom.endDay = new Date()
         const room = await Room.findById(usedroom.room)
         room.position = "bo'sh"
         await room.save()

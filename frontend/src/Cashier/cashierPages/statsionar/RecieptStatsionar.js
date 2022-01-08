@@ -1,9 +1,9 @@
 import React, { useCallback, useContext, useEffect, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { useReactToPrint } from 'react-to-print'
-import { Loader } from './../components/Loader'
-import { AuthContext } from './../context/AuthContext'
-import { useHttp } from './../hooks/http.hook'
+import { Loader } from '../../components/Loader'
+import { AuthContext } from '../../context/AuthContext'
+import { useHttp } from '../../hooks/http.hook'
 import QRCode from 'qrcode'
 import { toast } from 'react-toastify'
 
@@ -76,7 +76,7 @@ export const RecieptStatsionar = () => {
                 Authorization: `Bearer ${auth.token}`
             })
             if (data.position === "band") {
-                setBronDay(Math.abs((new Date(new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()) - new Date(new Date(data.beginDay).getFullYear(), new Date(data.beginDay).getMonth() + 1, new Date(data.beginDay).getDate()) ) / oneDay))
+                setBronDay(Math.abs((new Date(new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()) - new Date(new Date(data.beginDay).getFullYear(), new Date(data.beginDay).getMonth() + 1, new Date(data.beginDay).getDate())) / oneDay))
             } else {
                 setBronDay(Math.abs((new Date(new Date(data.beginDay).getFullYear(), new Date(data.beginDay).getMonth() + 1, new Date(data.endDay).getDate()) - new Date(new Date(data.beginDay).getFullYear(), new Date(data.beginDay).getMonth() + 1, new Date(data.beginDay).getDate())) / oneDay))
             }
@@ -172,6 +172,23 @@ export const RecieptStatsionar = () => {
         }
     }, [request, setLogo])
 
+    const [tulov, setTulov] = useState()
+
+    const getPayments = useCallback(async () => {
+        try {
+            const fetch = await request(`/api/payment/statsionar/${connectorId}`, 'GET', null, {
+                Authorization: `Bearer ${auth.token}`
+            })
+            let s = 0
+            fetch.map(p => {
+                s = s + p.total
+            })
+            setTulov(s)
+        } catch (e) {
+            notify(e)
+        }
+    }, [request, connectorId, auth, setTulov])
+
     useEffect(() => {
         if (client) {
             QRCode.toDataURL(`${baseUrl}/clienthistorys/${client._id}`)
@@ -203,6 +220,9 @@ export const RecieptStatsionar = () => {
         }
         if (!connector) {
             getConnector()
+        }
+        if (!tulov) {
+            getPayments()
         }
 
     }, [notify, clearError])
@@ -331,16 +351,28 @@ export const RecieptStatsionar = () => {
                                             <tr>
                                                 <td >{++k}</td>
                                                 <td className="text-start px-2">{room && room.roomname}</td>
-                                                <td className="text-center">{bronDay && bronDay}</td>
+                                                <td className="text-center">{bronDay && bronDay} kun</td>
                                                 <td className="text-center">{room && room.price}</td>
-                                                <td className="text-center">{room && (room.price * bronDay)}</td>
+                                                <td className="text-center">{(room && bronDay) && (room.price * bronDay)}</td>
                                             </tr>
                                         }
                                     </tbody>
                                     <tfoot>
                                         <tr>
                                             <td className="text-right px-3" colSpan="4">Jami to'lov:</td>
-                                            <td className="text-center">{room && price + bronDay * room.price}</td>
+                                            <td className="text-center">{(room && bronDay) && price + bronDay * room.price}</td>
+                                        </tr>
+                                        <tr>
+                                            <td className="text-right px-3" colSpan="4">Oldindan to'lov:</td>
+                                            <td className="text-center">{connector && connector.prepaymentCashier}</td>
+                                        </tr>
+                                        <tr>
+                                            <td className="text-right px-3" colSpan="4">To'langan:</td>
+                                            <td className="text-center">{tulov}</td>
+                                        </tr>
+                                        <tr>
+                                            <td className="text-right px-3" colSpan="4">Qarz:</td>
+                                            <td className="text-center">{(room && connector && tulov && bronDay) && price + bronDay * room.price - (tulov + connector.prepaymentCashier)}</td>
                                         </tr>
                                     </tfoot>
                                 </table>

@@ -255,21 +255,99 @@ export const ClientsPages = () => {
                                                 }
                                             })
                                         }
-                                        {
-                                            all && all.services[key].map((service, index) => {
-                                                paid = paid + service.priceCashier
-                                                unpaid = unpaid + (service.price - service.priceCashier)
-                                                return (
-                                                    <tr key={index}  >
-                                                        <td className="date fw-normal border-left border-success "  >{new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleTimeString()}</td>
-                                                        <td className="section text-uppercase fw-bold text-info"> {service.name} <span style={{ fontSize: "10pt" }}>{service.type}</span></td>
-                                                        <td className="turn">{service.pieces}(dona)</td>
-                                                        <td >{service.price}</td>
-                                                        <td >{service.priceCashier}</td>
-                                                        <td >{service.price - service.priceCashier}</td>
-                                                    </tr>
-                                                )
-                                            })
+                                        {all && all.sections[key].length === 0 ?
+                                            <>{
+                                                all && all.services[key].map((service, index) => {
+                                                    if (index === 0) {
+                                                        if (service.payment !== "to'lanmagan") {
+                                                            paid = paid + service.priceCashier
+                                                            unpaid = unpaid + (service.price - service.priceCashier)
+                                                        }
+                                                        return (
+                                                            <tr className=' border-top border-success' >
+                                                                <td
+                                                                    className="no border-right border-success"
+                                                                    rowSpan={all && all.services[key].length}
+                                                                >
+                                                                    {++kk}
+                                                                </td>
+                                                                <td
+                                                                    className="fish text-uppercase ps-3"
+                                                                    rowSpan={all && all.services[key].length}
+                                                                >
+                                                                    <Link className='text-success' style={{ fontWeight: "600" }} to={`/reseption/clientallhistory/${all.clients[key]._id}`} >
+                                                                        {all && all.clients[key].lastname} {all && all.clients[key].firstname} {all && all.clients[key].fathername}
+                                                                    </Link>
+                                                                    <br />
+                                                                    <Link className='btn button-success text-success' style={{ fontWeight: "600" }} to={`/reseption/edit/${all && all.clients[key]._id}`} >
+                                                                        <FontAwesomeIcon icon={faPenAlt} />
+                                                                    </Link>
+                                                                </td>
+                                                                <td
+                                                                    className="id"
+                                                                    rowSpan={all.services[key].length}
+                                                                >
+                                                                    {all && new Date(all.clients[key].born).toLocaleDateString()}
+                                                                </td>
+                                                                <td
+                                                                    className="id"
+                                                                    rowSpan={all && all.services[key].length}
+                                                                >
+                                                                    {all && all.clients[key].id}
+                                                                </td>
+                                                                <td
+                                                                    className="phone"
+                                                                    rowSpan={all && all.services[key].length}
+                                                                >
+                                                                    +{all && all.clients[key].phone}
+                                                                </td>
+                                                                <td className="date fw-normal border-left border-success "  >{new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleTimeString()}</td>
+                                                                <td className="section text-uppercase"> {service.name} {service.type}</td>
+                                                                <td className='turn'></td>
+                                                                <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price}</td>
+                                                                <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.priceCashier}</td>
+                                                                <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price - service.priceCashier}</td>
+                                                            </tr>
+                                                        )
+                                                    } else {
+                                                        if (service.payment !== "to'lanmagan") {
+                                                            paid = paid + service.priceCashier
+                                                            unpaid = unpaid + (service.price - service.priceCashier)
+                                                        }
+                                                        return (
+                                                            <tr key={index}  >
+                                                                <td className="date fw-normal border-left border-success "  >{new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleTimeString()}</td>
+                                                                <td className="section text-uppercase"> {service.name} {service.type}</td>
+                                                                <td className='turn'></td>
+                                                                <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price}</td>
+                                                                <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.priceCashier}</td>
+                                                                <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price - service.priceCashier}</td>
+                                                            </tr>
+                                                        )
+                                                    }
+                                                })
+
+
+                                            }
+                                            </> :
+                                            <>{
+                                                all && all.services[key].map((service, index) => {
+                                                    if (service.payment !== "to'lanmagan") {
+                                                        paid = paid + service.priceCashier
+                                                        unpaid = unpaid + (service.price - service.priceCashier)
+                                                    }
+                                                    return (
+                                                        <tr key={index}  >
+                                                            <td className="date fw-normal border-left border-success "  >{new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleTimeString()}</td>
+                                                            <td className="section text-uppercase"> {service.name} {service.type}</td>
+                                                            <td className='turn'></td>
+                                                            <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price}</td>
+                                                            <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.priceCashier}</td>
+                                                            <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price - service.priceCashier}</td>
+                                                        </tr>
+                                                    )
+                                                })}
+                                            </>
                                         }
                                     </>
                                     )
@@ -344,21 +422,99 @@ export const ClientsPages = () => {
                                                     }
                                                 })
                                             }
-                                            {
-                                                all && all.services[key].map((service, index) => {
-                                                    paid = paid + service.priceCashier
-                                                    unpaid = unpaid + (service.price - service.priceCashier)
-                                                    return (
-                                                        <tr key={index}  >
-                                                            <td className="date fw-normal border-left border-success "  >{new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleTimeString()}</td>
-                                                            <td className="section text-uppercase fw-bold text-info"> {service.name} <span style={{ fontSize: "10pt" }}>{service.type}</span></td>
-                                                            <td className="turn">{service.pieces}(dona)</td>
-                                                            <td >{service.price}</td>
-                                                            <td >{service.priceCashier}</td>
-                                                            <td >{service.price - service.priceCashier}</td>
-                                                        </tr>
-                                                    )
-                                                })
+                                            {all && all.sections[key].length === 0 ?
+                                                <>{
+                                                    all && all.services[key].map((service, index) => {
+                                                        if (index === 0) {
+                                                            if (service.payment !== "to'lanmagan") {
+                                                                paid = paid + service.priceCashier
+                                                                unpaid = unpaid + (service.price - service.priceCashier)
+                                                            }
+                                                            return (
+                                                                <tr className=' border-top border-success' >
+                                                                    <td
+                                                                        className="no border-right border-success"
+                                                                        rowSpan={all && all.services[key].length}
+                                                                    >
+                                                                        {++kk}
+                                                                    </td>
+                                                                    <td
+                                                                        className="fish text-uppercase ps-3"
+                                                                        rowSpan={all && all.services[key].length}
+                                                                    >
+                                                                        <Link className='text-success' style={{ fontWeight: "600" }} to={`/reseption/clientallhistory/${all.clients[key]._id}`} >
+                                                                            {all && all.clients[key].lastname} {all && all.clients[key].firstname} {all && all.clients[key].fathername}
+                                                                        </Link>
+                                                                        <br />
+                                                                        <Link className='btn button-success text-success' style={{ fontWeight: "600" }} to={`/reseption/edit/${all && all.clients[key]._id}`} >
+                                                                            <FontAwesomeIcon icon={faPenAlt} />
+                                                                        </Link>
+                                                                    </td>
+                                                                    <td
+                                                                        className="id"
+                                                                        rowSpan={all.services[key].length}
+                                                                    >
+                                                                        {all && new Date(all.clients[key].born).toLocaleDateString()}
+                                                                    </td>
+                                                                    <td
+                                                                        className="id"
+                                                                        rowSpan={all && all.services[key].length}
+                                                                    >
+                                                                        {all && all.clients[key].id}
+                                                                    </td>
+                                                                    <td
+                                                                        className="phone"
+                                                                        rowSpan={all && all.services[key].length}
+                                                                    >
+                                                                        +{all && all.clients[key].phone}
+                                                                    </td>
+                                                                    <td className="date fw-normal border-left border-success "  >{new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleTimeString()}</td>
+                                                                    <td className="section text-uppercase"> {service.name} {service.type}</td>
+                                                                    <td className='turn'></td>
+                                                                    <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price}</td>
+                                                                    <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.priceCashier}</td>
+                                                                    <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price - service.priceCashier}</td>
+                                                                </tr>
+                                                            )
+                                                        } else {
+                                                            if (service.payment !== "to'lanmagan") {
+                                                                paid = paid + service.priceCashier
+                                                                unpaid = unpaid + (service.price - service.priceCashier)
+                                                            }
+                                                            return (
+                                                                <tr key={index}  >
+                                                                    <td className="date fw-normal border-left border-success "  >{new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleTimeString()}</td>
+                                                                    <td className="section text-uppercase"> {service.name} {service.type}</td>
+                                                                    <td className='turn'></td>
+                                                                    <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price}</td>
+                                                                    <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.priceCashier}</td>
+                                                                    <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price - service.priceCashier}</td>
+                                                                </tr>
+                                                            )
+                                                        }
+                                                    })
+
+
+                                                }
+                                                </> :
+                                                <>{
+                                                    all && all.services[key].map((service, index) => {
+                                                        if (service.payment !== "to'lanmagan") {
+                                                            paid = paid + service.priceCashier
+                                                            unpaid = unpaid + (service.price - service.priceCashier)
+                                                        }
+                                                        return (
+                                                            <tr key={index}  >
+                                                                <td className="date fw-normal border-left border-success "  >{new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleTimeString()}</td>
+                                                                <td className="section text-uppercase"> {service.name} {service.type}</td>
+                                                                <td className='turn'></td>
+                                                                <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price}</td>
+                                                                <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.priceCashier}</td>
+                                                                <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price - service.priceCashier}</td>
+                                                            </tr>
+                                                        )
+                                                    })}
+                                                </>
                                             }
                                         </>
                                         )
@@ -460,16 +616,100 @@ export const ClientsPages = () => {
                                                 )
                                             }
                                         })}
-                                        {all && all.services[key].map((service, index) => {
-                                            return (
-                                                <tr key={index}  >
-                                                    <td className="date fw-normal border-left border-success "  >{new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleTimeString()}</td>
-                                                    <td className="section text-uppercase fw-bold text-info"> {service.name} <br /> <span style={{ fontSize: "10pt" }}>{service.type}</span></td>
-                                                    <td className="turn">{service.pieces}(dona)</td>
-                                                    <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price}</td>
-                                                </tr>
-                                            )
-                                        })}
+                                        {all && all.sections[key].length === 0 ?
+                                            <>{
+                                                all && all.services[key].map((service, index) => {
+                                                    if (index === 0) {
+
+
+                                                        return (
+                                                            <tr className=' border-top border-success' >
+                                                                <td
+                                                                    className="no border-right border-success"
+                                                                    rowSpan={all && all.services[key].length}
+                                                                >
+                                                                    {++kk}
+                                                                </td>
+                                                                <td
+                                                                    className="fish text-uppercase ps-3"
+                                                                    rowSpan={all && all.services[key].length}
+                                                                >
+                                                                    <Link className='text-success' style={{ fontWeight: "600" }} to={`/reseption/clientallhistory/${all.clients[key]._id}`} >
+                                                                        {all && all.clients[key].lastname} {all && all.clients[key].firstname} {all && all.clients[key].fathername}
+                                                                    </Link>
+                                                                    <br />
+                                                                    <Link className='btn button-success text-success' style={{ fontWeight: "600" }} to={`/reseption/edit/${all && all.clients[key]._id}`} >
+                                                                        <FontAwesomeIcon icon={faPenAlt} />
+                                                                    </Link>
+                                                                </td>
+                                                                <td
+                                                                    className="id"
+                                                                    rowSpan={all.services[key].length}
+                                                                >
+                                                                    {all && new Date(all.clients[key].born).toLocaleDateString()}
+                                                                </td>
+                                                                <td
+                                                                    className="id"
+                                                                    rowSpan={all && all.services[key].length}
+                                                                >
+                                                                    {all && all.clients[key].id}
+                                                                </td>
+                                                                <td
+                                                                    className="phone"
+                                                                    rowSpan={all && all.services[key].length}
+                                                                >
+                                                                    +{all && all.clients[key].phone}
+                                                                </td>
+                                                                <td
+                                                                    className="fish text-center"
+                                                                    rowSpan={all.sections[key].length + all.services[key].length}
+                                                                >
+                                                                    <Link className='btn button-success text-success' to={`/cashier/pay/${all.clients[key]._id}/${connector._id}`} >
+                                                                        Qabul qilish
+                                                                    </Link>
+                                                                </td>
+                                                                <td
+                                                                    className="fish text-center"
+                                                                    rowSpan={all.sections[key].length + all.services[key].length}
+                                                                >
+                                                                    <Link className='btn button-danger text-danger' to={`/cashier/payedit/${all.clients[key]._id}/${connector._id}`} >
+                                                                        Tahrirlash
+                                                                    </Link>
+                                                                </td>
+                                                                <td className="date fw-normal border-left border-success "  >{new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleTimeString()}</td>
+                                                                <td className="section text-uppercase fw-bold text-info"> {service.name} <br /> <span style={{ fontSize: "10pt" }}>{service.type}</span></td>
+                                                                <td className="turn">{service.pieces}(dona)</td>
+                                                                <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price}</td>
+                                                            </tr>
+                                                        )
+                                                    } else {
+                                                        return (
+                                                            <tr key={index}  >
+                                                                <td className="date fw-normal border-left border-success "  >{new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleTimeString()}</td>
+                                                                <td className="section text-uppercase fw-bold text-info"> {service.name} <br /> <span style={{ fontSize: "10pt" }}>{service.type}</span></td>
+                                                                <td className="turn">{service.pieces}(dona)</td>
+                                                                <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price}</td>
+                                                            </tr>
+                                                        )
+                                                    }
+                                                })
+
+
+                                            }
+                                            </> :
+                                            <>{
+                                                all && all.services[key].map((service, index) => {
+                                                    return (
+                                                        <tr key={index}  >
+                                                            <td className="date fw-normal border-left border-success "  >{new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleTimeString()}</td>
+                                                            <td className="section text-uppercase fw-bold text-info"> {service.name} <br /> <span style={{ fontSize: "10pt" }}>{service.type}</span></td>
+                                                            <td className="turn">{service.pieces}(dona)</td>
+                                                            <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price}</td>
+                                                        </tr>
+                                                    )
+                                                })}
+                                            </>
+                                        }
                                     </>
                                     )
                                 } else {
@@ -553,16 +793,100 @@ export const ClientsPages = () => {
                                                             )
                                                         }
                                                     })}
-                                                {all && all.services[key].map((service, index) => {
-                                                    return (
-                                                        <tr key={index}  >
-                                                            <td className="date fw-normal border-left border-success "  >{new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleTimeString()}</td>
-                                                            <td className="section text-uppercase"> {service.name} <br /> <span style={{ fontSize: "10pt" }}>{service.type}</span></td>
-                                                            <td className="turn"></td>
-                                                            <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price}</td>
-                                                        </tr>
-                                                    )
-                                                })}
+                                                {all && all.sections[key].length === 0 ?
+                                                    <>{
+                                                        all && all.services[key].map((service, index) => {
+                                                            if (index === 0) {
+
+
+                                                                return (
+                                                                    <tr className=' border-top border-success' >
+                                                                        <td
+                                                                            className="no border-right border-success"
+                                                                            rowSpan={all && all.services[key].length}
+                                                                        >
+                                                                            {++kk}
+                                                                        </td>
+                                                                        <td
+                                                                            className="fish text-uppercase ps-3"
+                                                                            rowSpan={all && all.services[key].length}
+                                                                        >
+                                                                            <Link className='text-success' style={{ fontWeight: "600" }} to={`/reseption/clientallhistory/${all.clients[key]._id}`} >
+                                                                                {all && all.clients[key].lastname} {all && all.clients[key].firstname} {all && all.clients[key].fathername}
+                                                                            </Link>
+                                                                            <br />
+                                                                            <Link className='btn button-success text-success' style={{ fontWeight: "600" }} to={`/reseption/edit/${all && all.clients[key]._id}`} >
+                                                                                <FontAwesomeIcon icon={faPenAlt} />
+                                                                            </Link>
+                                                                        </td>
+                                                                        <td
+                                                                            className="id"
+                                                                            rowSpan={all.services[key].length}
+                                                                        >
+                                                                            {all && new Date(all.clients[key].born).toLocaleDateString()}
+                                                                        </td>
+                                                                        <td
+                                                                            className="id"
+                                                                            rowSpan={all && all.services[key].length}
+                                                                        >
+                                                                            {all && all.clients[key].id}
+                                                                        </td>
+                                                                        <td
+                                                                            className="phone"
+                                                                            rowSpan={all && all.services[key].length}
+                                                                        >
+                                                                            +{all && all.clients[key].phone}
+                                                                        </td>
+                                                                        <td
+                                                                            className="fish text-center"
+                                                                            rowSpan={all.sections[key].length + all.services[key].length}
+                                                                        >
+                                                                            <Link className='btn button-success text-success' to={`/cashier/pay/${all.clients[key]._id}/${connector._id}`} >
+                                                                                Qabul qilish
+                                                                            </Link>
+                                                                        </td>
+                                                                        <td
+                                                                            className="fish text-center"
+                                                                            rowSpan={all.sections[key].length + all.services[key].length}
+                                                                        >
+                                                                            <Link className='btn button-danger text-danger' to={`/cashier/payedit/${all.clients[key]._id}/${connector._id}`} >
+                                                                                Tahrirlash
+                                                                            </Link>
+                                                                        </td>
+                                                                        <td className="date fw-normal border-left border-success "  >{new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleTimeString()}</td>
+                                                                        <td className="section text-uppercase fw-bold text-info"> {service.name} <br /> <span style={{ fontSize: "10pt" }}>{service.type}</span></td>
+                                                                        <td className="turn">{service.pieces}(dona)</td>
+                                                                        <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price}</td>
+                                                                    </tr>
+                                                                )
+                                                            } else {
+                                                                return (
+                                                                    <tr key={index}  >
+                                                                        <td className="date fw-normal border-left border-success "  >{new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleTimeString()}</td>
+                                                                        <td className="section text-uppercase fw-bold text-info"> {service.name} <br /> <span style={{ fontSize: "10pt" }}>{service.type}</span></td>
+                                                                        <td className="turn">{service.pieces}(dona)</td>
+                                                                        <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price}</td>
+                                                                    </tr>
+                                                                )
+                                                            }
+                                                        })
+
+
+                                                    }
+                                                    </> :
+                                                    <>{
+                                                        all && all.services[key].map((service, index) => {
+                                                            return (
+                                                                <tr key={index}  >
+                                                                    <td className="date fw-normal border-left border-success "  >{new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleTimeString()}</td>
+                                                                    <td className="section text-uppercase fw-bold text-info"> {service.name} <br /> <span style={{ fontSize: "10pt" }}>{service.type}</span></td>
+                                                                    <td className="turn">{service.pieces}(dona)</td>
+                                                                    <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price}</td>
+                                                                </tr>
+                                                            )
+                                                        })}
+                                                    </>
+                                                }
                                             </>
                                         )
 

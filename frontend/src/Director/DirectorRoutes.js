@@ -36,6 +36,8 @@ import { AddWare } from './directorPages/WareHouse/AddWare'
 import { HistoryWare } from './directorPages/WareHouse/HistoryWare'
 import { Rooms } from './directorPages/Rooms/Rooms'
 import { CreateRoom } from './directorPages/Rooms/CreateRoom'
+import { ClientsStatsionarPages } from './directorPages/ClientsStatsionarPages'
+import { ClientsPayments } from './directorPages/ClientsPayments'
 
 export const DirectorRoutes = (isAuthenticated) => {
     if (isAuthenticated) {
@@ -134,6 +136,12 @@ export const DirectorRoutes = (isAuthenticated) => {
                     </Route>
                     <Route path='/director/createroom' >
                         <RouterComponent component={<CreateRoom />} menu={true} />
+                    </Route>
+                    <Route path='/director/statsionar' >
+                        <RouterComponent component={<ClientsStatsionarPages />} menu={true} />
+                    </Route>
+                    <Route path='/director/papayments' >
+                        <RouterComponent component={<ClientsPayments />} menu={true} />
                     </Route>
                     <Route path="/sayt" >
                         <Sayt />

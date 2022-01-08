@@ -5,6 +5,8 @@ import { Cashier } from './Cashier/Cashier'
 import { ClientHistory } from './Client/ClientHistory'
 import { Director } from './Director/Director'
 import { Doctor } from './Doctor/Doctor'
+import { Fizioterapevt } from './Fizioterapevt/Fizioterapevt'
+import { Medsestra } from './Medsestra/Medsestra'
 import { RegistorDirector } from './RegistorDirector'
 import { Reseption } from './Reseption/Reseption'
 import { Sayt } from './Sayt/sayt'
@@ -36,6 +38,12 @@ export const useRoutes = () => {
             </Route>
             <Route path="/clienthistorys/:id" >
                 <ClientHistory />
+            </Route>
+            <Route path="/medsestra" >
+                <Medsestra />
+            </Route>
+            <Route path="/fizioterapevt" >
+                <Fizioterapevt />
             </Route>
             <Route path="/" >
                 <Sayt />

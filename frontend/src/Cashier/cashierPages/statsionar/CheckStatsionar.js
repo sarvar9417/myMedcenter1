@@ -1,9 +1,9 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { useHistory } from 'react-router-dom'
 import { useParams } from 'react-router'
-import { useHttp } from '../hooks/http.hook'
-import './cashier.css'
-import { AuthContext } from '../context/AuthContext'
+import { useHttp } from '../../hooks/http.hook'
+import '../cashier.css'
+import { AuthContext } from '../../context/AuthContext'
 import { toast } from "react-toastify"
 
 toast.configure()
@@ -16,15 +16,13 @@ export const CheckStatsionar = () => {
     let num = 0
     let num2 = 0
     const [modal1, setModal1] = useState(false)
-    const [debitor, setDebitor] = useState(0)
-    const [pay, setPays] = useState(0)
     let allPrice = 0
     let paymented = 0
     let back = 0
+    let debitor = 0
 
     const [clientId, setClientId] = useState(useParams().id)
     const [connectorId, setConnectorId] = useState(useParams().connector)
-    const [clientid, setClientid] = useState()
     const [sections, setSections] = useState()
     const [services, setServices] = useState()
     const [connector, setConnector] = useState()
@@ -42,7 +40,7 @@ export const CheckStatsionar = () => {
         position: "statsionar"
     })
 
-    const setPay = (event) => {
+    const setPay = useCallback((event) => {
         if (event.target.id === "card") {
             setPayment({
                 ...payment,
@@ -65,44 +63,49 @@ export const CheckStatsionar = () => {
                 [event.target.id]: parseInt(event.target.value),
                 total: payment.cash + payment.card + parseInt(event.target.value)
             })
+        } else {
+            setConnector({ ...connector, prepayment: 0 })
         }
-    }
+    }, [setPayment, payment, connector, setConnector])
 
     const setAllPayment = (event) => {
         if (event.target.id === "card") {
             setPayment({
                 ...payment,
-                total: debitor,
+                total: tulov && connector && room && bronDay && allPrice + room.price * bronDay - tulov - connector.prepaymentCashier,
                 type: event.target.id,
                 cash: 0,
                 transfer: 0,
-                [event.target.id]: debitor,
+                [event.target.id]: tulov && connector && room && bronDay && allPrice + room.price * bronDay - tulov - connector.prepaymentCashier,
             })
+            debitor = 0
         }
         if (event.target.id === "cash") {
             setPayment({
                 ...payment,
-                total: debitor,
+                total: tulov && connector && room && bronDay && allPrice + room.price * bronDay - tulov - connector.prepaymentCashier,
                 type: event.target.id,
                 card: 0,
                 transfer: 0,
-                [event.target.id]: debitor,
+                [event.target.id]: tulov && connector && room && bronDay && allPrice + room.price * bronDay - tulov - connector.prepaymentCashier,
             })
+            debitor = 0
         }
         if (event.target.id === "transfer") {
             setPayment({
                 ...payment,
-                total: debitor,
+                total: tulov && connector && room && bronDay && allPrice + room.price * bronDay - tulov - connector.prepaymentCashier,
                 type: event.target.id,
                 cash: 0,
                 card: 0,
-                [event.target.id]: debitor,
+                [event.target.id]: tulov && connector && room && bronDay && allPrice + room.price * bronDay - tulov - connector.prepaymentCashier,
             })
+            debitor = 0
         }
         if (event.target.id === "mixed") {
             setPayment({
                 ...payment,
-                total: debitor,
+                total: 0,
                 type: event.target.id,
                 cash: 0,
                 card: 0,
@@ -122,23 +125,40 @@ export const CheckStatsionar = () => {
         }
     }, [request, clientId, auth, setClient])
 
+    const [tulov, setTulov] = useState()
+
+    const getPayments = useCallback(async () => {
+        try {
+            const fetch = await request(`/api/payment/statsionar/${connectorId}`, 'GET', null, {
+                Authorization: `Bearer ${auth.token}`
+            })
+            console.log(fetch);
+            let s = 0
+            fetch.map(p => {
+                s = s + p.total
+            })
+            setTulov(s)
+        } catch (e) {
+            notify(e)
+        }
+    }, [request, connectorId, auth, setTulov])
+
     const getConnector = useCallback(async () => {
         try {
             const fetch = await request(`/api/connector/${connectorId}`, 'GET', null, {
                 Authorization: `Bearer ${auth.token}`
             })
-            // setDebitor(fetch.prepayment)
-            setPays(fetch.prepayment)
+            debitor = fetch.prepayment
             setConnector(fetch)
             setPayment({ ...payment, position: fetch.type })
         } catch (e) {
             notify(e)
         }
-    }, [request, connectorId, auth, setConnector, setPays, setDebitor])
+    }, [request, connectorId, auth, setConnector])
 
     const getSections = useCallback(async () => {
         try {
-            const fetch = await request(`/api/section/cashierconnector/${connectorId}`, 'GET', null, {
+            const fetch = await request(`/api/section/cashierconnectorstatsionar/${connectorId}`, 'GET', null, {
                 Authorization: `Bearer ${auth.token}`
             })
             setSections(fetch)
@@ -149,7 +169,7 @@ export const CheckStatsionar = () => {
 
     const getServices = useCallback(async () => {
         try {
-            const fetch = await request(`/api/service/cashierconnector/${connectorId}`, 'GET', null, {
+            const fetch = await request(`/api/service/cashierconnectorstatsionar/${connectorId}`, 'GET', null, {
                 Authorization: `Bearer ${auth.token}`
             })
             setServices(fetch)
@@ -201,7 +221,7 @@ export const CheckStatsionar = () => {
     const checkPrices = () => {
         let k = 0
 
-        if (payment.total > debitor) {
+        if (payment.total + tulov > allPrice) {
             return notify("Diqqat! Iltimos mijozdan umumiy summadan ortiq to'lov qabul qilmang.")
         }
         if (!k) {
@@ -241,7 +261,6 @@ export const CheckStatsionar = () => {
 
     const patchConnector = useCallback(async () => {
         try {
-            setConnector({ ...connector, prepayment: debitor - payment.total })
             const fetch = await request(`/api/connector/cashier/${connectorId}`, 'PATCH', {
                 ...connector
             }, {
@@ -266,35 +285,42 @@ export const CheckStatsionar = () => {
         })
     }
 
-    const getchangeSections = useCallback(async (event) => {
-        try {
-            const fetch = await request(`/api/clients/cashierid/${parseInt(event.target.value)}`, 'GET', null, {
-                Authorization: `Bearer ${auth.token}`
-            })
-            setClientId(fetch[0]._id)
-        } catch (e) {
-            notify(e)
-        }
-    }, [request, clientid, auth, setClientId])
 
     const Paymented = () => {
         let p = 0
         let s = [...services]
         s.map((service, key) => {
-            p = p + service.price
+            // p = p + service.price
             service.priceCashier = service.price
             service.payment = "to'langan"
         })
         setServices(s)
         s = [...sections]
         s.map((section, key) => {
-            p = p + section.price
+            // p = p + section.price
             section.priceCashier = section.price
             section.payment = "to'langan"
         })
         setSections(s)
-        connector && setDebitor(p - connector.prepaymentCashier)
     }
+
+    const oneDay = 1000 * 60 * 60 * 24
+    const [bronDay, setBronDay] = useState()
+    const [room, setRoom] = useState()
+    const getRoom = useCallback(async () => {
+        try {
+            const data = await request(`/api/usedroom/reseption/${connectorId}`, 'GET', null, {
+                Authorization: `Bearer ${auth.token}`
+            })
+            if (data.position === "band") {
+                setBronDay(Math.abs((new Date(new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()) - new Date(new Date(data.beginDay).getFullYear(), new Date(data.beginDay).getMonth() + 1, new Date(data.beginDay).getDate())) / oneDay))
+            } else {
+                setBronDay(Math.abs((new Date(new Date(data.beginDay).getFullYear(), new Date(data.beginDay).getMonth() + 1, new Date(data.endDay).getDate()) - new Date(new Date(data.beginDay).getFullYear(), new Date(data.beginDay).getMonth() + 1, new Date(data.beginDay).getDate())) / oneDay))
+            }
+            setRoom(data)
+        } catch (e) {
+        }
+    }, [request, connectorId, auth, setRoom, oneDay, setBronDay])
 
     useEffect(() => {
         if (error) {
@@ -313,6 +339,12 @@ export const CheckStatsionar = () => {
         if (!services) {
             getServices()
         }
+        if (!tulov) {
+            getPayments()
+        }
+        if (!room) {
+            getRoom()
+        }
     }, [notify, clearError])
     return (
         <>
@@ -327,7 +359,6 @@ export const CheckStatsionar = () => {
                             className="form-control inp w-75 d-inline-block mr-3 mb-2"
                             placeholder=""
                             style={{ background: "#fff" }}
-                            onChange={getchangeSections}
                         />
                         <label className="labels">Mijoznig ID raqami</label>
                         {/* <button onClick={() => { getClient(); getAllSections() }} className="btn text-white" style={{ backgroundColor: "#45D3D3", marginLeft: "5px" }}><FontAwesomeIcon icon={faSearch} /></button> */}
@@ -341,7 +372,6 @@ export const CheckStatsionar = () => {
                             className="form-control inp w-75 d-inline-block mr-3 mb-2"
                             placeholder=""
                             style={{ background: "#fff" }}
-                            onChange={getchangeSections}
                         />
                         <label className="labels">Oldindan to'lov</label>
                         {/* <button onClick={() => { getClient(); getAllSections() }} className="btn text-white" style={{ backgroundColor: "#45D3D3", marginLeft: "5px" }}><FontAwesomeIcon icon={faSearch} /></button> */}
@@ -415,6 +445,17 @@ export const CheckStatsionar = () => {
                                 )
                             })
                         }
+                        <tr >
+                            <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{++num}</td>
+                            <td style={{ width: "35%", textAlign: "center", padding: "10px 0" }}>
+                                {room && room.roomname}
+                            </td>
+                            <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{bronDay && bronDay} kun</td>
+                            <td style={{ width: "25%", padding: "10px 0" }}>
+                                <input disabled value={room && bronDay && room.price * bronDay} type="number" className="form-control" style={{ width: "80%", margin: "auto", display: "inline" }} />
+                            </td>
+
+                        </tr>
                     </tbody>
                 </table>
 
@@ -424,7 +465,7 @@ export const CheckStatsionar = () => {
                             <div className="fw-bold text-primary">Jami to'lov:</div>
                         </div>
                         <div className="col-6">
-                            <div className="fw-bold  text-end ">{allPrice}</div>
+                            <div className="fw-bold  text-end ">{room && bronDay && allPrice + room.price * bronDay}</div>
                         </div>
                         <hr />
 
@@ -435,6 +476,15 @@ export const CheckStatsionar = () => {
                         </div>
                         <div className="col-6">
                             <div className="fw-bold  text-end text-warning">{connector && connector.prepaymentCashier}</div>
+                        </div>
+                        <hr />
+                    </div>
+                    <div className="row ms-3 me-5">
+                        <div className="col-6">
+                            <div className="fw-bold text-primary">To'langan:</div>
+                        </div>
+                        <div className="col-6">
+                            <div className="fw-bold  text-end text-primary">{tulov && tulov}</div>
                         </div>
                         <hr />
                     </div>
@@ -452,7 +502,7 @@ export const CheckStatsionar = () => {
                             <div className="fw-bold text-danger">Qarz:</div>
                         </div>
                         <div className="col-6">
-                            <div className="fw-bold  text-end text-danger">{debitor + pay - (payment.card + payment.cash + payment.transfer)}</div>
+                            <div className="fw-bold  text-end text-danger">{tulov && connector && room && bronDay && allPrice + room.price * bronDay - tulov - payment.total - connector.prepaymentCashier}</div>
                         </div>
                         <hr />
                     </div>
@@ -587,7 +637,7 @@ export const CheckStatsionar = () => {
                                     <div className="fw-bold text-primary">Jami to'lov:</div>
                                 </div>
                                 <div className="col-6">
-                                    <div className="fw-bold  text-end ">{allPrice}</div>
+                                    <div className="fw-bold  text-end ">{room && bronDay && allPrice + room.price * bronDay}</div>
                                 </div>
                                 <hr />
 
@@ -598,6 +648,15 @@ export const CheckStatsionar = () => {
                                 </div>
                                 <div className="col-6">
                                     <div className="fw-bold  text-end text-warning">{connector && connector.prepaymentCashier}</div>
+                                </div>
+                                <hr />
+                            </div>
+                            <div className="row ms-3 me-5">
+                                <div className="col-6">
+                                    <div className="fw-bold text-primary">To'langan:</div>
+                                </div>
+                                <div className="col-6">
+                                    <div className="fw-bold  text-end text-primary">{tulov && tulov}</div>
                                 </div>
                                 <hr />
                             </div>
@@ -615,7 +674,7 @@ export const CheckStatsionar = () => {
                                     <div className="fw-bold text-danger">Qarz:</div>
                                 </div>
                                 <div className="col-6">
-                                    <div className="fw-bold  text-end text-danger">{debitor - (payment.card + payment.cash + payment.transfer)}</div>
+                                    <div className="fw-bold  text-end text-danger">{tulov && room && bronDay && connector && allPrice + room.price * bronDay - tulov - payment.total - connector.prepaymentCashier}</div>
                                 </div>
                                 <hr />
                             </div>

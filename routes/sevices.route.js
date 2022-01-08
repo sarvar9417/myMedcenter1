@@ -80,6 +80,18 @@ router.get('/cashierconnector/:id', auth, async (req, res) => {
     }
 })
 
+
+router.get('/cashierconnectorstatsionar/:id', auth, async (req, res) => {
+    try {
+        const service = await Service.find({
+            connector: req.params.id
+        })
+        res.json(service)
+    } catch (e) {
+        res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
+    }
+})
+
 router.get('/cashier/:id', auth, async (req, res) => {
     try {
         const service = await Service.find({

@@ -9,6 +9,7 @@ export const Doctor = () => {
     localStorage.removeItem('cashierData')
     localStorage.removeItem('directorData')
     localStorage.removeItem('callcenterData')
+    localStorage.removeItem('medsestraData')
     const { login, token, logout, doctorId, doctor } = useAuth()
     const isAuthenticated = !!token
     const doctorRouter = DoctorRoutes(isAuthenticated)
