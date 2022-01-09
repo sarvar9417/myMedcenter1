@@ -18,7 +18,7 @@ export const NewOnlineClient = () => {
     let s = []
     const { loading, request, error, clearError } = useHttp()
     const [turns, seTurns] = useState([])
-    const [sections, setSections] = useState([])
+    const [sections, setSections] = useState()
     const notify = (e) => {
         toast.error(e)
     }
@@ -29,30 +29,62 @@ export const NewOnlineClient = () => {
     const [modal, setModal] = useState(false)
 
     const [advertisement, setAdvertisement] = useState(false)
-    const [counteragents, setCounterAgents] = useState()
-    const [counteragent, setCounterAgent] = useState(" ")
     const [sources, setSources] = useState()
     const [source, setSource] = useState(" ")
+    //==============================================================================
+    //==============================================================================
+    //Counteragents begin
+    const [counteragent, setCounterAgent] = useState()
+    const [counteragents, setCounterAgents] = useState()
     const getCounterAgents = useCallback(async () => {
         try {
-            const fetch = await request('/api/counteragent/', 'GET', null, {
+            const fetch = await request('/api/counterdoctor', 'GET', null, {
                 Authorization: `Bearer ${auth.token}`
             })
             let c = [{
                 label: "Tanlanmagan",
-                value: " "
+                value: " ",
+                counterdoctor: "",
+                counteragent: "",
             }]
             fetch.map((data) => {
                 c.push({
-                    label: data.clinic.toUpperCase() + " " + data.lastname + " " + data.firstname + " " + data.fathername,
-                    value: data.lastname + " " + data.firstname + " " + data.fathername
+                    label: data.clinic.toUpperCase() + " " + data.lastname + " " + data.firstname,
+                    value: data.lastname + " " + data.firstname,
+                    counterdoctor: data._id,
+                    counteragent: data.counteragent
                 })
             })
             setCounterAgents(c)
         } catch (error) {
             notify(error)
         }
-    }, [auth, request, setCounterAgents, notify])
+    }, [auth, request, setCounterAgents])
+
+    const changeCounterAgent = (event) => {
+        if (event.label === "Tanlanmagan") {
+            setCounterAgent(null)
+        } else {
+            setCounterAgent({
+                counteragent: event.counteragent,
+                counterdoctor: event.counterdoctor,
+                paymentDay: new Date()
+            })
+        }
+    }
+
+    const createPaymentCounteragent = async (client, connector) => {
+        try {
+            const data = await request(`/api/counteragentpayment/reseption/register`, "POST", { ...counteragent, connector, client }, {
+                Authorization: `Bearer ${auth.token}`
+            })
+        } catch (e) {
+            notify(e)
+        }
+    }
+    //==============================================================================
+    //==============================================================================
+
 
     const getSources = useCallback(async () => {
         try {
@@ -106,23 +138,11 @@ export const NewOnlineClient = () => {
     const changeBronDate = (event) => {
         let key = parseInt(event.target.id)
         setSections(Object.values({ ...sections, [key]: { ...sections[key], bronDay: new Date(event.target.value) } }))
-    }
-
-    const changeCounterAgent = (event) => {
-        setCounterAgent(event.value)
-        sections.map((section, key) => {
-            setSections(
-                Object.values({
-                    ...sections,
-                    [key]: { ...sections[key], counteragent: event.value },
-                })
-
-            )
-        })
+        setCounterAgent({ ...counteragent, paymentDay: new Date(event.target.value) })
     }
 
     const changeSource = (name) => {
-        sections.map((section, key) => {
+        sections && sections.map((section, key) => {
             setSections(
                 Object.values({
                     ...sections,
@@ -134,9 +154,13 @@ export const NewOnlineClient = () => {
         setSource(name)
     }
 
+    const [ids, setIds] = useState([])
+
     const changeSections = (event) => {
         s = []
+        let i = []
         event.map((section) => {
+            i.push(section._id)
             let turn = 0
             turns.map((sec) => {
                 if (checkTurn(sec, section.section)) {
@@ -160,12 +184,13 @@ export const NewOnlineClient = () => {
                 position: 'kutilmoqda',
                 checkup: "chaqirilmagan",
                 doctor: " ",
-                counteragent: counteragent,
+                counteragent: " ",
                 paymentMethod: " ",
                 source: source
             })
         })
         setSections(s)
+        setIds(i)
     }
 
     const createSections = event => {
@@ -193,7 +218,7 @@ export const NewOnlineClient = () => {
         if (CheckClentData(client)) {
             return notify(CheckClentData(client))
         }
-        sections.map((section) => {
+        sections && sections.map((section) => {
             if (section.bronTime === " ") {
                 return notify("Mijozning bron vaqtini kiriting iltimos!")
             }
@@ -216,7 +241,7 @@ export const NewOnlineClient = () => {
             const connector = await request("/api/connector/register", "POST", {
                 client,
                 source,
-                counteragent,
+                counteragent: counteragent ? counteragent.counteragent : " ",
                 type: "online",
                 position: " ",
                 prepayment: 0,
@@ -228,16 +253,19 @@ export const NewOnlineClient = () => {
             })
 
             createAllSections(client, connector._id)
+
         } catch (e) {
             notify(e)
         }
     }
 
     const createAllSections = (id, connector) => {
-        sections.map((section) => {
+        sections && sections.map((section) => {
             create(id, section, connector)
         })
-        history.push(`/reseption/clients`)
+        WareUseds(connector)
+        counteragent && createPaymentCounteragent(id, connector)
+        history.push(`/reseption/onlineclients`)
     }
 
     const create = async (id, section, connector) => {
@@ -249,6 +277,55 @@ export const NewOnlineClient = () => {
             notify(e)
         }
     }
+
+    // =================================================================================
+    // =================================================================================
+    //Omborxona
+
+    const [wareconnectors, setWareConnectors] = useState()
+    const getWareConnectors = useCallback(async () => {
+        try {
+            const fetch = await request("/api/wareconnector", "GET", null, {
+                Authorization: `Bearer ${auth.token}`
+            })
+            setWareConnectors(fetch)
+        } catch (e) {
+            notify(e)
+        }
+    }, [request, auth, setWareConnectors])
+
+    const WareUseds = (bind) => {
+        let wareuseds = []
+        ids && ids.map((id) => {
+            wareconnectors && wareconnectors.map((wareconnector) => {
+                if (id === wareconnector.section) {
+                    wareuseds.push({
+                        section: wareconnector.section,
+                        sectionname: wareconnector.sectionname,
+                        warehouse: wareconnector.warehouse,
+                        warehousename: wareconnector.warehousename,
+                        count: wareconnector.count,
+                        connector: bind,
+                        day: new Date()
+                    })
+                }
+            })
+        })
+        createWareUseds(wareuseds)
+    }
+
+    const createWareUseds = useCallback(async (wareuseds) => {
+        try {
+            const fetch = await request(`/api/wareused/register`, "POST", wareuseds, {
+                Authorization: `Bearer ${auth.token}`
+            })
+        } catch (e) {
+            notify(e)
+        }
+    }, [request, auth])
+    // =================================================================================
+    // =================================================================================
+
 
     useEffect(() => {
         if (!options) {
@@ -264,6 +341,9 @@ export const NewOnlineClient = () => {
         if (error) {
             notify(error)
             clearError()
+        }
+        if (!wareconnectors) {
+            getWareConnectors()
         }
     }, [allClients])
 
@@ -454,7 +534,7 @@ export const NewOnlineClient = () => {
             </div>
             <div className="row">
                 {
-                    sections.map((section, key) => {
+                    sections && sections.map((section, key) => {
                         return (
                             <>
                                 <div className="col-4" >
@@ -529,7 +609,7 @@ export const NewOnlineClient = () => {
                             <tbody style={{ borderBottom: "1px solid #999" }}>
 
                                 {
-                                    sections.map((section, key) => {
+                                    sections && sections.map((section, key) => {
                                         allPrice = allPrice + section.price
                                         return (
                                             <tr key={key}>

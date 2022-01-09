@@ -31,25 +31,31 @@ export const NewStatsionarClient = () => {
   // So'rov kutish va xatoliklarni olish
   const { request, error, clearError, loading } = useHttp()
   const [advertisement, setAdvertisement] = useState(false)
-  const [counteragents, setCounterAgents] = useState()
-  const [counteragent, setCounterAgent] = useState(" ")
   const [sources, setSources] = useState()
   const [source, setSource] = useState(" ")
 
-
+  //==============================================================================
+  //==============================================================================
+  //Counteragents begin
+  const [counteragent, setCounterAgent] = useState()
+  const [counteragents, setCounterAgents] = useState()
   const getCounterAgents = useCallback(async () => {
     try {
-      const fetch = await request('/api/counteragent/', 'GET', null, {
+      const fetch = await request('/api/counterdoctor', 'GET', null, {
         Authorization: `Bearer ${auth.token}`
       })
       let c = [{
         label: "Tanlanmagan",
-        value: " "
+        value: " ",
+        counterdoctor: "",
+        counteragent: "",
       }]
       fetch.map((data) => {
         c.push({
-          label: data.clinic.toUpperCase() + " " + data.lastname + " " + data.firstname + " " + data.fathername,
-          value: data.lastname + " " + data.firstname + " " + data.fathername
+          label: data.clinic.toUpperCase() + " " + data.lastname + " " + data.firstname,
+          value: data.lastname + " " + data.firstname,
+          counterdoctor: data._id,
+          counteragent: data.counteragent
         })
       })
       setCounterAgents(c)
@@ -57,6 +63,30 @@ export const NewStatsionarClient = () => {
       notify(error)
     }
   }, [auth, request, setCounterAgents])
+
+  const changeCounterAgent = (event) => {
+    if (event.label === "Tanlanmagan") {
+      setCounterAgent(null)
+    } else {
+      setCounterAgent({
+        counteragent: event.counteragent,
+        counterdoctor: event.counterdoctor,
+        paymentDay: new Date()
+      })
+    }
+  }
+
+  const createPaymentCounteragent = async (client, connector) => {
+    try {
+      const data = await request(`/api/counteragentpayment/reseption/register`, "POST", { ...counteragent, connector, client }, {
+        Authorization: `Bearer ${auth.token}`
+      })
+    } catch (e) {
+      notify(e)
+    }
+  }
+  //==============================================================================
+  //==============================================================================
 
   const getSources = useCallback(async () => {
     try {
@@ -158,7 +188,7 @@ export const NewStatsionarClient = () => {
       roomname: event.value,
       beginDay: new Date(),
       endDay: new Date(),
-      position: "band",
+      position: event.price !== 0 ? "band" : "bo'sh",
       bed: event.bed,
       price: event.price,
       priceCashier: 0
@@ -218,19 +248,6 @@ export const NewStatsionarClient = () => {
     setClient({ ...client, born: new Date(event.target.value) })
   }
 
-  const changeCounterAgent = (event) => {
-    setCounterAgent(event.value)
-    sections.map((section, key) => {
-      setSections(
-        Object.values({
-          ...sections,
-          [key]: { ...sections[key], counteragent: event.value },
-        })
-
-      )
-    })
-  }
-
   const changeSource = (name) => {
     sections.map((section, key) => {
       setSections(
@@ -244,11 +261,12 @@ export const NewStatsionarClient = () => {
     setSource(name)
   }
 
-
-
+  const [ids, setIds] = useState([])
   const changeSections = (event) => {
     s = []
+    let i = []
     event.map((section) => {
+      i.push(section._id)
       s.push({
         name: section.section,
         subname: section.subsection,
@@ -266,22 +284,25 @@ export const NewStatsionarClient = () => {
         position: "statsionar",
         checkup: "chaqirilmagan",
         doctor: " ",
-        counteragent: counteragent,
+        counteragent: " ",
         paymentMethod: " ",
         source: source
       })
     })
     setSections(s)
+    setIds(i)
   }
 
   const checkData = () => {
     if (CheckClentData(client, diagnosis)) {
       return notify(CheckClentData(client, diagnosis))
     }
+    if (!room) {
+      return notify("Diqqat! Mijoz xonasini ko'rsatmadingiz. Agar xonasi aniq bo'lmasa aniq emas turini tanlang")
+    }
     window.scrollTo({ top: 0 })
     setModal(true)
   }
-
 
   const createHandler = async () => {
     try {
@@ -301,7 +322,7 @@ export const NewStatsionarClient = () => {
       const connector = await request("/api/connector/register", "POST", {
         client,
         source,
-        counteragent,
+        counteragent: counteragent ? counteragent.counteragent : " ",
         type: "statsionar",
         position: "davolanishda",
         prepayment: 0,
@@ -314,6 +335,7 @@ export const NewStatsionarClient = () => {
       sections && createAllSections(client, connector._id)
       services && createAllServices(client, connector._id)
       createRoom(client, connector._id)
+      counteragent && createPaymentCounteragent(client, connector._id)
     } catch (e) {
       notify(e)
     }
@@ -323,6 +345,7 @@ export const NewStatsionarClient = () => {
     sections.map((section) => {
       create(id, section, connector)
     })
+    WareUseds(connector)
     history.push(`/reseption/clientsstatsionar`)
   }
 
@@ -335,6 +358,56 @@ export const NewStatsionarClient = () => {
       notify(e)
     }
   }
+
+  // =================================================================================
+  // =================================================================================
+  //Omborxona
+
+  const [wareconnectors, setWareConnectors] = useState()
+  const getWareConnectors = useCallback(async () => {
+    try {
+      const fetch = await request("/api/wareconnector", "GET", null, {
+        Authorization: `Bearer ${auth.token}`
+      })
+      setWareConnectors(fetch)
+    } catch (e) {
+      notify(e)
+    }
+  }, [request, auth, setWareConnectors])
+
+  const WareUseds = (bind) => {
+    let wareuseds = []
+    ids && ids.map((id) => {
+      wareconnectors && wareconnectors.map((wareconnector) => {
+        if (id === wareconnector.section) {
+          wareuseds.push({
+            section: wareconnector.section,
+            sectionname: wareconnector.sectionname,
+            warehouse: wareconnector.warehouse,
+            warehousename: wareconnector.warehousename,
+            count: wareconnector.count,
+            connector: bind,
+            day: new Date()
+          })
+        }
+      })
+    })
+    console.log(wareuseds)
+    createWareUseds(wareuseds)
+  }
+
+  const createWareUseds = useCallback(async (wareuseds) => {
+    try {
+      const fetch = await request(`/api/wareused/register`, "POST", wareuseds, {
+        Authorization: `Bearer ${auth.token}`
+      })
+    } catch (e) {
+      notify(e)
+    }
+  }, [request, auth])
+  // =================================================================================
+  // =================================================================================
+
 
   useEffect(() => {
     if (!options) {
@@ -355,6 +428,9 @@ export const NewStatsionarClient = () => {
     }
     if (!rooms) {
       getRooms()
+    }
+    if (!wareconnectors) {
+      getWareConnectors()
     }
   }, [notify, error])
 
@@ -662,6 +738,13 @@ export const NewStatsionarClient = () => {
                     )
                   })
                 }
+                <tr>
+                  <td style={{ width: "10%", textAlign: "center", padding: "10px 0" }}>Xona</td>
+                  <td style={{ width: "30%", textAlign: "center", padding: "10px 0" }}>
+                    {room && room.roomname}
+                  </td>
+                  <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{room && room.price}</td>
+                </tr>
 
               </tbody>
             </table>
@@ -671,7 +754,7 @@ export const NewStatsionarClient = () => {
                 <div className="fw-bold text-primary">Jami to'lov:</div>
               </div>
               <div className="col-6">
-                <div className="fw-bold  text-end ">{allPrice}</div>
+                <div className="fw-bold  text-end ">{room && allPrice + room.price}</div>
               </div>
               <hr />
 

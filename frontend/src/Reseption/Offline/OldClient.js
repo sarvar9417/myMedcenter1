@@ -18,37 +18,68 @@ export const OldClient = () => {
   let s = []
   const { loading, request, error, clearError } = useHttp()
   const [turns, seTurns] = useState()
-  const [sections, setSections] = useState([])
-  const [clients, setClients] = useState()
+  const [sections, setSections] = useState()
   const notify = (e) => {
     toast.error(e)
   }
 
   const [advertisement, setAdvertisement] = useState(false)
-  const [counteragents, setCounterAgents] = useState()
-  const [counteragent, setCounterAgent] = useState(" ")
   const [sources, setSources] = useState()
   const [source, setSource] = useState(" ")
+  //==============================================================================
+  //==============================================================================
+  //Counteragents begin
+  const [counteragent, setCounterAgent] = useState()
+  const [counteragents, setCounterAgents] = useState()
   const getCounterAgents = useCallback(async () => {
     try {
-      const fetch = await request('/api/counteragent/', 'GET', null, {
+      const fetch = await request('/api/counterdoctor', 'GET', null, {
         Authorization: `Bearer ${auth.token}`
       })
       let c = [{
         label: "Tanlanmagan",
-        value: " "
+        value: " ",
+        counterdoctor: "",
+        counteragent: "",
       }]
       fetch.map((data) => {
         c.push({
-          label: data.clinic.toUpperCase() + " " + data.lastname + " " + data.firstname + " " + data.fathername,
-          value: data.lastname + " " + data.firstname + " " + data.fathername
+          label: data.clinic.toUpperCase() + " " + data.lastname + " " + data.firstname,
+          value: data.lastname + " " + data.firstname,
+          counterdoctor: data._id,
+          counteragent: data.counteragent
         })
       })
       setCounterAgents(c)
     } catch (error) {
       notify(error)
     }
-  }, [auth, request, setCounterAgents, notify])
+  }, [auth, request, setCounterAgents])
+
+  const changeCounterAgent = (event) => {
+    if (event.label === "Tanlanmagan") {
+      setCounterAgent(null)
+    } else {
+      setCounterAgent({
+        counteragent: event.counteragent,
+        counterdoctor: event.counterdoctor,
+        paymentDay: new Date()
+      })
+    }
+  }
+
+  const createPaymentCounteragent = async (connector) => {
+    try {
+      console.log(connector, client._id)
+      const data = await request(`/api/counteragentpayment/reseption/register`, "POST", { ...counteragent, connector, client: client._id }, {
+        Authorization: `Bearer ${auth.token}`
+      })
+    } catch (e) {
+      notify(e)
+    }
+  }
+  //==============================================================================
+  //==============================================================================
 
   const getSources = useCallback(async () => {
     try {
@@ -95,21 +126,8 @@ export const OldClient = () => {
     setClient({ ...client, [event.target.name]: event.target.value })
   }
 
-  const changeCounterAgent = (event) => {
-    setCounterAgent(event.value)
-    sections.map((section, key) => {
-      setSections(
-        Object.values({
-          ...sections,
-          [key]: { ...sections[key], counteragent: event.value },
-        })
-
-      )
-    })
-  }
-
   const changeSource = (name) => {
-    sections.map((section, key) => {
+    sections && sections.map((section, key) => {
       setSections(
         Object.values({
           ...sections,
@@ -121,9 +139,13 @@ export const OldClient = () => {
     setSource(name)
   }
 
+  const [ids, setIds] = useState([])
+
   const changeSections = (event) => {
     s = []
+    let i = []
     event.map((section) => {
+      i.push(section._id)
       let turn = 0
       turns && turns.map((sec) => {
         if (checkTurn(sec, section.section)) {
@@ -153,29 +175,13 @@ export const OldClient = () => {
         position: "offline",
         checkup: "chaqirilmagan",
         doctor: " ",
-        counteragent: counteragent,
+        counteragent: " ",
         paymentMethod: " ",
         source: source
       })
     })
     setSections(s)
-  }
-
-  const createSections = (event) => {
-    let key = parseInt(event.target.id)
-    setSections(
-      Object.values({
-        ...sections,
-        [key]: { ...sections[key], price: event.target.value },
-      }),
-      () =>
-        setSections(
-          Object.values({
-            ...sections,
-            [key]: { ...sections[key], turn: parseInt(event.target.name) },
-          })
-        )
-    )
+    setIds(i)
   }
 
   // =================================================================================
@@ -228,7 +234,7 @@ export const OldClient = () => {
   }
 
   const createAllServices = (connector) => {
-    services.map((service) => {
+    services && services.map((service) => {
       createService(service, connector)
     })
   }
@@ -278,7 +284,7 @@ export const OldClient = () => {
       const connector = await request("/api/connector/register", "POST", {
         client: client._id,
         source,
-        counteragent,
+        counteragent: counteragent ? counteragent.counteragent : " ",
         type: "offline",
         position: " ",
         prepayment: 0,
@@ -290,15 +296,17 @@ export const OldClient = () => {
       })
       createAllSections(connector._id)
       createAllServices(connector._id)
+      counteragent && createPaymentCounteragent(connector._id)
     } catch (e) {
       notify(e)
     }
   }
 
   const createAllSections = (connector) => {
-    sections.map((section) => {
+    sections && sections.map((section) => {
       create(section, connector)
     })
+    WareUseds(connector)
     history.push(`/reseption/clients`)
   }
 
@@ -311,6 +319,54 @@ export const OldClient = () => {
       notify(e)
     }
   }
+
+  // =================================================================================
+  // =================================================================================
+  //Omborxona
+  const [wareconnectors, setWareConnectors] = useState()
+  const getWareConnectors = useCallback(async () => {
+    try {
+      const fetch = await request("/api/wareconnector", "GET", null, {
+        Authorization: `Bearer ${auth.token}`
+      })
+      setWareConnectors(fetch)
+    } catch (e) {
+      notify(e)
+    }
+  }, [request, auth, setWareConnectors])
+
+  const WareUseds = (bind) => {
+    let wareuseds = []
+    ids && ids.map((id) => {
+      wareconnectors && wareconnectors.map((wareconnector) => {
+        if (id === wareconnector.section) {
+          wareuseds.push({
+            section: wareconnector.section,
+            sectionname: wareconnector.sectionname,
+            warehouse: wareconnector.warehouse,
+            warehousename: wareconnector.warehousename,
+            count: wareconnector.count,
+            connector: bind,
+            day: new Date()
+          })
+        }
+      })
+    })
+    createWareUseds(wareuseds)
+  }
+
+  const createWareUseds = useCallback(async (wareuseds) => {
+    try {
+      const fetch = await request(`/api/wareused/register`, "POST", wareuseds, {
+        Authorization: `Bearer ${auth.token}`
+      })
+    } catch (e) {
+      notify(e)
+    }
+  }, [request, auth])
+  // =================================================================================
+  // =================================================================================
+
 
   useEffect(() => {
     if (!options) {
@@ -331,6 +387,9 @@ export const OldClient = () => {
     }
     if (!warehouse) {
       getWarehouse()
+    }
+    if (!wareconnectors) {
+      getWareConnectors()
     }
   }, [notify, clearError])
 
@@ -568,7 +627,7 @@ export const OldClient = () => {
 
       <div className="mt-5 text-center" >
         <button
-          onClick={() => setModal(true)}
+          onClick={() => { setModal(true); window.scrollTo({ top: 0 }) }}
           className="btn btn-primary profile-button"
         >
           Saqlash
@@ -595,12 +654,12 @@ export const OldClient = () => {
               <tbody style={{ borderBottom: "1px solid #999" }}>
 
                 {
-                  sections.map((section, key) => {
+                  sections && sections.map((section, key) => {
                     allPrice = allPrice + section.price
                     return (
                       <tr key={key}>
                         <td style={{ width: "10%", textAlign: "center", padding: "10px 0" }}>{key + 1}</td>
-                        <td style={{ width: "30%", textAlign: "center", padding: "10px 0" }}>
+                        < td style={{ width: "30%", textAlign: "center", padding: "10px 0" }}>
                           {section.name}
                         </td>
                         <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{section.price}</td>

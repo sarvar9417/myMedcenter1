@@ -101,6 +101,7 @@ router.get('/reseptiononline/:start/:end', async (req, res) => {
             type: "online"
         })
             .sort({ _id: -1 })
+
         let clients = []
         let sections = []
         for (let i = 0; i < connectors.length; i++) {

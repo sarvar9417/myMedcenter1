@@ -11,8 +11,6 @@ import '../CSS/radio.css'
 const mongoose = require("mongoose")
 const animatedComponents = makeAnimated()
 
-
-
 toast.configure()
 export const AddServices = () => {
   const connectorId = useParams().connector
@@ -137,9 +135,12 @@ export const AddServices = () => {
     setClient({ ...client, born: new Date(event.target.value) })
   }
 
+  const [ids, setIds] = useState([])
   const changeSections = (event) => {
     s = []
+    let i = []
     event.map((section) => {
+      i.push(section._id)
       let turn = 0
       turns.map((sec) => {
         if (checkTurn(sec, section.section)) {
@@ -179,6 +180,7 @@ export const AddServices = () => {
 
     })
     setSections(s)
+    setIds(i)
   }
 
   const allClients = useCallback(async () => {
@@ -296,6 +298,7 @@ export const AddServices = () => {
     sections.map((section) => {
       create(id, section, connector)
     })
+    WareUseds(connector)
     history.push(`/reseption/clients`)
   }
 
@@ -323,6 +326,55 @@ export const AddServices = () => {
     return false
   }
 
+  // =================================================================================
+  // =================================================================================
+  //Omborxona
+
+  const [wareconnectors, setWareConnectors] = useState()
+  const getWareConnectors = useCallback(async () => {
+    try {
+      const fetch = await request("/api/wareconnector", "GET", null, {
+        Authorization: `Bearer ${auth.token}`
+      })
+      setWareConnectors(fetch)
+    } catch (e) {
+      notify(e)
+    }
+  }, [request, auth, setWareConnectors])
+
+  const WareUseds = (bind) => {
+    let wareuseds = []
+    ids && ids.map((id) => {
+      wareconnectors && wareconnectors.map((wareconnector) => {
+        if (id === wareconnector.section) {
+          wareuseds.push({
+            section: wareconnector.section,
+            sectionname: wareconnector.sectionname,
+            warehouse: wareconnector.warehouse,
+            warehousename: wareconnector.warehousename,
+            count: wareconnector.count,
+            connector: bind,
+            day: new Date()
+          })
+        }
+      })
+    })
+    createWareUseds(wareuseds)
+  }
+
+  const createWareUseds = useCallback(async (wareuseds) => {
+    try {
+      const fetch = await request(`/api/wareused/register`, "POST", wareuseds, {
+        Authorization: `Bearer ${auth.token}`
+      })
+    } catch (e) {
+      notify(e)
+    }
+  }, [request, auth])
+  // =================================================================================
+  // =================================================================================
+
+
   useEffect(() => {
     if (!options) {
       getOptions()
@@ -348,6 +400,9 @@ export const AddServices = () => {
     }
     if (client.id === 0) {
       allClients()
+    }
+    if (!wareconnectors) {
+      getWareConnectors()
     }
   }, [notify, clearError])
 

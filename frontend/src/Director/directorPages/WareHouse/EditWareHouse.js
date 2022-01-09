@@ -1,5 +1,5 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
-import { Link, useHistory } from 'react-router-dom'
+import { Link, useHistory, useParams } from 'react-router-dom'
 import { toast } from "react-toastify"
 import { AuthContext } from '../../context/AuthContext'
 import { useHttp } from '../../hooks/http.hook'
@@ -7,20 +7,32 @@ import { CheckWare } from './CheckWare'
 import { Loader } from '../../components/Loader'
 
 toast.configure()
-export const CreateWare = () => {
+export const EditWareHouse = () => {
   const auth = useContext(AuthContext)
   const { request, error, loading, clearError } = useHttp()
   const history = useHistory()
   // Modal oyna funksiyalari
   const [modal, setModal] = useState(false)
+  const warehouseId = useParams().id
 
   //Ware ma'lumotlari
-  const [ware, setWare] = useState({
-    name: "",
-    type: "",
-    pieces: 0,
-    price: 0
-  })
+  const [ware, setWare] = useState()
+
+  const getWarehouse = useCallback(async () => {
+    try {
+      const fetch = await request(`/api/warehouse/${warehouseId}`, 'GET', null, {
+        Authorization: `Bearer ${auth.token}`
+      })
+      setWare({
+        name: fetch.name,
+        type: fetch.type,
+        price: fetch.price,
+        pieces: fetch.pieces
+      })
+    } catch (e) {
+      notify(e)
+    }
+  }, [setWare, warehouseId])
 
   const changeHandler = (event) => {
     if (event.target.name === "price") {
@@ -46,7 +58,7 @@ export const CreateWare = () => {
 
   const createHandler = async () => {
     try {
-      const data = await request("/api/warehouse/register", "POST", { ...ware }, {
+      const data = await request(`/api/warehouse/${warehouseId}`, "PATCH", { ...ware }, {
         Authorization: `Bearer ${auth.token}`
       })
       history.push('/director/warehouse')
@@ -63,6 +75,9 @@ export const CreateWare = () => {
     if (error) {
       notify(error)
       clearError()
+    }
+    if (!ware) {
+      getWarehouse()
     }
   }, [notify, clearError])
 
@@ -91,12 +106,12 @@ export const CreateWare = () => {
                       <td className="text-center">
                         <span className="table-avatar">
                           <span href="profile.html">
-                            <input defaultValue={ware.name} onChange={changeHandler} name="name" className="addDirection" />
+                            <input defaultValue={ware && ware.name} onChange={changeHandler} name="name" className="addDirection" />
                           </span>
                         </span>
                       </td>
-                      <td className="text-center"><input defaultValue={ware.type} onChange={changeHandler} name="type" type="string" className="addDirection" /></td>
-                      <td className="text-center"><input defaultValue={ware.price} onChange={changeHandler} name="price" type="number" className="addDirection" /></td>
+                      <td className="text-center"><input defaultValue={ware && ware.type} onChange={changeHandler} name="type" type="text" className="addDirection" /></td>
+                      <td className="text-center"><input defaultValue={ware && ware.price} onChange={changeHandler} name="price" type="number" className="addDirection" /></td>
                       <td className="text-center"><button onClick={checkWare} className="btn button-success" >Saqlash</button> </td>
                     </tr>
                   </tbody>
@@ -121,6 +136,7 @@ export const CreateWare = () => {
                     <tr>
                       <th className="text-center">Mahsulot nomi</th>
                       <th className="text-center">Turi</th>
+                      <th className="text-center">Soni</th>
                       <th className="text-center">Narxi</th>
                     </tr>
                   </thead>
@@ -128,11 +144,12 @@ export const CreateWare = () => {
                     <tr>
                       <td className="text-center">
                         <span className="table-avatar">
-                          <span href="profile.html"> {ware.name} </span>
+                          <span href="profile.html"> {ware && ware.name} </span>
                         </span>
                       </td>
-                      <td className="text-center">{ware.type}</td>
-                      <td className="text-center">{ware.price}</td>
+                      <td className="text-center">{ware && ware.type}</td>
+                      <td className="text-center">{ware && ware.pieces}</td>
+                      <td className="text-center">{ware && ware.price}</td>
                     </tr>
                   </tbody>
                 </table>

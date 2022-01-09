@@ -38,6 +38,11 @@ import { Rooms } from './directorPages/Rooms/Rooms'
 import { CreateRoom } from './directorPages/Rooms/CreateRoom'
 import { ClientsStatsionarPages } from './directorPages/ClientsStatsionarPages'
 import { ClientsPayments } from './directorPages/ClientsPayments'
+import { AddCounterDoctor } from './marketing/counterdoctors/AddCounterDoctor'
+import { CounterDoctors } from './marketing/counterdoctors/Counterdoctors'
+import { EditCounterDoctor } from './marketing/counterdoctors/EditCounterDoctor'
+import { EditWareHouse } from './directorPages/WareHouse/EditWareHouse'
+import { WareConnector } from './directorPages/WareHouse/WareConnectors'
 
 export const DirectorRoutes = (isAuthenticated) => {
     if (isAuthenticated) {
@@ -128,6 +133,12 @@ export const DirectorRoutes = (isAuthenticated) => {
                     <Route path='/director/addware/:id' >
                         <RouterComponent component={<AddWare />} menu={true} />
                     </Route>
+                    <Route path='/director/wareconnectors' >
+                        <RouterComponent component={<WareConnector />} menu={true} />
+                    </Route>
+                    <Route path='/director/editwarehouse/:id' >
+                        <RouterComponent component={<EditWareHouse />} menu={true} />
+                    </Route>
                     <Route path='/director/warehistory/:ware' >
                         <RouterComponent component={<HistoryWare />} menu={true} />
                     </Route>
@@ -142,6 +153,15 @@ export const DirectorRoutes = (isAuthenticated) => {
                     </Route>
                     <Route path='/director/payments' >
                         <RouterComponent component={<ClientsPayments />} menu={true} />
+                    </Route>
+                    <Route path='/director/addcounterdoctor' >
+                        <RouterComponent component={<Marketing component={<AddCounterDoctor />} />} />
+                    </Route>
+                    <Route path='/director/counterdoctors' >
+                        <RouterComponent component={<Marketing component={<CounterDoctors />} />} />
+                    </Route>
+                    <Route path='/director/editcounterdoctor/:id' >
+                        <RouterComponent component={<Marketing component={<EditCounterDoctor />} />} />
                     </Route>
                     <Route path="/sayt" >
                         <Sayt />

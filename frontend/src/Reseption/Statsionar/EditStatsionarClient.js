@@ -83,9 +83,12 @@ export const EditStatsionarClient = () => {
     setClient({ ...client, born: new Date(event.target.value) })
   }
 
+  const [ids, setIds] = useState([])
   const changeSections = (event) => {
     s = []
+    let i = []
     event.map((section) => {
+      i.push(section._id)
       s.push({
         client: client && client._id,
         connector: connector && connector._id,
@@ -111,6 +114,7 @@ export const EditStatsionarClient = () => {
       })
     })
     setSections(s)
+    setIds(i)
   }
 
   // =================================================================================
@@ -193,6 +197,7 @@ export const EditStatsionarClient = () => {
     })
     services && createAllServices()
     createRoom(client._id, connectorId)
+    WareUseds(connectorId)
     history.push(`/reseption/clientsstatsionar`)
   }
 
@@ -228,6 +233,7 @@ export const EditStatsionarClient = () => {
       const fetch = await request(`/api/usedroom/reseption/${connectorId}`, 'GET', null, {
         Authorization: `Bearer ${auth.token}`
       })
+      console.log(fetch);
       setRoom(fetch)
     } catch (error) {
       notify(error)
@@ -249,7 +255,7 @@ export const EditStatsionarClient = () => {
 
   const createRoom = async (id, connector) => {
     try {
-      const data = await request(`/api/usedroom/register`, "POST", { ...room, connector, client: id }, {
+      const data = await request(`/api/usedroom/${room && room._id}`, "PATCH", { ...room, connector, client: id }, {
         Authorization: `Bearer ${auth.token}`
       })
     } catch (e) {
@@ -259,7 +265,55 @@ export const EditStatsionarClient = () => {
   // =================================================================================
   // =================================================================================
 
-  const [t, setT] = useState()
+  // =================================================================================
+  // =================================================================================
+  //Omborxona
+
+  const [wareconnectors, setWareConnectors] = useState()
+  const getWareConnectors = useCallback(async () => {
+    try {
+      const fetch = await request("/api/wareconnector", "GET", null, {
+        Authorization: `Bearer ${auth.token}`
+      })
+      setWareConnectors(fetch)
+    } catch (e) {
+      notify(e)
+    }
+  }, [request, auth, setWareConnectors])
+
+  const WareUseds = (bind) => {
+    let wareuseds = []
+    ids && ids.map((id) => {
+      wareconnectors && wareconnectors.map((wareconnector) => {
+        if (id === wareconnector.section) {
+          wareuseds.push({
+            section: wareconnector.section,
+            sectionname: wareconnector.sectionname,
+            warehouse: wareconnector.warehouse,
+            warehousename: wareconnector.warehousename,
+            count: wareconnector.count,
+            connector: bind,
+            day: new Date()
+          })
+        }
+      })
+    })
+    createWareUseds(wareuseds)
+  }
+
+  const createWareUseds = useCallback(async (wareuseds) => {
+    try {
+      const fetch = await request(`/api/wareused/register`, "POST", wareuseds, {
+        Authorization: `Bearer ${auth.token}`
+      })
+    } catch (e) {
+      notify(e)
+    }
+  }, [request, auth])
+  // =================================================================================
+  // =================================================================================
+
+
   useEffect(() => {
     if (!options) {
       getOptions()
@@ -277,9 +331,11 @@ export const EditStatsionarClient = () => {
     if (!rooms) {
       getRooms()
     }
-    if (!t) {
+    if (!room) {
       getUsedRoom()
-      setT(1)
+    }
+    if (!wareconnectors) {
+      getWareConnectors()
     }
   }, [notify, clearError])
 
@@ -383,18 +439,19 @@ export const EditStatsionarClient = () => {
         </div>
         <div className="col-6 mb-2 input_box">
           <Select
+            defaultValue={room && room.roomname}
             placeholder="Mijoz xonasi"
             className="m-0 p-0"
             onChange={(event) => changeRooms(event)}
             components={animatedComponents}
             options={rooms && rooms}
             escapeClearsValue="true"
+            placeholder={room && room.roomname}
           />
         </div>
         <div className="col-6 mb-2 input_box">
           <input
             // disabled={room && room.room ? true : false}
-            defaultValue={room && room.beginDay}
             onChange={(event) => {
               setRoom({
                 ...room,
@@ -536,6 +593,13 @@ export const EditStatsionarClient = () => {
                     )
                   })
                 }
+                <tr>
+                  <td style={{ width: "10%", textAlign: "center", padding: "10px 0" }}>Xona</td>
+                  <td style={{ width: "30%", textAlign: "center", padding: "10px 0" }}>
+                    {room && room.roomname}
+                  </td>
+                  <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{room && room.price}</td>
+                </tr>
 
               </tbody>
             </table>
@@ -545,7 +609,7 @@ export const EditStatsionarClient = () => {
                 <div className="fw-bold text-primary">Jami to'lov:</div>
               </div>
               <div className="col-6">
-                <div className="fw-bold  text-end ">{allPrice}</div>
+                <div className="fw-bold  text-end ">{room && allPrice + room.price}</div>
               </div>
               <hr />
 

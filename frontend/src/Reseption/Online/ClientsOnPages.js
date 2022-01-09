@@ -41,6 +41,7 @@ export const ClientsOnPages = () => {
             const fetch = await request(`/api/connector/reseptiononline/${startDate}/${endDate}`, 'GET', null, {
                 Authorization: `Bearer ${auth.token}`
             })
+            console.log(fetch)
             setAll(fetch)
         } catch (e) {
             notify(e)

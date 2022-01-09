@@ -41,7 +41,7 @@ export const EditCounterAgent = () => {
   const changeHandler = (event) => {
     setCounterAgent({ ...counteragent, [event.target.name]: event.target.value })
   }
-  
+
   const changeProcient = (event) => {
     if (parseInt(event.target.value) > 100) {
       return notify("Diqqat! Kontragent foizi umumiy summadan ortib ketdi. Iltimos, foiz miqdori 100 foizdan oshmasligiga e'tibor qarating!")
@@ -113,21 +113,8 @@ export const EditCounterAgent = () => {
               <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Ismi</label>
               <input type="text" placeholder="Ismini kiriting" defaultValue={counteragent && counteragent.firstname} onChange={changeHandler} name="firstname" className='form-control' />
               <br />
-              <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Otasining ismi</label>
-              <input defaultValue={counteragent && counteragent.fathername} type="text" placeholder="Otasining ismini kiriting" name='fathername' onChange={changeHandler} className='form-control' />
-            </div>
-            <div className="col-12 col-md-6 p-4 mt-5">
               <label htmlFor="name" className="fw-normal pt-1" style={{ color: "#888" }}>Telefon raqami</label>
               <input defaultValue={counteragent && counteragent.phone} onChange={changeHandler} name="phone" className="form-control" />
-              <br />
-              <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Klinika</label>
-              <input defaultValue={counteragent && counteragent.clinic} onChange={changeHandler} name="clinic" className="form-control" />
-              <br />
-              <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Ixtisosligi</label>
-              <input defaultValue={counteragent && counteragent.section} onChange={changeHandler} name="section" className="form-control" />
-              <br />
-              <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Ulushi(foiz - % miqdorida)</label>
-              <input defaultValue={counteragent && counteragent.procient} onChange={changeProcient} name="procient" type="number" className="form-control" />
             </div>
           </div>
         </div>
@@ -158,22 +145,8 @@ export const EditCounterAgent = () => {
                     <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Ismi</label>
                     <input disabled type="text" placeholder="Ismini kiriting" value={counteragent && counteragent.firstname} onChange={changeHandler} name="firstname" className='form-control' />
                     <br />
-                    <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Otasining ismi</label>
-                    <input disabled type="text" placeholder="Otasining ismini kiriting" value={counteragent && counteragent.fathername} name='fathername' onChange={changeHandler} className='form-control' />
-                  </div>
-                  <div className="col-12 col-md-6 p-4">
-                    <p className="fs-4"> </p>
                     <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Telefon raqami</label>
                     <input disabled value={counteragent && counteragent.phone} onChange={changeHandler} name="phone" className="form-control" />
-                    <br />
-                    <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Klinika</label>
-                    <input disabled value={counteragent && counteragent.clinic} onChange={changeHandler} name="clinic" className="form-control" />
-                    <br />
-                    <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Ixtisosligi</label>
-                    <input disabled value={counteragent && counteragent.section} onChange={changeHandler} name="section" className="form-control" />
-                    <br />
-                    <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Ish haqi(foiz - % miqdorida)</label>
-                    <input disabled value={counteragent && counteragent.procient} onChange={changeProcient} name="procient" type="number" className="form-control" />
                   </div>
                 </div>
               </div>

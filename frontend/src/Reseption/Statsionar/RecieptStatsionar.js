@@ -174,7 +174,6 @@ export const RecieptStatsionar = () => {
         }
     }, [request, setLogo])
 
-    const [t, setT] = useState()
     useEffect(() => {
         if (client) {
             QRCode.toDataURL(`${baseUrl}/clienthistorys/${client._id}`)
@@ -201,9 +200,8 @@ export const RecieptStatsionar = () => {
         if (!services) {
             getServices()
         }
-        if (!t) {
+        if (!room) {
             getRoom()
-            setT(1)
         }
         if (!connector) {
             getConnector()
@@ -282,7 +280,7 @@ export const RecieptStatsionar = () => {
                                             <td className='w-75 p-1 px-3'>{connector && connector.prepaymentCashier} </td>
                                         </tr>
                                         <tr>
-                                            <td className='w-25 p-1 text-start px-3'>Tashxiz</td>
+                                            <td className='w-25 p-1 text-start px-3'>Tashxis</td>
                                             <td className='w-75 p-1 px-3'>{connector && connector.diagnosis} </td>
                                         </tr>
                                     </thead>

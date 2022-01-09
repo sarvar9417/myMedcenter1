@@ -40,12 +40,22 @@ app.use('/api/templatedoctor', require('./routes/templateDoctor.route'))
 app.use('/api/source', require('./routes/source.route'))
 // CounterAgent
 app.use('/api/counteragent', require('./routes/counteragent.route'))
+// CounterAgent
+app.use('/api/counteragentpayment', require('./routes/counteragentpayment.route'))
+// CounterDoctor
+app.use('/api/counterdoctor', require('./routes/counterdoctor.route'))
 // CallCenter
 app.use('/api/callcenter', require('./routes/callcenter.route'))
 // Operator
 app.use('/api/auth/operator', require('./routes/operatorAuth.route'))
 // wareHouse
 app.use('/api/warehouse', require('./routes/warehouse.route'))
+//Ware
+app.use('/api/ware', require('./routes/ware.route'))
+//WareConnector
+app.use('/api/wareconnector', require('./routes/wareconnector.route'))
+//WareUsed
+app.use('/api/wareused', require('./routes/wareused.route'))
 // Rooms
 app.use('/api/rooms', require('./routes/rooms.route'))
 // Rooms

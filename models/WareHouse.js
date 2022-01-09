@@ -2,8 +2,6 @@ const { Schema, model } = require('mongoose')
 const Joi = require("joi")
 
 const warehouse = new Schema({
-    value: String,
-    label: String,
     name: String,
     type: String,
     price: Number,
@@ -12,13 +10,10 @@ const warehouse = new Schema({
 
 function validateWareHouse(warehouse) {
     const schema = Joi.object({
-        value: Joi.string(),
-        label: Joi.string(),
         name: Joi.string(),
         type: Joi.string(),
         price: Joi.number(),
-        pieces: Joi.number(),
-        comment: Joi.string()
+        pieces: Joi.number()
     })
     return schema.validate(warehouse)
 }

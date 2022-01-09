@@ -7,37 +7,37 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faTrash, faPenAlt } from '@fortawesome/free-solid-svg-icons'
 
 toast.configure()
-export const CounterAgents = () => {
+export const CounterDoctors = () => {
     const auth = useContext(AuthContext)
     const { request, error, clearError } = useHttp()
-    const [counteragents, setCounterAgents] = useState()
+    const [counterdoctors, setCounterDoctors] = useState()
     const [modal, setModal] = useState(false)
-    const [agentId, setAgentId] = useState()
+    const [doctorId, setDoctorId] = useState()
     const notify = (e) => {
         toast.error(e)
     }
 
-    const getCounterAgents = useCallback(async () => {
+    const getCounterDoctors = useCallback(async () => {
         try {
-            const fetch = await request('/api/counteragent/', 'GET', null, {
+            const fetch = await request('/api/counterdoctor/', 'GET', null, {
                 Authorization: `Bearer ${auth.token}`
             })
-            setCounterAgents(fetch)
+            setCounterDoctors(fetch)
         } catch (error) {
             notify(error)
         }
-    }, [auth, request, setCounterAgents, notify])
+    }, [auth, request, setCounterDoctors, notify])
 
     const Delete = useCallback(async () => {
-        const fetch = request(`/api/counteragent/${agentId && agentId}`, 'DELETE', null, {
+        const fetch = request(`/api/counterdoctor/${doctorId && doctorId}`, 'DELETE', null, {
             Authorization: `Bearer ${auth.token}`
         })
         window.location.reload()
-    }, [agentId])
+    }, [doctorId])
 
     useEffect(() => {
-        if (!counteragents) {
-            getCounterAgents()
+        if (!counterdoctors) {
+            getCounterDoctors()
         }
         if (error) {
             notify(error)
@@ -49,12 +49,8 @@ export const CounterAgents = () => {
         <div>
             <div className="row p-3">
                 <div className="col-12 text-end">
-                    <Link to="/director/addcounteragent" className="btn button-success">
-                        Kontragent yaratish
-                    </Link>
-
-                    <Link to="/director/counterdoctors" className="btn mx-4 btn-success">
-                        Yo'naltiruvchi shifokorlar
+                    <Link to="/director/addcounterdoctor" className="btn button-success">
+                        Shifokor yaratish
                     </Link>
                 </div>
             </div>
@@ -64,28 +60,28 @@ export const CounterAgents = () => {
                         <tr>
                             <th className="text-center" scope="col">№</th>
                             <th className="text-center" scope="col">F.I.SH</th>
-                            <th className="text-center" scope="col">Telefon raqami</th>
-                            <th className="text-center" scope="col">Shifokorlari</th>
+                            <th className="text-center" scope="col">Klinikasi</th>
+                            <th className="text-center" scope="col">Kontragent</th>
                             <th className="text-center" scope="col">Tahrirlash</th>
                             <th className="text-center" scope="col">O'chirish</th>
                         </tr>
                     </thead>
                     <tbody>
                         {
-                            counteragents && counteragents.map((agent, index) => {
+                            counterdoctors && counterdoctors.map((doctor, index) => {
                                 return (
                                     <tr key={index}>
                                         <th className="text-center" >{index + 1}</th>
-                                        <td className="ps-3"> <Link className='text-success' style={{ fontWeight: "600" }} to={`/director/counteragentprocient/${agent._id}`} >{agent.lastname} {agent.firstname} {agent.fathername}</Link> </td>
-                                        <td className="text-center">+{agent.phone}</td>
-                                        <td className="text-center"></td>
+                                        <td className="ps-3"> <Link className='text-success' style={{ fontWeight: "600" }} to={`/director/counterdoctorprocient/${doctor._id}`} >{doctor.lastname} {doctor.firstname} {doctor.fathername}</Link> </td>
+                                        <td className="text-center">{doctor.clinic}</td>
+                                        <td className="text-center">{doctor.counteragentname}</td>
                                         <td className="text-center">
-                                            <Link to={`/director/editcounteragent/${agent._id}`} className="btn" style={{ backgroundColor: "rgba(15, 183, 107, 0.12", color: "#26af48" }}>
+                                            <Link to={`/director/editcounterdoctor/${doctor._id}`} className="btn" style={{ backgroundColor: "rgba(15, 183, 107, 0.12", color: "#26af48" }}>
                                                 <FontAwesomeIcon icon={faPenAlt} />
                                             </Link>
                                         </td>
                                         <td className="text-center">
-                                            <button onClick={() => { setAgentId(agent._id); setModal(true); }} className="btn button-danger">
+                                            <button onClick={() => { setDoctorId(doctor._id); setModal(true); }} className="btn button-danger">
                                                 <FontAwesomeIcon icon={faTrash} />
                                             </button>
                                         </td>
@@ -106,7 +102,7 @@ export const CounterAgents = () => {
                         <div className="card" >
                             <div className="card-header">
                                 <h6 className="text-danger">
-                                    Diqqat! Counteragentga tegishli barcha shifokorlar ham o'chiriladi. Counter agentni o'chirilishini tasdiqlaysizmi?
+                                    Diqqat! Counterdoctorga tegishli barcha shifokorlar ham o'chiriladi. Counter doctorni o'chirilishini tasdiqlaysizmi?
                                 </h6>
                             </div>
                             <div className="card-footer text-center">

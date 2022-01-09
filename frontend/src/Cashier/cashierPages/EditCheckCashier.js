@@ -344,6 +344,9 @@ export const EditCheckCashier = () => {
             const fetch = await request(`/api/service/${delService && delService._id}`, 'DELETE', null, {
                 Authorization: `Bearer ${auth.token}`
             })
+            const data = await request(`/api/payment/register`, 'POST', { ...deletePayment }, {
+                Authorization: `Bearer ${auth.token}`
+            })
             window.location.reload()
         } catch (e) {
             notify(e)

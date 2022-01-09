@@ -33,25 +33,32 @@ export const NewClient = () => {
   const { request, error, clearError, loading } = useHttp()
 
   const [advertisement, setAdvertisement] = useState(false)
-  const [counteragents, setCounterAgents] = useState()
-  const [counteragent, setCounterAgent] = useState(" ")
   const [sources, setSources] = useState()
   const [source, setSource] = useState(" ")
+
+  //==============================================================================
+  //==============================================================================
+  //Counteragents begin
+  const [counteragent, setCounterAgent] = useState()
+  const [counteragents, setCounterAgents] = useState()
   const getCounterAgents = useCallback(async () => {
     try {
-      const fetch = await request('/api/counteragent/', 'GET', null, {
+      const fetch = await request('/api/counterdoctor', 'GET', null, {
         Authorization: `Bearer ${auth.token}`
       })
       let c = [{
         label: "Tanlanmagan",
-        value: " "
+        value: " ",
+        counterdoctor: "",
+        counteragent: "",
       }]
       fetch.map((data) => {
         c.push({
-          label: data.clinic.toUpperCase() + " " + data.lastname + " " + data.firstname + " " + data.fathername,
-          value: data.lastname + " " + data.firstname + " " + data.fathername
+          label: data.clinic.toUpperCase() + " " + data.lastname + " " + data.firstname,
+          value: data.lastname + " " + data.firstname,
+          counterdoctor: data._id,
+          counteragent: data.counteragent
         })
-
       })
       setCounterAgents(c)
     } catch (error) {
@@ -59,6 +66,30 @@ export const NewClient = () => {
     }
   }, [auth, request, setCounterAgents])
 
+  const changeCounterAgent = (event) => {
+    if (event.label === "Tanlanmagan") {
+      setCounterAgent(null)
+    } else {
+      setCounterAgent({
+        counteragent: event.counteragent,
+        counterdoctor: event.counterdoctor,
+        paymentDay: new Date()
+      })
+    }
+  }
+
+  const createPaymentCounteragent = async (client, connector) => {
+    try {
+      const data = await request(`/api/counteragentpayment/reseption/register`, "POST", { ...counteragent, connector, client }, {
+        Authorization: `Bearer ${auth.token}`
+      })
+    } catch (e) {
+      notify(e)
+    }
+  }
+  //==============================================================================
+  //==============================================================================
+  
   const getSources = useCallback(async () => {
     try {
       const fetch = await request('/api/source/', 'GET', null, {
@@ -74,9 +105,7 @@ export const NewClient = () => {
   const [turns, seTurns] = useState([])
 
   //Registratsiyadan o'tgan bo'limlarni olish
-  const [sections, setSections] = useState([])
-
-
+  const [sections, setSections] = useState()
 
   //Boshqa sahifaga yo'naltirish yuklanishi
   const history = useHistory()
@@ -111,12 +140,24 @@ export const NewClient = () => {
   // Servislar bo'limi
   const [services, setServices] = useState()
   const [warehouse, setWarehouse] = useState()
+
   const getWarehouse = useCallback(async () => {
     try {
       const fetch = await request('/api/warehouse/', 'GET', null, {
         Authorization: `Bearer ${auth.token}`
       })
-      setWarehouse(fetch)
+      let s = []
+      fetch.map(p => {
+        s.push({
+          label: p.name + " " + p.type,
+          value: p.name + " " + p.type,
+          name: p.name,
+          type: p.type,
+          price: p.price,
+          _id: p._id
+        })
+      })
+      setWarehouse(s)
     } catch (error) {
       notify(error)
     }
@@ -153,9 +194,8 @@ export const NewClient = () => {
       })
     )
   }
-
   const createAllServices = (id, connector) => {
-    services.map((service) => {
+    services && services.map((service) => {
       createService(id, service, connector)
     })
   }
@@ -172,7 +212,6 @@ export const NewClient = () => {
   // =================================================================================
   // =================================================================================
 
-
   const changeHandlar = (event) => {
     setClient({ ...client, [event.target.name]: event.target.value })
   }
@@ -181,22 +220,8 @@ export const NewClient = () => {
     setClient({ ...client, born: new Date(event.target.value) })
   }
 
-  const changeCounterAgent = (event) => {
-    setCounterAgent(event.value)
-    sections.map((section, key) => {
-      setSections(
-        Object.values({
-          ...sections,
-          [key]: { ...sections[key], counteragent: event.value },
-        })
-
-      )
-
-    })
-  }
-
   const changeSource = (name) => {
-    sections.map((section, key) => {
+    sections && sections.map((section, key) => {
       setSections(
         Object.values({
           ...sections,
@@ -209,9 +234,12 @@ export const NewClient = () => {
     setSource(name)
   }
 
+  const [ids, setIds] = useState([])
   const changeSections = (event) => {
     s = []
+    let i = []
     event.map((section) => {
+      i.push(section._id)
       let turn = 0
       turns.map((sec) => {
         if (checkTurn(sec, section.section)) {
@@ -242,13 +270,14 @@ export const NewClient = () => {
         position: "offline",
         checkup: "chaqirilmagan",
         doctor: " ",
-        counteragent: counteragent,
+        counteragent: " ",
         paymentMethod: " ",
         source: source
       })
 
     })
     setSections(s)
+    setIds(i)
   }
 
   const allClients = useCallback(async () => {
@@ -291,7 +320,7 @@ export const NewClient = () => {
       const connector = await request("/api/connector/register", "POST", {
         client,
         source,
-        counteragent,
+        counteragent: counteragent ? counteragent.counteragent : " ",
         type: "offline",
         position: " ",
         prepayment: 0,
@@ -303,16 +332,17 @@ export const NewClient = () => {
       })
       createAllSections(client, connector._id)
       createAllServices(client, connector._id)
+      counteragent && createPaymentCounteragent(client, connector._id)
     } catch (e) {
       notify(e)
     }
   }
 
   const createAllSections = (id, connector) => {
-    sections.map((section) => {
+    sections && sections.map((section) => {
       create(id, section, connector)
-
     })
+    WareUseds(connector)
     history.push(`/reseption/clients`)
   }
 
@@ -340,6 +370,55 @@ export const NewClient = () => {
     return false
   }
 
+  // =================================================================================
+  // =================================================================================
+  //Omborxona
+
+  const [wareconnectors, setWareConnectors] = useState()
+  const getWareConnectors = useCallback(async () => {
+    try {
+      const fetch = await request("/api/wareconnector", "GET", null, {
+        Authorization: `Bearer ${auth.token}`
+      })
+      setWareConnectors(fetch)
+    } catch (e) {
+      notify(e)
+    }
+  }, [request, auth, setWareConnectors])
+
+  const WareUseds = (bind) => {
+    let wareuseds = []
+    ids && ids.map((id) => {
+      wareconnectors && wareconnectors.map((wareconnector) => {
+        if (id === wareconnector.section) {
+          wareuseds.push({
+            section: wareconnector.section,
+            sectionname: wareconnector.sectionname,
+            warehouse: wareconnector.warehouse,
+            warehousename: wareconnector.warehousename,
+            count: wareconnector.count,
+            connector: bind,
+            day: new Date()
+          })
+        }
+      })
+    })
+    createWareUseds(wareuseds)
+  }
+
+  const createWareUseds = useCallback(async (wareuseds) => {
+    try {
+      const fetch = await request(`/api/wareused/register`, "POST", wareuseds, {
+        Authorization: `Bearer ${auth.token}`
+      })
+    } catch (e) {
+      notify(e)
+    }
+  }, [request, auth])
+  // =================================================================================
+  // =================================================================================
+
+
   useEffect(() => {
     if (!options) {
       getOptions()
@@ -359,6 +438,9 @@ export const NewClient = () => {
     }
     if (!warehouse) {
       getWarehouse()
+    }
+    if (!wareconnectors) {
+      getWareConnectors()
     }
   }, [notify, clearError])
 
@@ -617,7 +699,7 @@ export const NewClient = () => {
               <tbody style={{ borderBottom: "1px solid #999" }}>
 
                 {
-                  sections.map((section, key) => {
+                  sections && sections.map((section, key) => {
                     allPrice = allPrice + section.price
                     return (
                       <tr key={key}>

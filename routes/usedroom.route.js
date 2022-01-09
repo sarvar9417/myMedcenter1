@@ -43,9 +43,11 @@ router.post('/register', auth, async (req, res) => {
             price,
             priceCashier
         })
-        const rooms = await Room.findById(room)
-        rooms.position = "band"
-        await rooms.save()
+        if (bed !== "0") {
+            const rooms = await Room.findById(room)
+            rooms.position = "band"
+            await rooms.save()
+        }
         await newroom.save()
         res.status(201).send(newroom)
 

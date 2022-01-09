@@ -21,27 +21,61 @@ export const OldStatsionarClient = () => {
   }
 
   const [advertisement, setAdvertisement] = useState(false)
-  const [counteragents, setCounterAgents] = useState()
-  const [counteragent, setCounterAgent] = useState(" ")
   const [sources, setSources] = useState()
   const [source, setSource] = useState(" ")
+  //==============================================================================
+  //==============================================================================
+  //Counteragents begin
+  const [counteragent, setCounterAgent] = useState()
+  const [counteragents, setCounterAgents] = useState()
   const getCounterAgents = useCallback(async () => {
     try {
-      const fetch = await request('/api/counteragent/', 'GET', null, {
+      const fetch = await request('/api/counterdoctor', 'GET', null, {
         Authorization: `Bearer ${auth.token}`
       })
-      let c = []
+      let c = [{
+        label: "Tanlanmagan",
+        value: " ",
+        counterdoctor: "",
+        counteragent: "",
+      }]
       fetch.map((data) => {
         c.push({
-          label: data.clinic.toUpperCase() + " " + data.lastname + " " + data.firstname + " " + data.fathername,
-          value: data.lastname + " " + data.firstname + " " + data.fathername
+          label: data.clinic.toUpperCase() + " " + data.lastname + " " + data.firstname,
+          value: data.lastname + " " + data.firstname,
+          counterdoctor: data._id,
+          counteragent: data.counteragent
         })
       })
       setCounterAgents(c)
     } catch (error) {
       notify(error)
     }
-  }, [auth, request, setCounterAgents, notify])
+  }, [auth, request, setCounterAgents])
+
+  const changeCounterAgent = (event) => {
+    if (event.label === "Tanlanmagan") {
+      setCounterAgent(null)
+    } else {
+      setCounterAgent({
+        counteragent: event.counteragent,
+        counterdoctor: event.counterdoctor,
+        paymentDay: new Date()
+      })
+    }
+  }
+
+  const createPaymentCounteragent = async (client, connector) => {
+    try {
+      const data = await request(`/api/counteragentpayment/reseption/register`, "POST", { ...counteragent, connector, client }, {
+        Authorization: `Bearer ${auth.token}`
+      })
+    } catch (e) {
+      notify(e)
+    }
+  }
+  //==============================================================================
+  //==============================================================================
 
   const getSources = useCallback(async () => {
     try {
@@ -88,19 +122,6 @@ export const OldStatsionarClient = () => {
     setClient({ ...client, [event.target.name]: event.target.value })
   }
 
-  const changeCounterAgent = (event) => {
-    setCounterAgent(event.value)
-    sections.map((section, key) => {
-      setSections(
-        Object.values({
-          ...sections,
-          [key]: { ...sections[key], counteragent: event.value },
-        })
-
-      )
-    })
-  }
-
   const changeSource = (name) => {
     sections.map((section, key) => {
       setSections(
@@ -114,9 +135,12 @@ export const OldStatsionarClient = () => {
     setSource(name)
   }
 
+  const [ids, setIds] = useState([])
   const changeSections = (event) => {
     s = []
+    let i = []
     event.map((section) => {
+      i.push(section._id)
       s.push({
         client: client._id,
         name: section.section,
@@ -135,12 +159,13 @@ export const OldStatsionarClient = () => {
         position: "statsionar",
         checkup: "chaqirilmagan",
         doctor: " ",
-        counteragent: counteragent,
+        counteragent: " ",
         paymentMethod: " ",
         source: source
       })
     })
     setSections(s)
+    setIds(i)
   }
 
   const getClient = useCallback(async (id) => {
@@ -246,21 +271,20 @@ export const OldStatsionarClient = () => {
 
   const changeRooms = (event) => {
     setRoom({
-      client: client._id,
       room: event._id,
       roomname: event.value,
       beginDay: new Date(),
       endDay: new Date(),
-      position: "band",
+      position: event.price !== 0 ? "band" : "bo'sh",
       bed: event.bed,
       price: event.price,
       priceCashier: 0
     })
   }
 
-  const createRoom = async (connector) => {
+  const createRoom = async (id, connector) => {
     try {
-      const data = await request(`/api/usedroom/register`, "POST", { ...room, connector }, {
+      const data = await request(`/api/usedroom/register`, "POST", { ...room, connector, client: id }, {
         Authorization: `Bearer ${auth.token}`
       })
     } catch (e) {
@@ -269,8 +293,6 @@ export const OldStatsionarClient = () => {
   }
   // =================================================================================
   // =================================================================================
-
-
   const [prepayment, setPrepayment] = useState(0)
   const [diagnosis, setDiagnosis] = useState("")
   const createConnector = async () => {
@@ -278,7 +300,7 @@ export const OldStatsionarClient = () => {
       const connector = await request("/api/connector/register", "POST", {
         client: client._id,
         source,
-        counteragent,
+        counteragent: counteragent ? counteragent.counteragent : " ",
         type: "statsionar",
         position: "davolanishda",
         prepayment,
@@ -301,6 +323,8 @@ export const OldStatsionarClient = () => {
     sections && sections.map((section) => {
       create(section, connector)
     })
+    WareUseds(connector)
+    counteragent && createPaymentCounteragent(client, connector._id)
     history.push(`/reseption/clientsstatsionar`)
   }
 
@@ -318,9 +342,62 @@ export const OldStatsionarClient = () => {
     if (CheckClentData(client, diagnosis)) {
       return notify(CheckClentData(client, diagnosis))
     }
+    if (!room) {
+      return notify("Diqqat! Mijoz xonasini ko'rsatmadingiz. Agar xonasi aniq bo'lmasa aniq emas turini tanlang")
+    }
     window.scrollTo({ top: 0 })
     setModal(true)
   }
+
+  // =================================================================================
+  // =================================================================================
+  //Omborxona
+
+  const [wareconnectors, setWareConnectors] = useState()
+  const getWareConnectors = useCallback(async () => {
+    try {
+      const fetch = await request("/api/wareconnector", "GET", null, {
+        Authorization: `Bearer ${auth.token}`
+      })
+      setWareConnectors(fetch)
+    } catch (e) {
+      notify(e)
+    }
+  }, [request, auth, setWareConnectors])
+
+  const WareUseds = (bind) => {
+    let wareuseds = []
+    ids && ids.map((id) => {
+      wareconnectors && wareconnectors.map((wareconnector) => {
+        if (id === wareconnector.section) {
+          wareuseds.push({
+            section: wareconnector.section,
+            sectionname: wareconnector.sectionname,
+            warehouse: wareconnector.warehouse,
+            warehousename: wareconnector.warehousename,
+            count: wareconnector.count,
+            connector: bind,
+            day: new Date()
+          })
+        }
+      })
+    })
+    createWareUseds(wareuseds)
+  }
+
+  const createWareUseds = useCallback(async (wareuseds) => {
+    try {
+      const fetch = await request(`/api/wareused/register`, "POST", wareuseds, {
+        Authorization: `Bearer ${auth.token}`
+      })
+    } catch (e) {
+      notify(e)
+    }
+  }, [request, auth])
+  // =================================================================================
+  // =================================================================================
+
+
 
   useEffect(() => {
     if (!options) {
@@ -341,6 +418,9 @@ export const OldStatsionarClient = () => {
     }
     if (!rooms) {
       getRooms()
+    }
+    if (!wareconnectors) {
+      getWareConnectors()
     }
   }, [notify, clearError])
 
@@ -438,28 +518,6 @@ export const OldStatsionarClient = () => {
             style={{ background: "#fff", color: "#999" }}
           />
           <label className="labels" style={{ top: "-7px", fontSize: "12px", fontWeight: "500" }}>Tug'ilgan sanasi</label>
-        </div>
-        <div className="col-md-6 mb-2 input_box">
-          <input
-            defaultValue={client.address}
-            onChange={changeHandlar}
-            name="address"
-            type="text"
-            className="form-control inp"
-            placeholder="Mijozning manzili"
-          />
-          <label className="labels" style={{ top: "-7px", fontSize: "12px", fontWeight: "500" }}>Mijoz manzili</label>
-        </div>
-        <div className="col-md-6 mb-2 input_box">
-          <input
-            defaultValue={prepayment}
-            onChange={(event) => { setPrepayment(parseInt(event.target.value)) }}
-            name="prepayment"
-            type="number"
-            className="form-control inp"
-            placeholder="Oldindan to'lov"
-          />
-          <label className="labels" style={{ top: "-7px", fontSize: "12px", fontWeight: "500" }}>Oldindan to'lov</label>
         </div>
         <div className="col-6 mb-2 input_box">
           <textarea
@@ -644,7 +702,13 @@ export const OldStatsionarClient = () => {
                     )
                   })
                 }
-
+                <tr>
+                  <td style={{ width: "10%", textAlign: "center", padding: "10px 0" }}>Xona</td>
+                  <td style={{ width: "30%", textAlign: "center", padding: "10px 0" }}>
+                    {room && room.roomname}
+                  </td>
+                  <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{room && room.price}</td>
+                </tr>
               </tbody>
             </table>
 
@@ -653,7 +717,7 @@ export const OldStatsionarClient = () => {
                 <div className="fw-bold text-primary">Jami to'lov:</div>
               </div>
               <div className="col-6">
-                <div className="fw-bold  text-end ">{allPrice}</div>
+                <div className="fw-bold  text-end ">{room && allPrice + room.price}</div>
               </div>
               <hr />
 

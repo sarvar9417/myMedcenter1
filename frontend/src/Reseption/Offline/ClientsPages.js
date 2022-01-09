@@ -47,6 +47,7 @@ export const ClientsPages = () => {
         }
     }, [request, auth, startDate, endDate, setAll])
 
+
     const getId = useCallback(async () => {
         try {
             const fetch = await request(`/api/connector/reseption/${clientId}`, 'GET', null, {
@@ -90,18 +91,6 @@ export const ClientsPages = () => {
         getBorn()
     }
 
-    const filtr = (event) => {
-        const regex = new RegExp(`${event.target.value}`, 'i')
-        const name = all.clients.filter(({ firstname }) => regex.test(firstname))
-        // name.map(n=>{
-        //     all.clients.map((client, index)=>{
-        //         if (client.firstname == n.firstname) {
-        //             t.
-        //         }
-        //     })
-        // })
-    }
-
     useEffect(() => {
         if (error) {
             notify(error)
@@ -143,11 +132,7 @@ export const ClientsPages = () => {
                 </div>
             </div>
             <div className="row">
-                <div className='col-3'>
-                    <input className='from-control' onChange={filtr} />
-
-                </div>
-                <div className="offset-8 col-1 text-end">
+                <div className="offset-11 col-1 text-end">
                     <ReactHTMLTableToExcel
                         className="btn text-white mb-2 btn-success"
                         table="reseptionReport"
@@ -216,31 +201,31 @@ export const ClientsPages = () => {
                                                     <tr key={index} className=' border-top' >
                                                         <td
                                                             className="no border-right"
-                                                            rowSpan={all.sections[key].length}
+                                                            rowSpan={all.sections[key].length + all.services[key].length}
                                                         >
                                                             {k}
                                                         </td>
                                                         <td
                                                             className="fish text-uppercase ps-3 fw-bold text-success"
-                                                            rowSpan={all.sections[key].length}
+                                                            rowSpan={all.sections[key].length + all.services[key].length}
                                                         >
                                                             {all.clients[key].lastname} {all.clients[key].firstname} {all.clients[key].fathername}
                                                         </td>
                                                         <td
                                                             className="id"
-                                                            rowSpan={all.sections[key].length}
+                                                            rowSpan={all.sections[key].length + all.services[key].length}
                                                         >
                                                             {new Date(all.clients[key].born).toLocaleDateString()}
                                                         </td>
                                                         <td
                                                             className="id"
-                                                            rowSpan={all.sections[key].length}
+                                                            rowSpan={all.sections[key].length + all.services[key].length}
                                                         >
                                                             {all.clients[key].id}
                                                         </td>
                                                         <td
                                                             className="phone"
-                                                            rowSpan={all.sections[key].length}
+                                                            rowSpan={all.sections[key].length + all.services[key].length}
                                                         >
                                                             +{all.clients[key].phone}
                                                         </td>
@@ -381,31 +366,31 @@ export const ClientsPages = () => {
                                                         <tr key={index} className=' border-top' >
                                                             <td
                                                                 className="no border-right"
-                                                                rowSpan={all.sections[key].length}
+                                                                rowSpan={all.sections[key].length + all.services[key].length}
                                                             >
                                                                 {k}
                                                             </td>
                                                             <td
                                                                 className="fish text-uppercase ps-3 fw-bold text-success"
-                                                                rowSpan={all.sections[key].length}
+                                                                rowSpan={all.sections[key].length + all.services[key].length}
                                                             >
                                                                 {all.clients[key].lastname} {all.clients[key].firstname} {all.clients[key].fathername}
                                                             </td>
                                                             <td
                                                                 className="id"
-                                                                rowSpan={all.sections[key].length}
+                                                                rowSpan={all.sections[key].length + all.services[key].length}
                                                             >
                                                                 {new Date(all.clients[key].born).toLocaleDateString()}
                                                             </td>
                                                             <td
                                                                 className="id"
-                                                                rowSpan={all.sections[key].length}
+                                                                rowSpan={all.sections[key].length + all.services[key].length}
                                                             >
                                                                 {all.clients[key].id}
                                                             </td>
                                                             <td
                                                                 className="phone"
-                                                                rowSpan={all.sections[key].length}
+                                                                rowSpan={all.sections[key].length + all.services[key].length}
                                                             >
                                                                 +{all.clients[key].phone}
                                                             </td>
@@ -565,13 +550,13 @@ export const ClientsPages = () => {
                                                         <tr key={index} className=' border-top border-success' >
                                                             <td
                                                                 className="no border-right border-success"
-                                                                rowSpan={all.sections[key].length}
+                                                                rowSpan={all.sections[key].length + all.services[key].length}
                                                             >
                                                                 {kk}
                                                             </td>
                                                             <td
                                                                 className="fish text-uppercase ps-3"
-                                                                rowSpan={all.sections[key].length}
+                                                                rowSpan={all.sections[key].length + all.services[key].length}
                                                             >
                                                                 <Link className='text-success' style={{ fontWeight: "600" }} to={`/reseption/clientallhistory/${all.clients[key]._id}`} >
                                                                     {all.clients[key].lastname} {all.clients[key].firstname} {all.clients[key].fathername}
@@ -583,25 +568,25 @@ export const ClientsPages = () => {
                                                             </td>
                                                             <td
                                                                 className="id"
-                                                                rowSpan={all.sections[key].length}
+                                                                rowSpan={all.sections[key].length + all.services[key].length}
                                                             >
                                                                 {new Date(all.clients[key].born).toLocaleDateString()}
                                                             </td>
                                                             <td
                                                                 className="id"
-                                                                rowSpan={all.sections[key].length}
+                                                                rowSpan={all.sections[key].length + all.services[key].length}
                                                             >
                                                                 {all.clients[key].id}
                                                             </td>
                                                             <td
                                                                 className="phone"
-                                                                rowSpan={all.sections[key].length}
+                                                                rowSpan={all.sections[key].length + all.services[key].length}
                                                             >
                                                                 +{all.clients[key].phone}
                                                             </td>
                                                             <td
                                                                 className="edit"
-                                                                rowSpan={all.sections[key].length}
+                                                                rowSpan={all.sections[key].length + all.services[key].length}
                                                             >
                                                                 <Link className='btn button-success text-success' to={`/reseption/addservices/${all.clients[key]._id}/${connector._id}`} >
                                                                     +
@@ -609,7 +594,7 @@ export const ClientsPages = () => {
                                                             </td>
                                                             <td
                                                                 className="cek"
-                                                                rowSpan={all.sections[key].length}
+                                                                rowSpan={all.sections[key].length + all.services[key].length}
                                                             >
                                                                 <Link to={`/reseption/reciept/${all.clients[key]._id}/${section.connector}`} >
                                                                     <FontAwesomeIcon icon={faPrint} className="fa-2x" />
@@ -740,13 +725,13 @@ export const ClientsPages = () => {
                                                         <tr key={index} className=' border-top border-success' >
                                                             <td
                                                                 className="no border-right border-success"
-                                                                rowSpan={all.sections[key].length}
+                                                                rowSpan={all.sections[key].length + all.services[key].length}
                                                             >
                                                                 {kk}
                                                             </td>
                                                             <td
                                                                 className="fish text-uppercase ps-3"
-                                                                rowSpan={all.sections[key].length}
+                                                                rowSpan={all.sections[key].length + all.services[key].length}
                                                             >
                                                                 <Link className='text-success' style={{ fontWeight: "600" }} to={`/reseption/clientallhistory/${all.clients[key]._id}`} >
                                                                     {all.clients[key].lastname} {all.clients[key].firstname} {all.clients[key].fathername}
@@ -758,25 +743,25 @@ export const ClientsPages = () => {
                                                             </td>
                                                             <td
                                                                 className="id"
-                                                                rowSpan={all.sections[key].length}
+                                                                rowSpan={all.sections[key].length + all.services[key].length}
                                                             >
                                                                 {new Date(all.clients[key].born).toLocaleDateString()}
                                                             </td>
                                                             <td
                                                                 className="id"
-                                                                rowSpan={all.sections[key].length}
+                                                                rowSpan={all.sections[key].length + all.services[key].length}
                                                             >
                                                                 {all.clients[key].id}
                                                             </td>
                                                             <td
                                                                 className="phone"
-                                                                rowSpan={all.sections[key].length}
+                                                                rowSpan={all.sections[key].length + all.services[key].length}
                                                             >
                                                                 +{all.clients[key].phone}
                                                             </td>
                                                             <td
                                                                 className="edit"
-                                                                rowSpan={all.sections[key].length}
+                                                                rowSpan={all.sections[key].length + all.services[key].length}
                                                             >
                                                                 <Link className='btn button-success text-success' to={`/reseption/addservices/${all.clients[key]._id}/${connector._id}`} >
                                                                     +
@@ -784,7 +769,7 @@ export const ClientsPages = () => {
                                                             </td>
                                                             <td
                                                                 className="cek"
-                                                                rowSpan={all.sections[key].length}
+                                                                rowSpan={all.sections[key].length + all.services[key].length}
                                                             >
                                                                 <Link to={`/reseption/reciept/${all.clients[key]._id}/${section.connector}`} >
                                                                     <FontAwesomeIcon icon={faPrint} className="fa-2x" />

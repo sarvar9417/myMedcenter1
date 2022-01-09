@@ -15,8 +15,6 @@ export const WareHouse = () => {
     const [remove, setRemove] = useState()
     const history = useHistory()
 
-
-
     // Modal oyna funksiyalari
     const [modal, setModal] = useState(false)
 
@@ -54,7 +52,7 @@ export const WareHouse = () => {
             notify(error)
             clearError()
         }
-    }, [ notify, clearError])
+    }, [notify, clearError])
 
     if (loading) {
         return <Loader />
@@ -66,6 +64,7 @@ export const WareHouse = () => {
                     <div className="card">
                         <div className="card-body">
                             <div className="text-end p-3">
+                                <Link to="/director/wareconnectors" className="btn border-success text-success mx-3">Xizmatlarni bog'lash</Link>
                                 <Link to="/director/createware" className="btn button-success">Mahsulot yaratish</Link>
                             </div>
                             <div className="table-responsive">
@@ -75,8 +74,9 @@ export const WareHouse = () => {
                                             <th className="text-center">№</th>
                                             <th className=""> Mahsulot nomi</th>
                                             <th className="text-center">Turi</th>
-                                            <th className="text-center">Narxi</th>
                                             <th className="text-center">Soni</th>
+                                            <th className="text-center">Narxi</th>
+                                            <th className="text-center">Tahrirlash</th>
                                             <th className="text-center">Qo'shish yoki olish</th>
                                             <th className="text-center">O'chirish</th>
                                         </tr>
@@ -93,9 +93,10 @@ export const WareHouse = () => {
                                                             </span>
                                                         </td>
                                                         <td className="text-center">{ware.type}</td>
-                                                        <td className="text-end ">{ware.price} so'm</td>
                                                         <td className="text-center">{ware.pieces}</td>
-                                                        <td className="text-center"> <Link to={`/director/addware/${ware._id}`} className="btn button-success  px-3" ><FontAwesomeIcon icon={faEdit}></FontAwesomeIcon> </Link></td>
+                                                        <td className="text-center">{ware.price}</td>
+                                                        <td className="text-center"> <Link to={`/director/editwarehouse/${ware._id}`} className="btn button-success  px-3" ><FontAwesomeIcon icon={faEdit}></FontAwesomeIcon> </Link></td>
+                                                        <td className="text-center"> <Link to={`/director/addware/${ware._id}`} className="btn button-success  px-3" >Qo'shish </Link></td>
                                                         <td className="text-center"> <button onClick={() => { setRemove(ware); window.scrollTo({ top: 0 }); setModal(true) }} className="btn button-danger px-3" ><FontAwesomeIcon icon={faTrashAlt}></FontAwesomeIcon> </button></td>
                                                     </tr>)
                                             })
@@ -121,7 +122,6 @@ export const WareHouse = () => {
                                         <tr>
                                             <th className="text-center">Mahsulot nomi</th>
                                             <th className="text-center">Turi</th>
-                                            <th className="text-center">Narxi</th>
                                             <th className="text-center">Soni</th>
                                         </tr>
                                     </thead>
@@ -133,7 +133,6 @@ export const WareHouse = () => {
                                                 </span>
                                             </td>
                                             <td className="text-center">{remove && remove.type}</td>
-                                            <td className="text-center">{remove && remove.price} so'm</td>
                                             <td className="text-center">{remove && remove.pieces}</td>
                                         </tr>
                                     </tbody>

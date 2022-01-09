@@ -16,7 +16,7 @@ export const OldOnlineClient = () => {
     let s = []
     const { loading, request, error, clearError } = useHttp()
     const [turns, seTurns] = useState([])
-    const [sections, setSections] = useState([])
+    const [sections, setSections] = useState()
 
     const [clients, setClients] = useState()
     const notify = (e) => {
@@ -24,30 +24,61 @@ export const OldOnlineClient = () => {
     }
 
     const [advertisement, setAdvertisement] = useState(false)
-    const [counteragents, setCounterAgents] = useState()
-    const [counteragent, setCounterAgent] = useState(" ")
     const [sources, setSources] = useState()
     const [source, setSource] = useState(" ")
+    //==============================================================================
+    //==============================================================================
+    //Counteragents begin
+    const [counteragent, setCounterAgent] = useState()
+    const [counteragents, setCounterAgents] = useState()
     const getCounterAgents = useCallback(async () => {
         try {
-            const fetch = await request('/api/counteragent/', 'GET', null, {
+            const fetch = await request('/api/counterdoctor', 'GET', null, {
                 Authorization: `Bearer ${auth.token}`
             })
             let c = [{
                 label: "Tanlanmagan",
-                value: " "
+                value: " ",
+                counterdoctor: "",
+                counteragent: "",
             }]
             fetch.map((data) => {
                 c.push({
-                    label: data.clinic.toUpperCase() + " " + data.lastname + " " + data.firstname + " " + data.fathername,
-                    value: data.lastname + " " + data.firstname + " " + data.fathername
+                    label: data.clinic.toUpperCase() + " " + data.lastname + " " + data.firstname,
+                    value: data.lastname + " " + data.firstname,
+                    counterdoctor: data._id,
+                    counteragent: data.counteragent
                 })
             })
             setCounterAgents(c)
         } catch (error) {
             notify(error)
         }
-    }, [auth, request, setCounterAgents, notify])
+    }, [auth, request, setCounterAgents])
+
+    const changeCounterAgent = (event) => {
+        if (event.label === "Tanlanmagan") {
+            setCounterAgent(null)
+        } else {
+            setCounterAgent({
+                counteragent: event.counteragent,
+                counterdoctor: event.counterdoctor,
+                paymentDay: new Date()
+            })
+        }
+    }
+
+    const createPaymentCounteragent = async (client, connector) => {
+        try {
+            const data = await request(`/api/counteragentpayment/reseption/register`, "POST", { ...counteragent, connector, client }, {
+                Authorization: `Bearer ${auth.token}`
+            })
+        } catch (e) {
+            notify(e)
+        }
+    }
+    //==============================================================================
+    //==============================================================================
 
     const getSources = useCallback(async () => {
         try {
@@ -105,23 +136,11 @@ export const OldOnlineClient = () => {
     const changeBronDate = (event) => {
         let key = parseInt(event.target.id)
         setSections(Object.values({ ...sections, [key]: { ...sections[key], bronDay: new Date(event.target.value) } }))
-    }
-
-    const changeCounterAgent = (event) => {
-        setCounterAgent(event.value)
-        sections.map((section, key) => {
-            setSections(
-                Object.values({
-                    ...sections,
-                    [key]: { ...sections[key], counteragent: event.value },
-                })
-
-            )
-        })
+        setCounterAgent({ ...counteragent, paymentDay: new Date(event.target.value) })
     }
 
     const changeSource = (name) => {
-        sections.map((section, key) => {
+        sections && sections.map((section, key) => {
             setSections(
                 Object.values({
                     ...sections,
@@ -133,9 +152,13 @@ export const OldOnlineClient = () => {
         setSource(name)
     }
 
+    const [ids, setIds] = useState([])
     const changeSections = (event) => {
         s = []
+        let i = []
+
         event.map((section) => {
+            i.push(section._id)
             let turn = 0
             turns.map((sec) => {
                 if (checkTurn(sec, section.section)) {
@@ -165,13 +188,14 @@ export const OldOnlineClient = () => {
             })
         })
         setSections(s)
+        setIds(i)
     }
 
     const checkData = () => {
         if (CheckClentData(client)) {
             return notify(CheckClentData(client))
         }
-        sections.map((section) => {
+        sections && sections.map((section) => {
             if (section.bronTime === " ") {
                 return notify("Mijozning bron vaqtini kiriting iltimos!")
             }
@@ -207,12 +231,12 @@ export const OldOnlineClient = () => {
             const connector = await request("/api/connector/register", "POST", {
                 client: client._id,
                 source,
-                counteragent,
+                counteragent: counteragent ? counteragent.counteragent : " ",
                 type: "online",
                 position: " ",
                 prepayment: 0,
                 diagnosis: " ",
-                bronDay: sections[0].bronDay,
+                bronDay: sections ? sections[0].bronDay : new Date(),
                 prepaymentCashier: 0,
             }, {
                 Authorization: `Bearer ${auth.token}`
@@ -224,9 +248,11 @@ export const OldOnlineClient = () => {
     }
 
     const createAllSections = (connector) => {
-        sections.map((section) => {
+        sections && sections.map((section) => {
             create(section, connector)
         })
+        WareUseds(connector)
+        counteragent && createPaymentCounteragent(client && client._id, connector)
         history.push(`/reseption/clients`)
     }
 
@@ -240,6 +266,55 @@ export const OldOnlineClient = () => {
             notify(e)
         }
     }
+
+    // =================================================================================
+    // =================================================================================
+    //Omborxona
+
+    const [wareconnectors, setWareConnectors] = useState()
+    const getWareConnectors = useCallback(async () => {
+        try {
+            const fetch = await request("/api/wareconnector", "GET", null, {
+                Authorization: `Bearer ${auth.token}`
+            })
+            setWareConnectors(fetch)
+        } catch (e) {
+            notify(e)
+        }
+    }, [request, auth, setWareConnectors])
+
+    const WareUseds = (bind) => {
+        let wareuseds = []
+        ids && ids.map((id) => {
+            wareconnectors && wareconnectors.map((wareconnector) => {
+                if (id === wareconnector.section) {
+                    wareuseds.push({
+                        section: wareconnector.section,
+                        sectionname: wareconnector.sectionname,
+                        warehouse: wareconnector.warehouse,
+                        warehousename: wareconnector.warehousename,
+                        count: wareconnector.count,
+                        connector: bind,
+                        day: new Date()
+                    })
+                }
+            })
+        })
+        createWareUseds(wareuseds)
+    }
+
+    const createWareUseds = useCallback(async (wareuseds) => {
+        try {
+            const fetch = await request(`/api/wareused/register`, "POST", wareuseds, {
+                Authorization: `Bearer ${auth.token}`
+            })
+        } catch (e) {
+            notify(e)
+        }
+    }, [request, auth])
+    // =================================================================================
+    // =================================================================================
+
 
     useEffect(() => {
         if (!options) {
@@ -255,6 +330,9 @@ export const OldOnlineClient = () => {
         }
         if (!sources) {
             getSources()
+        }
+        if (!wareconnectors) {
+            getWareConnectors()
         }
     }, [getClient])
 
@@ -413,7 +491,7 @@ export const OldOnlineClient = () => {
             </div>
             <div className="row">
                 {
-                    sections.map((section, key) => {
+                    sections && sections.map((section, key) => {
                         return (
                             <>
                                 <div className="col-md-4 col-sm-6 mt-2" >
@@ -488,7 +566,7 @@ export const OldOnlineClient = () => {
                             <tbody style={{ borderBottom: "1px solid #999" }}>
 
                                 {
-                                    sections.map((section, key) => {
+                                    sections && sections.map((section, key) => {
                                         allPrice = allPrice + section.price
                                         return (
                                             <tr key={key}>
