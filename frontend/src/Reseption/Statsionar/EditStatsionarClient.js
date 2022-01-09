@@ -192,6 +192,7 @@ export const EditStatsionarClient = () => {
       create(section)
     })
     services && createAllServices()
+    createRoom(client._id, connectorId)
     history.push(`/reseption/clientsstatsionar`)
   }
 
@@ -205,6 +206,60 @@ export const EditStatsionarClient = () => {
     }
   }
 
+  // =================================================================================
+  // =================================================================================
+  // ROOMS bo'limi
+
+  const [rooms, setRooms] = useState()
+  const [room, setRoom] = useState()
+  const getRooms = useCallback(async () => {
+    try {
+      const fetch = await request('/api/rooms/reseption', 'GET', null, {
+        Authorization: `Bearer ${auth.token}`
+      })
+      setRooms(fetch)
+    } catch (error) {
+      notify(error)
+    }
+  }, [auth, request, setRooms])
+
+  const getUsedRoom = useCallback(async () => {
+    try {
+      const fetch = await request(`/api/usedroom/reseption/${connectorId}`, 'GET', null, {
+        Authorization: `Bearer ${auth.token}`
+      })
+      setRoom(fetch)
+    } catch (error) {
+      notify(error)
+    }
+  }, [auth, request, setRoom, connectorId])
+
+  const changeRooms = (event) => {
+    setRoom({
+      room: event._id,
+      roomname: event.value,
+      beginDay: new Date(),
+      endDay: new Date(),
+      position: "band",
+      bed: event.bed,
+      price: event.price,
+      priceCashier: 0
+    })
+  }
+
+  const createRoom = async (id, connector) => {
+    try {
+      const data = await request(`/api/usedroom/register`, "POST", { ...room, connector, client: id }, {
+        Authorization: `Bearer ${auth.token}`
+      })
+    } catch (e) {
+      notify(e)
+    }
+  }
+  // =================================================================================
+  // =================================================================================
+
+  const [t, setT] = useState()
   useEffect(() => {
     if (!options) {
       getOptions()
@@ -218,6 +273,13 @@ export const EditStatsionarClient = () => {
     }
     if (!warehouse) {
       getWarehouse()
+    }
+    if (!rooms) {
+      getRooms()
+    }
+    if (!t) {
+      getUsedRoom()
+      setT(1)
     }
   }, [notify, clearError])
 
@@ -318,6 +380,31 @@ export const EditStatsionarClient = () => {
             placeholder="Tashxisni kiritish"
           />
           <label className="labels" style={{ top: "-7px", fontSize: "12px", fontWeight: "500" }}>Mijozga qo'yilgan tashxis</label>
+        </div>
+        <div className="col-6 mb-2 input_box">
+          <Select
+            placeholder="Mijoz xonasi"
+            className="m-0 p-0"
+            onChange={(event) => changeRooms(event)}
+            components={animatedComponents}
+            options={rooms && rooms}
+            escapeClearsValue="true"
+          />
+        </div>
+        <div className="col-6 mb-2 input_box">
+          <input
+            // disabled={room && room.room ? true : false}
+            defaultValue={room && room.beginDay}
+            onChange={(event) => {
+              setRoom({
+                ...room,
+                beginDay: event.target.value,
+                endDay: event.target.value
+              })
+            }}
+            type="date"
+            className="form-control" />
+          <label className="labels" style={{ top: "-7px", fontSize: "12px", fontWeight: "500" }}>Xona band qilingan sana</label>
         </div>
       </div>
 

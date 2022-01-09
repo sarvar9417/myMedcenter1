@@ -3,7 +3,6 @@ import { Loader } from '../components/Loader'
 import { useHttp } from '../hooks/http.hook'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faSearch, faSort, faPrint } from '@fortawesome/free-solid-svg-icons'
-import { Link, useHistory } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import "react-datepicker/dist/react-datepicker.css"
 import { AuthContext } from '../context/AuthContext'
@@ -25,13 +24,10 @@ export const ClientsPayments = () => {
             const fetch = await request(`/api/payment/directorclients`, 'GET', null, {
                 Authorization: `Bearer ${auth.token}`
             })
-            console.log(fetch);
             setAll(fetch)
         } catch (e) {
         }
     }, [request, auth, setAll])
-
-
 
     useEffect(() => {
         if (!all) {

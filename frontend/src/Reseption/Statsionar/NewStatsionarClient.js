@@ -313,7 +313,7 @@ export const NewStatsionarClient = () => {
       })
       sections && createAllSections(client, connector._id)
       services && createAllServices(client, connector._id)
-      createRoom(client, connector._id )
+      createRoom(client, connector._id)
     } catch (e) {
       notify(e)
     }
@@ -368,7 +368,7 @@ export const NewStatsionarClient = () => {
       <div className="row">
         <div className="col-md-6 mb-2 input_box" >
           <input
-            defaultValue={ client.lastname}
+            defaultValue={client.lastname}
             onChange={changeHandlar}
             name="lastname"
             type="text"

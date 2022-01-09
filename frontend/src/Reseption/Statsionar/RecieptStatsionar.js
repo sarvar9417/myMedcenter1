@@ -80,8 +80,10 @@ export const RecieptStatsionar = () => {
             } else {
                 setBronDay(Math.abs((new Date(new Date(data.beginDay).getFullYear(), new Date(data.beginDay).getMonth() + 1, new Date(data.endDay).getDate()) - new Date(new Date(data.beginDay).getFullYear(), new Date(data.beginDay).getMonth() + 1, new Date(data.beginDay).getDate())) / oneDay))
             }
+            console.log(data)
             setRoom(data)
         } catch (e) {
+            notify(e)
         }
     }, [request, connectorId, auth, setRoom, oneDay, setBronDay])
     // =================================================================================
@@ -172,6 +174,7 @@ export const RecieptStatsionar = () => {
         }
     }, [request, setLogo])
 
+    const [t, setT] = useState()
     useEffect(() => {
         if (client) {
             QRCode.toDataURL(`${baseUrl}/clienthistorys/${client._id}`)
@@ -198,8 +201,9 @@ export const RecieptStatsionar = () => {
         if (!services) {
             getServices()
         }
-        if (!room) {
+        if (!t) {
             getRoom()
+            setT(1)
         }
         if (!connector) {
             getConnector()
@@ -333,14 +337,14 @@ export const RecieptStatsionar = () => {
                                                 <td className="text-start px-2">{room && room.roomname}</td>
                                                 <td className="text-center">{bronDay && bronDay}</td>
                                                 <td className="text-center">{room && room.price}</td>
-                                                <td className="text-center">{room && (room.price * bronDay)}</td>
+                                                <td className="text-center">{room && bronDay && (room.price * bronDay)}</td>
                                             </tr>
                                         }
                                     </tbody>
                                     <tfoot>
                                         <tr>
                                             <td className="text-right px-3" colSpan="4">Jami to'lov:</td>
-                                            <td className="text-center">{room && price + bronDay * room.price}</td>
+                                            <td className="text-center">{room && bronDay && price + bronDay * room.price}</td>
                                         </tr>
                                     </tfoot>
                                 </table>

@@ -108,9 +108,9 @@ router.get('/director', async (req, res) => {
 
 router.get('/directorclients', async (req, res) => {
     try {
-        const payment = await Payment.find({
-            position: { $ne: "statsionar" }
-        })
+        const payment = await Payment.find()
+            .or[{ position: "offline" }]
+        console.log(payment)
         let payments = []
         payment.map(pay => {
             if (new mongoose.Types.ObjectId(pay._id).getTimestamp().toLocaleDateString() === new Date().toLocaleDateString()) {

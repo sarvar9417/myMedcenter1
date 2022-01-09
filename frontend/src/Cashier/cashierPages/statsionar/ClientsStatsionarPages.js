@@ -2,7 +2,7 @@ import React, { useCallback, useEffect, useState, Component, useContext } from '
 import { Loader } from '../../components/Loader'
 import { useHttp } from '../../hooks/http.hook'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import {  faSearch, faSort, faPrint } from '@fortawesome/free-solid-svg-icons'
+import { faSearch, faSort, faPrint } from '@fortawesome/free-solid-svg-icons'
 import { Link, useHistory } from 'react-router-dom'
 import { toast } from 'react-toastify'
 import DatePicker from "react-datepicker"
@@ -52,6 +52,7 @@ export const ClientsStatsionarPages = () => {
             const fetch = await request(`/api/connector/cashierstatsionar/${startDate}/${endDate}`, 'GET', null, {
                 Authorization: `Bearer ${auth.token}`
             })
+            // console.log(fetch);
             setAll(fetch)
         } catch (e) {
             notify(e)

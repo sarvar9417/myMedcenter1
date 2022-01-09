@@ -90,6 +90,18 @@ export const ClientsPages = () => {
         getBorn()
     }
 
+    const filtr = (event) => {
+        const regex = new RegExp(`${event.target.value}`, 'i')
+        const name = all.clients.filter(({ firstname }) => regex.test(firstname))
+        // name.map(n=>{
+        //     all.clients.map((client, index)=>{
+        //         if (client.firstname == n.firstname) {
+        //             t.
+        //         }
+        //     })
+        // })
+    }
+
     useEffect(() => {
         if (error) {
             notify(error)
@@ -132,11 +144,7 @@ export const ClientsPages = () => {
             </div>
             <div className="row">
                 <div className='col-3'>
-                    <Select
-                        onChange={(event) => sortOnOff(event)}
-                        defaultValue={options[0]}
-                        options={options}
-                    />
+                    <input className='from-control' onChange={filtr} />
 
                 </div>
                 <div className="offset-8 col-1 text-end">
@@ -275,7 +283,7 @@ export const ClientsPages = () => {
                                                                     className="no border-right border-success"
                                                                     rowSpan={all && all.services[key].length}
                                                                 >
-                                                                    {++kk}
+                                                                    {++k}
                                                                 </td>
                                                                 <td
                                                                     className="fish text-uppercase ps-3"
@@ -440,7 +448,7 @@ export const ClientsPages = () => {
                                                                         className="no border-right border-success"
                                                                         rowSpan={all && all.services[key].length}
                                                                     >
-                                                                        {++kk}
+                                                                        {++k}
                                                                     </td>
                                                                     <td
                                                                         className="fish text-uppercase ps-3"
@@ -628,8 +636,6 @@ export const ClientsPages = () => {
                                                 <>{
                                                     all && all.services[key].map((service, index) => {
                                                         if (index === 0) {
-
-
                                                             return (
                                                                 <tr className=' border-top border-success' >
                                                                     <td
@@ -805,8 +811,6 @@ export const ClientsPages = () => {
                                                 <>{
                                                     all && all.services[key].map((service, index) => {
                                                         if (index === 0) {
-
-
                                                             return (
                                                                 <tr className=' border-top border-success' >
                                                                     <td

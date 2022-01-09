@@ -353,7 +353,10 @@ router.get('/reseptionborn/:born', async (req, res) => {
     try {
         const born = new Date(req.params.born)
         const client = await Clients.find({
-            born: { $gte: new Date(new Date(born).getFullYear(), new Date(born).getMonth(), new Date(born).getDate()), $lt: new Date(new Date(born).getFullYear(), new Date(born).getMonth(), new Date(born).getDate() + 1) }
+            born: {
+                $gte: new Date(new Date(born).getFullYear(), new Date(born).getMonth(), new Date(born).getDate()),
+                $lt: new Date(new Date(born).getFullYear(), new Date(born).getMonth(), new Date(born).getDate() + 1)
+            }
         })
         let connectors = []
         for (let i = 0; i < client.length; i++) {
@@ -383,7 +386,7 @@ router.get('/reseptionborn/:born', async (req, res) => {
             clients.push(client)
             sections.push(sec)
         }
-        res.json({ connectors, clients, sections, service })
+        res.json({ connectors, clients, sections, services })
     } catch (e) {
         res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
     }
