@@ -69,7 +69,7 @@ export const ClientsStatsionarPages = () => {
             notify(e)
         }
     }, [request, auth, clientId, setAll])
-
+    console.log(all);
     const getBorn = useCallback(async () => {
         try {
             const fetch = await request(`/api/connector/statsionarborn/${born}`, 'GET', null, {
@@ -178,6 +178,7 @@ export const ClientsStatsionarPages = () => {
                                 <th scope="" className="date text-center" >Tug'ilgan yili <FontAwesomeIcon icon={faSort} /></th>
                                 <th scope="" className="id text-center">ID <FontAwesomeIcon icon={faSort} /></th>
                                 <th scope="" className="phone text-center">Tel <FontAwesomeIcon icon={faSort} /></th>
+                                <th scope="" className="phone text-center">Xona <FontAwesomeIcon icon={faSort} /></th>
                                 <th scope="" className="diagnos text-center">Tashxis <FontAwesomeIcon icon={faSort} /></th>
                                 <th scope="" className="fish text-center">Oldindan to'lov <FontAwesomeIcon icon={faSort} /></th>
                                 <th scope="" className="cek text-center">To'lov  </th>
@@ -197,6 +198,7 @@ export const ClientsStatsionarPages = () => {
                         <th scope="" className="date text-center" >Tug'ilgan yili <FontAwesomeIcon icon={faSort} /></th>
                         <th scope="" className="id text-center">ID <FontAwesomeIcon icon={faSort} /></th>
                         <th scope="" className="phone text-center">Tel <FontAwesomeIcon icon={faSort} /></th>
+                        <th scope="" className="phone text-center">Xona <FontAwesomeIcon icon={faSort} /></th>
                         <th scope="" className="diagnos text-center">Tashxis <FontAwesomeIcon icon={faSort} /></th>
                         <th scope="" className="fish text-center"> Holati <FontAwesomeIcon icon={faSort} /></th>
                         <th scope="" className="cek text-center"> Kelgan vaqti  </th>
@@ -214,6 +216,7 @@ export const ClientsStatsionarPages = () => {
                                         <td className="date" >{all && new Date(all.clients[key].born).toLocaleDateString()}</td>
                                         <td className="id" >{all && all.clients[key].id}</td>
                                         <td className="phone">+{all && all.clients[key].phone}</td>
+                                        <td className="phone">{all && all.rooms[key].roomname}</td>
                                         <td className="diagnos ">  {connector.diagnosis} </td>
                                         <td scope="" className="fish text-center">
                                             {connector.position}
@@ -236,6 +239,7 @@ export const ClientsStatsionarPages = () => {
                                             <td className="fish text-uppercase text-success" style={{ fontWeight: "600" }} >{all && all.clients[key].lastname} {all && all.clients[key].firstname} {all && all.clients[key].fathername}</td>
                                             <td className="id" >{all && all.clients[key].id}</td>
                                             <td className="phone">+{all && all.clients[key].phone}</td>
+                                            <td className="phone">{all && all.rooms[key].roomname}</td>
                                             <td className="diagnos ">  {connector.diagnosis} </td>
                                             <td scope="" className="fish text-center">
                                                 {connector.position}
@@ -272,6 +276,7 @@ export const ClientsStatsionarPages = () => {
                                         <td className="date" >{all && new Date(all.clients[key].born).toLocaleDateString()}</td>
                                         <td className="id" >{all && all.clients[key].id}</td>
                                         <td className="phone">+{all && all.clients[key].phone}</td>
+                                        <td className="phone">{all && all.rooms[key].roomname}</td>
                                         <td className="diagnos ">  {connector.diagnosis} </td>
                                         <td scope="" className="fish text-center">
                                             {connector.position === "davolanishda" ? <Link className='btn button-success' to={`/cashier/prepayment/${all.clients[key]._id}/${connector._id}`}> Qo'shish</Link> : "Xizmat yakunlangan"}
@@ -294,6 +299,7 @@ export const ClientsStatsionarPages = () => {
                                             <td className="fish text-uppercase text-success" style={{ fontWeight: "600" }} >{all && all.clients[key].lastname} {all && all.clients[key].firstname} {all && all.clients[key].fathername}</td>
                                             <td className="id" >{all && all.clients[key].id}</td>
                                             <td className="phone">+{all && all.clients[key].phone}</td>
+                                            <td className="phone">{all && all.rooms[key].roomname}</td>
                                             <td className="diagnos ">  {connector.diagnosis} </td>
                                             <td scope="" className="fish text-center">
                                                 {connector.position === "davolanishda" ? <Link className='btn button-success' to={`/cashier/prepayment/${all.clients[key]._id}/${connector._id}`}> Qo'shish</Link> : "Xizmat yakunlangan"}

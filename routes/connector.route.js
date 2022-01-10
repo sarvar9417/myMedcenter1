@@ -47,6 +47,108 @@ router.post('/register', async (req, res) => {
     }
 })
 
+// /api/auth/connector/
+router.get('/reseptionoffline/:start/:end/:fish', async (req, res) => {
+    try {
+        const fish = (req.params.fish).split(" ")
+        const name = new RegExp('.*' + fish[0] + ".*", "i")
+        const lastname = fish[1] ? new RegExp('.*' + fish[1] + ".*", "i") : new RegExp('.*' + "" + ".*", "i")
+        const start = new Date(req.params.start)
+        const end = new Date(req.params.end)
+        const clientss = await Clients.find()
+            .or([
+                { firstname: name, lastname: lastname },
+                { lastname: name, firstname: lastname }
+            ])
+        let connectors = []
+        for (let i = 0; i < clientss.length; i++) {
+            const connector = await Connector.find({
+                bronDay: {
+                    $gte:
+                        new Date(new Date(start).getFullYear(), new Date(start).getMonth(), new Date(start).getDate()),
+                    $lt: new Date(new Date().getFullYear(),
+                        new Date(end).getMonth(), new Date(end).getDate() + 1)
+                },
+                client: clientss[i]._id
+            })
+                .or([{ type: "offline" }, { type: "online" }, { type: "callcenter" }])
+                .sort({ _id: -1 })
+            connectors = connectors.concat(connector)
+        }
+
+        let clients = []
+        let sections = []
+        let services = []
+        for (let i = 0; i < connectors.length; i++) {
+            const client = await Clients.findById(connectors[i].client)
+            const sec = await Section.find({
+                connector: connectors[i]._id
+            })
+                .or([{ position: "offline" }, { position: "kelgan" }, { position: "callcenter" }])
+            const service = await Service.find({
+                connector: connectors[i]._id
+            })
+            services.push(service)
+            clients.push(client)
+            sections.push(sec)
+        }
+        res.json({ connectors, clients, sections, services })
+    } catch (e) {
+        res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
+    }
+})
+
+// /api/auth/connector/
+router.get('/reseptiononline/:start/:end/:fish', async (req, res) => {
+    try {
+        const fish = (req.params.fish).split(" ")
+        const name = new RegExp('.*' + fish[0] + ".*", "i")
+        const lastname = fish[1] ? new RegExp('.*' + fish[1] + ".*", "i") : new RegExp('.*' + "" + ".*", "i")
+        const start = new Date(req.params.start)
+        const end = new Date(req.params.end)
+        const clientss = await Clients.find()
+            .or([
+                { firstname: name, lastname: lastname },
+                { lastname: name, firstname: lastname }
+            ])
+        let connectors = []
+        for (let i = 0; i < clientss.length; i++) {
+            const connector = await Connector.find({
+                bronDay: {
+                    $gte:
+                        new Date(new Date(start).getFullYear(), new Date(start).getMonth(), new Date(start).getDate()),
+                    $lt: new Date(new Date().getFullYear(),
+                        new Date(end).getMonth(), new Date(end).getDate() + 1)
+                },
+                client: clientss[i]._id
+            })
+                .or([{ type: "online" }])
+                .sort({ _id: -1 })
+            connectors = connectors.concat(connector)
+        }
+
+        let clients = []
+        let sections = []
+        let services = []
+        for (let i = 0; i < connectors.length; i++) {
+            const client = await Clients.findById(connectors[i].client)
+            const sec = await Section.find({
+                connector: connectors[i]._id
+            })
+            const service = await Service.find({
+                connector: connectors[i]._id
+            })
+            services.push(service)
+            clients.push(client)
+            sections.push(sec)
+        }
+        res.json({ connectors, clients, sections, services })
+    } catch (e) {
+        res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
+    }
+})
+
+
 
 
 // /api/auth/connector/
@@ -602,10 +704,9 @@ router.get('/reseption', async (req, res) => {
             }
         })
             .or([{ type: "offline" }, { type: "online" }, { type: "callcenter" }])
-            .skip((pagenumber - 1) * 10)
-            .limit(10)
             .sort({ _id: -1 })
-        console.log(connectors);
+            .skip((pagenumber - 1) * 15)
+            .limit(15)
         let clients = []
         let sections = []
         let services = []

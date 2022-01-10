@@ -103,6 +103,22 @@ export const ClientsPages = () => {
         getBorn()
     }
 
+    //=================================================================================
+    //=================================================================================
+    //=================================================================================
+    // FISH bilan qidirish
+    const [fish, setFish] = useState()
+    const searchName = useCallback(async () => {
+        try {
+            const fetch = await request(`/api/connector/reseptionoffline/${startDate}/${endDate}/${fish}`, 'GET', null, {
+                Authorization: `Bearer ${auth.token}`
+            })
+            setAll(fetch)
+        } catch (e) {
+            notify(e)
+        }
+    }, [request, auth, setAll, startDate, endDate, fish])
+
     useEffect(() => {
         if (error) {
             notify(error)
@@ -144,7 +160,13 @@ export const ClientsPages = () => {
                 </div>
             </div>
             <div className="row">
-                <div className="offset-11 col-1 text-end">
+                <div className='col-2 '>
+                    <input onChange={(event) => { setFish(event.target.value) }} className='form-control' placeholder='Mijoz ism-familiyasi' />
+                </div>
+                <div className='col-1'>
+                    <button onClick={(event) => (searchName((event.target.value)))} className="btn text-white" style={{ backgroundColor: "#45D3D3" }}><FontAwesomeIcon icon={faSearch} /></button>
+                </div>
+                <div className=" offset-8 col-1 text-end">
                     <ReactHTMLTableToExcel
                         className="btn text-white mb-2 btn-success"
                         table="reseptionReport"

@@ -259,15 +259,11 @@ export const CheckCashier = () => {
                     ...services,
                     [key]: { ...services[key], priceCashier: parseInt(event.target.value), payment: "kutilmoqda" },
                 }))
-            setServices(
-                Object.values({
-                    ...services,
-                    [key]: { ...services[key], priceCashier: parseInt(event.target.value), payment: "to'langan", commentCashier: " " },
-                }))
             let k = 0
             sections.map((s, i) => {
                 k = k + (sections[i].priceCashier - sections1[i].priceCashier)
             })
+            console.log(k, " bu")
             services.map((s, i) => {
                 if (i === key) {
                     k = k + (parseInt(event.target.value) - services1[i].priceCashier)
@@ -278,7 +274,7 @@ export const CheckCashier = () => {
             setBepaid(k)
         }
     }, [services, setServices, services1, sections, sections1, setBepaid])
-
+    console.log(bepaid);
     const inputCommentSection = (event, key) => {
         setSections(
             Object.values({
