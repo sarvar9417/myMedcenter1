@@ -40,7 +40,7 @@ export const ClientsStatsionarPages = () => {
             const fetch = await request(`/api/connector/cashierstatsionar`, 'GET', null, {
                 Authorization: `Bearer ${auth.token}`
             })
-
+            console.log(fetch);
             setAll(fetch)
         } catch (e) {
             notify(e)
@@ -52,6 +52,7 @@ export const ClientsStatsionarPages = () => {
             const fetch = await request(`/api/connector/cashierstatsionar/${startDate}/${endDate}`, 'GET', null, {
                 Authorization: `Bearer ${auth.token}`
             })
+            console.log(fetch)
             setAll(fetch)
         } catch (e) {
             notify(e)
@@ -273,13 +274,13 @@ export const ClientsStatsionarPages = () => {
                                         <td className="phone">+{all && all.clients[key].phone}</td>
                                         <td className="diagnos ">  {connector.diagnosis} </td>
                                         <td scope="" className="fish text-center">
-                                            {connector.position === "davolanishda" ? <Link className='btn button-success' to={`/cashier/prepayment/${all.clients[key]._id}/${connector._id}`}> Qo'shish</Link> : "Xizmat yakunlangan"}
+                                            {connector.prepayment}
                                         </td>
                                         <td scope="" className="cek text-center">
-                                            {connector.position === "yakunlangan" ? <Link to={`/cashier/paystatsionar/${all.clients[key]._id}/${connector._id}`} className='btn button-danger' >Qabul qilish </Link> : "Xizmat yakunlanmagan"}
+                                            {connector.position}
                                         </td>
                                         <td scope="" className="cek text-center">
-                                            <Link to={`/cashier/reciept/${all && all.clients[key]._id}/${connector._id}`} > <FontAwesomeIcon icon={faPrint} className="fa-2x" /> </Link>
+                                            <Link to={`/director/recieptstatsionar/${all && all.clients[key]._id}/${connector._id}`} > <FontAwesomeIcon icon={faPrint} className="fa-2x" /> </Link>
                                         </td>
                                     </tr>
                                 )
@@ -295,13 +296,13 @@ export const ClientsStatsionarPages = () => {
                                             <td className="phone">+{all && all.clients[key].phone}</td>
                                             <td className="diagnos ">  {connector.diagnosis} </td>
                                             <td scope="" className="fish text-center">
-                                                {connector.position === "davolanishda" ? <Link className='btn button-success' to={`/cashier/prepayment/${all.clients[key]._id}/${connector._id}`}> Qo'shish</Link> : "Xizmat yakunlangan"}
+                                                {connector.prepayment}
                                             </td>
                                             <td scope="" className="cek text-center">
-                                                {connector.position === "yakunlangan" ? <Link to={`/cashier/paystatsionar/${all.clients[key]._id}/${connector._id}`} className='btn button-danger' >Qabul qilish </Link> : "Xizmat yakunlanmagan"}
+                                                {connector.position}
                                             </td>
                                             <td scope="" className="cek text-center">
-                                                <Link to={`/cashier/reciept/${all && all.clients[key]._id}/${connector._id}`} > <FontAwesomeIcon icon={faPrint} className="fa-2x" /> </Link>
+                                                <Link to={`/director/recieptstatsionar/${all && all.clients[key]._id}/${connector._id}`} > <FontAwesomeIcon icon={faPrint} className="fa-2x" /> </Link>
                                             </td>
                                         </tr>
                                     )

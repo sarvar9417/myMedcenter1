@@ -72,7 +72,6 @@ router.get('/cashierconnector/:id', auth, async (req, res) => {
     try {
         const service = await Service.find({
             connector: req.params.id,
-            payment: "kutilmoqda"
         })
         res.json(service)
     } catch (e) {

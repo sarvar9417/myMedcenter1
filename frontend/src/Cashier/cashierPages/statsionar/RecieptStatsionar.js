@@ -76,9 +76,9 @@ export const RecieptStatsionar = () => {
                 Authorization: `Bearer ${auth.token}`
             })
             if (data.position === "band") {
-                setBronDay(Math.abs((new Date(new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()) - new Date(new Date(data.beginDay).getFullYear(), new Date(data.beginDay).getMonth() + 1, new Date(data.beginDay).getDate())) / oneDay))
+                setBronDay(Math.abs((new Date(new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()) - new Date(new Date(data.beginDay).getFullYear(), new Date(data.beginDay).getMonth() + 1, new Date(data.beginDay).getDate())) / oneDay) + 1)
             } else {
-                setBronDay(Math.abs((new Date(new Date(data.beginDay).getFullYear(), new Date(data.beginDay).getMonth() + 1, new Date(data.endDay).getDate()) - new Date(new Date(data.beginDay).getFullYear(), new Date(data.beginDay).getMonth() + 1, new Date(data.beginDay).getDate())) / oneDay))
+                setBronDay(Math.abs((new Date(new Date(data.beginDay).getFullYear(), new Date(data.beginDay).getMonth() + 1, new Date(data.endDay).getDate()) - new Date(new Date(data.beginDay).getFullYear(), new Date(data.beginDay).getMonth() + 1, new Date(data.beginDay).getDate())) / oneDay) + 1)
             }
             setRoom(data)
         } catch (e) {
@@ -173,6 +173,7 @@ export const RecieptStatsionar = () => {
     }, [request, setLogo])
 
     const [tulov, setTulov] = useState()
+    const [t, setT] = useState()
 
     const getPayments = useCallback(async () => {
         try {
@@ -221,8 +222,9 @@ export const RecieptStatsionar = () => {
         if (!connector) {
             getConnector()
         }
-        if (!tulov) {
+        if (!t) {
             getPayments()
+            setT(1)
         }
 
     }, [notify, clearError])

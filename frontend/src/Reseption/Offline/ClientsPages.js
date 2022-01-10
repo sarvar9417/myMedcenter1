@@ -36,6 +36,18 @@ export const ClientsPages = () => {
     const { loading, request, error, clearError } = useHttp()
     const [clientId, setClientId] = useState('')
     const [all, setAll] = useState()
+
+    const getToday = useCallback(async () => {
+        try {
+            const fetch = await request(`/api/connector/reseption`, 'GET', null, {
+                Authorization: `Bearer ${auth.token}`
+            })
+            setAll(fetch)
+        } catch (e) {
+            notify(e)
+        }
+    }, [request, auth, startDate, endDate, setAll])
+
     const getConnectors = useCallback(async () => {
         try {
             const fetch = await request(`/api/connector/reseption/${startDate}/${endDate}`, 'GET', null, {
@@ -97,7 +109,7 @@ export const ClientsPages = () => {
             clearError()
         }
         if (!all) {
-            getConnectors()
+            getToday()
         }
     }, [notify, clearError])
 

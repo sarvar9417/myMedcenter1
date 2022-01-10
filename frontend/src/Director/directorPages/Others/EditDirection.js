@@ -31,8 +31,12 @@ export const EditDirection = () => {
     value: "",
     price: "",
     section: "",
-    subsection: "", 
-    room: ""
+    subsection: " ",
+    label: "",
+    room: "",
+    doctorProcient: "",
+    counteragentProcient: "",
+    counterDoctor: ""
   })
   const directionId = useParams().id
 
@@ -46,7 +50,12 @@ export const EditDirection = () => {
         price: data.price,
         section: data.section,
         subsection: data.subsection,
-        room: data.room
+        room: data.room,
+        label: data.label,
+        doctorProcient: data.doctorProcient,
+        counteragentProcient: data.counteragentProcient,
+        counterDoctor: data.counterDoctor
+
       })
     } catch (e) {
       notify(e)
@@ -79,11 +88,15 @@ export const EditDirection = () => {
     setDirection({ ...direction, room: event.target.value })
   }
 
+  const changeProcient = (event) => {
+    setDirection({ ...direction, [event.target.name]: parseInt(event.target.value) })
+  }
+
   const checkDirection = () => {
     if (CheckDirection(direction)) {
       return notify(CheckDirection(direction))
     }
-    window.scrollTo({top:0})
+    window.scrollTo({ top: 0 })
     setModal(true)
   }
 
@@ -118,7 +131,7 @@ export const EditDirection = () => {
   }, [getDirection, notify, clearError])
 
   if (loading) {
-    return <Loader/>
+    return <Loader />
   }
 
   return (
@@ -135,6 +148,9 @@ export const EditDirection = () => {
                       <th className="text-center">Xizmat narxi</th>
                       <th className="text-center">Xizmat turi</th>
                       <th className="text-center">Xizmat xonasi</th>
+                      <th className="text-center">Doctor ulushi</th>
+                      <th className="text-center">Medpridstavitel ulushi</th>
+                      <th className="text-center">Tavsiya etgan doctor ulushi</th>
                       <th className="text-center">Saqlash</th>
                     </tr>
                   </thead>
@@ -142,12 +158,15 @@ export const EditDirection = () => {
                     <tr>
                       <td className="text-center">
                         <span className="table-avatar">
-                          <span href="profile.html"> <input defaultValue={direction.section} onChange={changeSection} name="" className="addDirection" /> </span>
+                          <span href="profile.html"> <input style={{ width: "100px" }} defaultValue={direction.section} onChange={changeSection} name="lastname" className="addDirection" /> </span>
                         </span>
                       </td>
-                      <td className="text-center"><input defaultValue={direction.price} onChange={changePrice} name="" className="addDirection" /> sum</td>
-                      <td className="text-center"><input defaultValue={direction.subsection} onChange={changeSubsection} name="" className="addDirection" /></td>
-                      <td className="text-center"><input defaultValue={direction.room} onChange={changeRoom} name="room" className="addDirection" /></td>
+                      <td className="text-center"><input style={{ width: "100px" }} defaultValue={direction.price} onChange={changePrice} type="number" name="lastname" className="addDirection" /> sum</td>
+                      <td className="text-center"><input style={{ width: "100px" }} defaultValue={direction.subsection} onChange={changeSubsection} name="lastname" className="addDirection" /></td>
+                      <td className="text-center"><input style={{ width: "100px" }} defaultValue={direction.room} onChange={changeRoom} name="room" className="addDirection" /></td>
+                      <td className="text-center"><input style={{ width: "100px" }} type="number" defaultValue={direction.doctorProcient} onChange={changeProcient} name="doctorProcient" className="addDirection" /></td>
+                      <td className="text-center"><input style={{ width: "100px" }} type="number" defaultValue={direction.counteragentProcient} onChange={changeProcient} name="counteragentProcient" className="addDirection" /></td>
+                      <td className="text-center"><input style={{ width: "100px" }} type="number" defaultValue={direction.counterDoctor} onChange={changeProcient} name="counterDoctor" className="addDirection" /></td>
                       <td className="text-center"><button onClick={checkDirection} className="btn button-success" >Saqlash</button> </td>
                     </tr>
                   </tbody>

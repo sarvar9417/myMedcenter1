@@ -47,7 +47,7 @@ export const EditCheckCashier = () => {
     const [deletePayment, setDeletePayment] = useState({
         client: clientId,
         connector: connectorId,
-        type: "",
+        type: "cash",
         total: 0,
         cash: 0,
         card: 0,
@@ -405,7 +405,7 @@ export const EditCheckCashier = () => {
             notify(e)
         }
     }, [request, auth, connectorId, setpayments, setPayment])
-    console.log(payment)
+
     useEffect(() => {
         if (error) {
             notify(error)

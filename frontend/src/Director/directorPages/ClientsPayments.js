@@ -43,8 +43,8 @@ export const ClientsPayments = () => {
         <div className="container m-5 mx-auto" style={{ minWidth: "1250px" }}  >
             <div>
                 <div style={{ minWidth: "1100px" }} >
-                    <table id="" className="table-striped table-hover" style={{ borderBottom: "1px solid #aaa", marginBottom: "10px" }} >
-                        <thead>
+                    <table id="" className=" table-hover" style={{ borderBottom: "1px solid #aaa", marginBottom: "10px" }} >
+                        <thead style={{ backgroundColor: "#6c7ae0", color: "white" }}>
                             <tr>
                                 <th className="no" scope="no" >№ <FontAwesomeIcon icon={faSort} /> </th>
                                 <th scope="" className="date text-center" >Kelgan vaqti <FontAwesomeIcon icon={faSort} /></th>
@@ -52,6 +52,7 @@ export const ClientsPayments = () => {
                                 <th scope="" className="date text-center" >Tug'ilgan yili <FontAwesomeIcon icon={faSort} /></th>
                                 <th scope="" className="id text-center">ID <FontAwesomeIcon icon={faSort} /></th>
                                 <th scope="" className="phone text-center">Tel <FontAwesomeIcon icon={faSort} /></th>
+                                <th scope="" className="phone text-center">Turi<FontAwesomeIcon icon={faSort} /></th>
                                 <th scope="" className="diagnos text-center">Naqt <FontAwesomeIcon icon={faSort} /></th>
                                 <th scope="" className="fish text-center">Plastik <FontAwesomeIcon icon={faSort} /></th>
                                 <th scope="" className="cek text-center">Aralash  </th>
@@ -72,10 +73,11 @@ export const ClientsPayments = () => {
                                         <td className="date" >{all && new Date(all.clients[key].born).toLocaleDateString()}</td>
                                         <td className="id" >{all && all.clients[key].id}</td>
                                         <td className="phone">+{all && all.clients[key].phone}</td>
+                                        <td className="phone">{all && all.payments[key].position}</td>
                                         <td className="diagnos text-center">  {all && all.payments[key].cash} </td>
                                         <td className="diagnos text-center">  {all && all.payments[key].card} </td>
                                         <td className="diagnos text-center">  {all && all.payments[key].transfer} </td>
-                                        <td className="diagnos text-center">  {all && all.payments[key].cash + all.payments[key].cash + all.payments[key].transfer} </td>
+                                        <td className="diagnos text-center">  {all && all.payments[key].cash + all.payments[key].card + all.payments[key].transfer} </td>
                                     </tr>
                                 )
 
@@ -86,21 +88,21 @@ export const ClientsPayments = () => {
                         <tbody className='pt-5 mt-5'>
 
                             <tr>
-                                <td colSpan={6}>
+                                <td colSpan={6} className='fw-bold'>
                                     Jami:
                                 </td>
-                                <td className="diagnos ">  Naqt </td>
-                                <td className="diagnos ">  Plastik </td>
-                                <td className="diagnos ">  O'tkazma </td>
-                                <td className="diagnos ">  Umumiy </td>
+                                <td className="diagnos fw-bold">  Naqt </td>
+                                <td className="diagnos fw-bold">  Plastik </td>
+                                <td className="diagnos fw-bold">  O'tkazma </td>
+                                <td className="diagnos fw-bold">  Umumiy </td>
                             </tr>
                             <tr>
                                 <td colSpan={6}>
                                 </td>
-                                <td className="diagnos ">  {cash} </td>
-                                <td className="diagnos ">  {card} </td>
-                                <td className="diagnos ">  {transfer} </td>
-                                <td className="diagnos ">  {transfer + card + cash} </td>
+                                <td className="diagnos fw-bold text-primary">  {cash} </td>
+                                <td className="diagnos fw-bold text-warning">  {card} </td>
+                                <td className="diagnos fw-bold text-danger">  {transfer} </td>
+                                <td className="diagnos fw-bold text-success">  {transfer + card + cash} </td>
                             </tr>
                         </tbody>
 

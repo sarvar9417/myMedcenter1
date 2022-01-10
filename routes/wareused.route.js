@@ -11,7 +11,6 @@ const { WareHouse } = require('../models/WareHouse')
 // /api/ware/register
 router.post('/register', auth, async (req, res) => {
     try {
-        console.log(req.body);
         const useds = req.body
         useds.map(async (used) => {
             const { error } = validateWareUsed(used)

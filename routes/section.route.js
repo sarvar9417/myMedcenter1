@@ -179,7 +179,6 @@ router.get('/cashierconnector/:id', auth, async (req, res) => {
         const id = req.params.id
         const sections = await Section.find({
             connector: id,
-            payment: "kutilmoqda"
         }).sort({ _id: -1 })
         res.json(sections)
 

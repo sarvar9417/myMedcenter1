@@ -46,6 +46,17 @@ export const ClientsPages = () => {
         }
     }, [request, auth, startDate, endDate, setAll])
 
+    const getToday = useCallback(async () => {
+        try {
+            const fetch = await request(`/api/connector/reseption`, 'GET', null, {
+                Authorization: `Bearer ${auth.token}`
+            })
+            setAll(fetch)
+        } catch (e) {
+            notify(e)
+        }
+    }, [request, auth, startDate, endDate, setAll])
+
     const getId = useCallback(async () => {
         try {
             const fetch = await request(`/api/connector/reseption/${clientId}`, 'GET', null, {
@@ -96,7 +107,7 @@ export const ClientsPages = () => {
             clearError()
         }
         if (!all) {
-            getConnectors()
+            getToday()
         }
     }, [notify, clearError])
 
@@ -595,7 +606,7 @@ export const ClientsPages = () => {
                                                             className="fish text-center"
                                                             rowSpan={all.sections[key].length + all.services[key].length}
                                                         >
-                                                            <Link className='btn button-danger text-danger' to={`/cashier/payedit/${all.clients[key]._id}/${connector._id}`} >
+                                                            <Link className='btn button-danger text-danger' to={`/cashier/pay/${all.clients[key]._id}/${connector._id}`} >
                                                                 Tahrirlash
                                                             </Link>
                                                         </td>
@@ -672,7 +683,7 @@ export const ClientsPages = () => {
                                                                     className="fish text-center"
                                                                     rowSpan={all.sections[key].length + all.services[key].length}
                                                                 >
-                                                                    <Link className='btn button-danger text-danger' to={`/cashier/payedit/${all.clients[key]._id}/${connector._id}`} >
+                                                                    <Link className='btn button-danger text-danger' to={`/cashier/pay/${all.clients[key]._id}/${connector._id}`} >
                                                                         Tahrirlash
                                                                     </Link>
                                                                 </td>
@@ -772,7 +783,7 @@ export const ClientsPages = () => {
                                                                         className="fish text-center"
                                                                         rowSpan={all.sections[key].length + all.services[key].length}
                                                                     >
-                                                                        <Link className='btn button-danger text-danger' to={`/cashier/payedit/${all.clients[key]._id}/${connector._id}`} >
+                                                                        <Link className='btn button-danger text-danger' to={`/cashier/pay/${all.clients[key]._id}/${connector._id}`} >
                                                                             Tahrirlash
                                                                         </Link>
                                                                     </td>
@@ -849,7 +860,7 @@ export const ClientsPages = () => {
                                                                             className="fish text-center"
                                                                             rowSpan={all.sections[key].length + all.services[key].length}
                                                                         >
-                                                                            <Link className='btn button-danger text-danger' to={`/cashier/payedit/${all.clients[key]._id}/${connector._id}`} >
+                                                                            <Link className='btn button-danger text-danger' to={`/cashier/pay/${all.clients[key]._id}/${connector._id}`} >
                                                                                 Tahrirlash
                                                                             </Link>
                                                                         </td>

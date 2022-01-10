@@ -43,6 +43,7 @@ import { CounterDoctors } from './marketing/counterdoctors/Counterdoctors'
 import { EditCounterDoctor } from './marketing/counterdoctors/EditCounterDoctor'
 import { EditWareHouse } from './directorPages/WareHouse/EditWareHouse'
 import { WareConnector } from './directorPages/WareHouse/WareConnectors'
+import { RecieptStatsionar } from './directorPages/RecieptStatsionar'
 
 export const DirectorRoutes = (isAuthenticated) => {
     if (isAuthenticated) {
@@ -150,6 +151,9 @@ export const DirectorRoutes = (isAuthenticated) => {
                     </Route>
                     <Route path='/director/statsionar' >
                         <RouterComponent component={<ClientsStatsionarPages />} menu={true} />
+                    </Route>
+                    <Route path='/director/recieptstatsionar/:id/:connector' >
+                        <RouterComponent component={<RecieptStatsionar />} menu={true} />
                     </Route>
                     <Route path='/director/payments' >
                         <RouterComponent component={<ClientsPayments />} menu={true} />

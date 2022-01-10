@@ -590,6 +590,45 @@ router.get('/cashierstatsionar', async (req, res) => {
 })
 
 // /api/auth/connector/
+router.get('/reseption', async (req, res) => {
+    try {
+        const pagenumber = 1
+        const connectors = await Connector.find({
+            bronDay: {
+                $gte:
+                    new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()),
+                $lt: new Date(new Date().getFullYear(),
+                    new Date().getMonth(), new Date().getDate() + 1)
+            }
+        })
+            .or([{ type: "offline" }, { type: "online" }, { type: "callcenter" }])
+            .skip((pagenumber - 1) * 10)
+            .limit(10)
+            .sort({ _id: -1 })
+        console.log(connectors);
+        let clients = []
+        let sections = []
+        let services = []
+        for (let i = 0; i < connectors.length; i++) {
+            const client = await Clients.findById(connectors[i].client)
+            const sec = await Section.find({
+                connector: connectors[i]._id
+            })
+                .or([{ position: "offline" }, { position: "kelgan" }, { position: "callcenter" }])
+            const service = await Service.find({
+                connector: connectors[i]._id
+            })
+            services.push(service)
+            clients.push(client)
+            sections.push(sec)
+        }
+        res.json({ connectors, clients, sections, services })
+    } catch (e) {
+        res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
+    }
+})
+
+// /api/auth/connector/
 router.get('/', async (req, res) => {
     try {
         const connectors = await Connector.find({}).sort({ _id: -1 })

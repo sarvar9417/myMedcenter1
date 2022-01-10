@@ -32,41 +32,6 @@ export const AddServices = () => {
   // So'rov kutish va xatoliklarni olish
   const { request, error, clearError, loading } = useHttp()
 
-  const [counteragents, setCounterAgents] = useState()
-  const [sources, setSources] = useState()
-  const getCounterAgents = useCallback(async () => {
-    try {
-      const fetch = await request('/api/counteragent/', 'GET', null, {
-        Authorization: `Bearer ${auth.token}`
-      })
-      let c = [{
-        label: "Tanlanmagan",
-        value: " "
-      }]
-      fetch.map((data) => {
-        c.push({
-          label: data.clinic.toUpperCase() + " " + data.lastname + " " + data.firstname + " " + data.fathername,
-          value: data.lastname + " " + data.firstname + " " + data.fathername
-        })
-
-      })
-      setCounterAgents(c)
-    } catch (error) {
-      notify(error)
-    }
-  }, [auth, request, setCounterAgents])
-
-  const getSources = useCallback(async () => {
-    try {
-      const fetch = await request('/api/source/', 'GET', null, {
-        Authorization: `Bearer ${auth.token}`
-      })
-      setSources(fetch)
-    } catch (error) {
-      notify(error)
-    }
-  }, [auth, request, setSources])
-
   //Navbatni ro'yxatga olish
   const [turns, seTurns] = useState([])
 
@@ -209,7 +174,18 @@ export const AddServices = () => {
       const fetch = await request('/api/warehouse/', 'GET', null, {
         Authorization: `Bearer ${auth.token}`
       })
-      setWarehouse(fetch)
+      let s = []
+      fetch.map(p => {
+        s.push({
+          label: p.name + " " + p.type,
+          value: p.name + " " + p.type,
+          name: p.name,
+          type: p.type,
+          price: p.price,
+          _id: p._id
+        })
+      })
+      setWarehouse(s)
     } catch (error) {
       notify(error)
     }
@@ -378,12 +354,6 @@ export const AddServices = () => {
   useEffect(() => {
     if (!options) {
       getOptions()
-    }
-    if (!sources) {
-      getSources()
-    }
-    if (!counteragents) {
-      getCounterAgents()
     }
     if (error) {
       notify(error)
