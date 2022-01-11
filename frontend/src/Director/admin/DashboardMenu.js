@@ -55,29 +55,29 @@ export const DashboardMenu = () => {
             const fetch = await request(`/api/connector/reseption/${new Date()}/${new Date()}`, 'GET', null, {
                 Authorization: `Bearer ${auth.token}`
             })
-            const payments = await request(`/api/payment/director`, 'GET', null, {
+            const payments = await request(`/api/payment/directorclients/${new Date()}/${new Date()}`, 'GET', null, {
                 Authorization: `Bearer ${auth.token}`
             })
+            let on = 0
+            let off = 0
+            let pay = 0
+            let stat = 0
             let t = 0
-            payments.map(p => {
-                t = p.total
+            payments.payments.map(p => {
+                t = t + p.total
+                if (p.position === "statsionar") {
+                    stat = stat + p.total
+                }
+                if (p.position === "offline") {
+                    off = off + p.total
+                }
+                if (p.position === "online") {
+                    on = on + p.total
+                }
             })
             setTushum(t)
-            let i = 0
-            let price = 0
-            fetch.sections.map((sections) => {
-                sections.map(section => {
-                    price = price + section.priceCashier
-                })
-            })
-            fetch.services.map((services) => {
-                services.map(service => {
-                    price = price + service.priceCashier
-                })
-            })
-            setSections(fetch.sections)
-            setClient(i)
-            setPriceToday(price)
+            setSections(off)
+            setPriceToday(stat)
         } catch (e) {
 
         }
@@ -126,7 +126,7 @@ export const DashboardMenu = () => {
                             <h5>Kunduzgi</h5>
                             <div className='row'>
                                 <div className='col-6'> {new Date().toLocaleDateString()}</div>
-                                <div className='col-6 text-end'>{priceToday}</div>
+                                <div className='col-6 text-end'>{sections}</div>
                             </div>
                         </div>
                         <div className="icon">

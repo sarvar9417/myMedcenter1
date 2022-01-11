@@ -26,6 +26,9 @@ export const ClientsPages = () => {
             const data = await request("/api/direction/", "GET", null, {
                 Authorization: `Bearer ${auth.token}`
             })
+            const fetch = await request("/api/warehouse/", "GET", null, {
+                Authorization: `Bearer ${auth.token}`
+            })
             let m = [{
                 _id: "123",
                 __v: 0,
@@ -45,6 +48,22 @@ export const ClientsPages = () => {
                     m.push({
                         value: section.section,
                         label: section.section,
+                        subvalue: " ",
+                        price: 0
+                    })
+                }
+            })
+            fetch.map((ware) => {
+                let k = 0
+                m.map((mm) => {
+                    if (mm.value === ware.name) {
+                        k++
+                    }
+                })
+                if (!k) {
+                    m.push({
+                        value: ware.name,
+                        label: ware.name,
                         subvalue: " ",
                         price: 0
                     })
@@ -108,8 +127,28 @@ export const ClientsPages = () => {
         getConnectors()
     }
 
+    //====================================================================================
+    //====================================================================================
+    //====================================================================================
+    // Bo'limlar bo'yicha sartirovka
+
+    const getSortSection = useCallback(async (section) => {
+        try {
+            console.log(section)
+            const fetch = await request(`/api/connector/director/${startDate}/${endDate}/${section}`, 'GET', null, {
+                Authorization: `Bearer ${auth.token}`
+            })
+            setAll(fetch)
+        } catch (e) {
+            notify(e)
+        }
+    }, [request, auth, startDate, endDate, setAll])
     const sortOnOff = (event) => {
-        setType(event.name)
+        if (event.label === "all") {
+            getConnectors()
+        } else {
+            getSortSection(event.label)
+        }
     }
 
     const searchId = () => {
@@ -120,6 +159,21 @@ export const ClientsPages = () => {
         getBorn()
     }
 
+    //=================================================================================
+    //=================================================================================
+    //=================================================================================
+    // FISH bilan qidirish
+    const [fish, setFish] = useState()
+    const searchName = useCallback(async () => {
+        try {
+            const fetch = await request(`/api/connector/reseptionoffline/${startDate}/${endDate}/${fish}`, 'GET', null, {
+                Authorization: `Bearer ${auth.token}`
+            })
+            setAll(fetch)
+        } catch (e) {
+            notify(e)
+        }
+    }, [request, auth, setAll, startDate, endDate, fish])
 
     useEffect(() => {
         if (error) {
@@ -139,7 +193,7 @@ export const ClientsPages = () => {
     // }
 
     return (
-        <div className="container m-5 mx-auto" style={{ minWidth: "1250px" }}  >
+        <div className="container m-5 mx-auto" style={{ minWidth: "1100px" }}  >
             <div className="row mb-3">
                 <div className=" col-2">
                     <DatePicker className="form-control mb-2" selected={startDate} onChange={(date) => { setStartDate(date) }} />
@@ -165,7 +219,13 @@ export const ClientsPages = () => {
                 </div>
             </div>
             <div className="row">
-                <div className="offset-11 col-1 text-end">
+                <div className='col-2 '>
+                    <input onChange={(event) => { setFish(event.target.value) }} className='form-control' placeholder='Mijoz ism-familiyasi' />
+                </div>
+                <div className='col-1'>
+                    <button onClick={(event) => (searchName((event.target.value)))} className="btn text-white" style={{ backgroundColor: "#45D3D3" }}><FontAwesomeIcon icon={faSearch} /></button>
+                </div>
+                <div className="offset-8 col-1 text-end">
                     <ReactHTMLTableToExcel
                         className="btn text-white mb-2 btn-success"
                         table="reseptionReport"
@@ -177,7 +237,7 @@ export const ClientsPages = () => {
 
             </div>
             <div>
-                <div style={{ minWidth: "1000px" }} >
+                <div style={{ minWidth: "1100px" }} >
                     <table id="" className="table-striped table-hover" style={{ borderBottom: "1px solid #aaa", marginBottom: "10px" }} >
                         <thead>
                             <tr>
@@ -271,7 +331,7 @@ export const ClientsPages = () => {
                                                             <td >{section.payment === "to'lanmagan" ? "Rad etilgan" : section.price}</td>
                                                             <td >{section.payment === "to'lanmagan" ? "Rad etilgan" : section.priceCashier}</td>
                                                             <td >{section.payment === "to'lanmagan" ? "Rad etilgan" : section.price - section.priceCashier}</td>
-                                                            <td className="date text-center" >{section.comment}</td>
+                                                            <td className="date text-center" >{section.commentCashier}</td>
                                                         </tr>
                                                     )
                                                 } else {
@@ -287,7 +347,7 @@ export const ClientsPages = () => {
                                                             <td >{section.payment === "to'lanmagan" ? "Rad etilgan" : section.price}</td>
                                                             <td >{section.payment === "to'lanmagan" ? "Rad etilgan" : section.priceCashier}</td>
                                                             <td >{section.payment === "to'lanmagan" ? "Rad etilgan" : section.price - section.priceCashier}</td>
-                                                            <td className="date text-center" >{section.comment}</td>
+                                                            <td className="date text-center" >{section.commentCashier}</td>
                                                         </tr>
                                                     )
                                                 }
@@ -345,7 +405,7 @@ export const ClientsPages = () => {
                                                                 <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price}</td>
                                                                 <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.priceCashier}</td>
                                                                 <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price - service.priceCashier}</td>
-                                                                <td className="date text-center" >{service.comment}</td>
+                                                                <td className="date text-center" >{service.commentCashier}</td>
                                                             </tr>
                                                         )
                                                     } else {
@@ -361,7 +421,7 @@ export const ClientsPages = () => {
                                                                 <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price}</td>
                                                                 <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.priceCashier}</td>
                                                                 <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price - service.priceCashier}</td>
-                                                                <td className="date text-center" >{service.comment}</td>
+                                                                <td className="date text-center" >{service.commentCashier}</td>
                                                             </tr>
                                                         )
                                                     }
@@ -384,7 +444,7 @@ export const ClientsPages = () => {
                                                             <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price}</td>
                                                             <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.priceCashier}</td>
                                                             <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price - service.priceCashier}</td>
-                                                            <td className="date text-center" >{service.comment}</td>
+                                                            <td className="date text-center" >{service.commentCashier}</td>
                                                         </tr>
                                                     )
                                                 })}
@@ -443,7 +503,7 @@ export const ClientsPages = () => {
                                                                 <td >{section.payment === "to'lanmagan" ? "Rad etilgan" : section.price}</td>
                                                                 <td >{section.payment === "to'lanmagan" ? "Rad etilgan" : section.priceCashier}</td>
                                                                 <td >{section.payment === "to'lanmagan" ? "Rad etilgan" : section.price - section.priceCashier}</td>
-                                                                <td className="date text-center" >{section.comment}</td>
+                                                                <td className="date text-center" >{section.commentCashier}</td>
                                                             </tr>
                                                         )
                                                     } else {
@@ -459,7 +519,7 @@ export const ClientsPages = () => {
                                                                 <td >{section.payment === "to'lanmagan" ? "Rad etilgan" : section.price}</td>
                                                                 <td >{section.payment === "to'lanmagan" ? "Rad etilgan" : section.priceCashier}</td>
                                                                 <td >{section.payment === "to'lanmagan" ? "Rad etilgan" : section.price - section.priceCashier}</td>
-                                                                <td className="date text-center" >{section.comment}</td>
+                                                                <td className="date text-center" >{section.commentCashier}</td>
                                                             </tr>
                                                         )
                                                     }
@@ -517,7 +577,7 @@ export const ClientsPages = () => {
                                                                     <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price}</td>
                                                                     <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.priceCashier}</td>
                                                                     <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price - service.priceCashier}</td>
-                                                                    <td className="date text-center" >{service.comment}</td>
+                                                                    <td className="date text-center" >{service.commentCashier}</td>
                                                                 </tr>
                                                             )
                                                         } else {
@@ -533,7 +593,7 @@ export const ClientsPages = () => {
                                                                     <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price}</td>
                                                                     <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.priceCashier}</td>
                                                                     <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price - service.priceCashier}</td>
-                                                                    <td className="date text-center" >{service.comment}</td>
+                                                                    <td className="date text-center" >{service.commentCashier}</td>
                                                                 </tr>
                                                             )
                                                         }
@@ -556,7 +616,7 @@ export const ClientsPages = () => {
                                                                 <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price}</td>
                                                                 <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.priceCashier}</td>
                                                                 <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price - service.priceCashier}</td>
-                                                                <td className="date text-center" >{service.comment}</td>
+                                                                <td className="date text-center" >{service.commentCashier}</td>
                                                             </tr>
                                                         )
                                                     })}
@@ -583,7 +643,7 @@ export const ClientsPages = () => {
                 </table>
             </div>
 
-            <div className="overflow-auto" style={{ height: "55vh", minWidth: "1000px" }}>
+            <div className="overflow-auto" style={{ height: "55vh", minWidth: "1100px" }}>
                 <table className=" table-hover"  >
                     <tbody className="" >
                         {all &&
@@ -635,7 +695,7 @@ export const ClientsPages = () => {
                                                         <td className="prices text-primary fw-bold">{section.price}</td>
                                                         <td className="prices text-success fw-bold">{section.priceCashier}</td>
                                                         <td className="prices text-danger fw-bold">{section.price - section.priceCashier}</td>
-                                                        <td className="date text-center" >{section.comment}</td>
+                                                        <td className="date text-center" >{section.commentCashier}</td>
                                                     </tr>
                                                 )
                                             } else {
@@ -647,7 +707,7 @@ export const ClientsPages = () => {
                                                         <td className="prices text-primary fw-bold">{section.price}</td>
                                                         <td className="prices text-success fw-bold">{section.priceCashier}</td>
                                                         <td className="prices text-danger fw-bold">{section.price - section.priceCashier}</td>
-                                                        <td className="date text-center" >{section.comment}</td>
+                                                        <td className="date text-center" >{section.commentCashier}</td>
                                                     </tr>
                                                 )
                                             }
@@ -700,7 +760,7 @@ export const ClientsPages = () => {
                                                                 <td className="prices text-primary fw-bold">{service.price}</td>
                                                                 <td className="prices text-success fw-bold">{service.priceCashier}</td>
                                                                 <td className="prices text-danger fw-bold">{service.price - service.priceCashier}</td>
-                                                                <td className="date text-center" >{service.comment}</td>
+                                                                <td className="date text-center" >{service.commentCashier}</td>
                                                             </tr>
                                                         )
                                                     } else {
@@ -712,7 +772,7 @@ export const ClientsPages = () => {
                                                                 <td className="prices text-primary fw-bold">{service.price}</td>
                                                                 <td className="prices text-success fw-bold">{service.priceCashier}</td>
                                                                 <td className="prices text-danger fw-bold">{service.price - service.priceCashier}</td>
-                                                                <td className="date text-center" >{service.comment}</td>
+                                                                <td className="date text-center" >{service.commentCashier}</td>
                                                             </tr>
                                                         )
                                                     }
@@ -731,7 +791,7 @@ export const ClientsPages = () => {
                                                             <td className="prices text-primary fw-bold">{service.price}</td>
                                                             <td className="prices text-success fw-bold">{service.priceCashier}</td>
                                                             <td className="prices text-danger fw-bold">{service.price - service.priceCashier}</td>
-                                                            <td className="date text-center" >{service.comment}</td>
+                                                            <td className="date text-center" >{service.commentCashier}</td>
                                                         </tr>
                                                     )
                                                 })}
@@ -756,7 +816,7 @@ export const ClientsPages = () => {
                                                                         className="no border-right border-success"
                                                                         rowSpan={all.sections[key].length + all.services[key].length}
                                                                     >
-                                                                        {++kk}
+                                                                        {mmm}
                                                                     </td>
                                                                     <td
                                                                         className="fish text-uppercase ps-3"
@@ -794,7 +854,7 @@ export const ClientsPages = () => {
                                                                     <td className="prices text-primary fw-bold">{section.price}</td>
                                                                     <td className="prices text-success fw-bold">{section.priceCashier}</td>
                                                                     <td className="prices text-danger fw-bold">{section.price - section.priceCashier}</td>
-                                                                    <td className="date text-center" >{section.comment}</td>
+                                                                    <td className="date text-center" >{section.commentCashier}</td>
                                                                 </tr>
                                                             )
                                                         } else {
@@ -806,7 +866,7 @@ export const ClientsPages = () => {
                                                                     <td className="prices text-primary fw-bold">{section.price}</td>
                                                                     <td className="prices text-success fw-bold">{section.priceCashier}</td>
                                                                     <td className="prices text-danger fw-bold">{section.price - section.priceCashier}</td>
-                                                                    <td className="date text-center" >{section.comment}</td>
+                                                                    <td className="date text-center" >{section.commentCashier}</td>
                                                                 </tr>
                                                             )
                                                         }
@@ -860,7 +920,7 @@ export const ClientsPages = () => {
                                                                     <td className="prices text-primary fw-bold">{service.price}</td>
                                                                     <td className="prices text-success fw-bold">{service.priceCashier}</td>
                                                                     <td className="prices text-danger fw-bold">{service.price - service.priceCashier}</td>
-                                                                    <td className="date text-center" >{service.comment}</td>
+                                                                    <td className="date text-center" >{service.commentCashier}</td>
                                                                 </tr>
                                                             )
                                                         } else {
@@ -872,7 +932,7 @@ export const ClientsPages = () => {
                                                                     <td className="prices text-primary fw-bold">{service.price}</td>
                                                                     <td className="prices text-success fw-bold">{service.priceCashier}</td>
                                                                     <td className="prices text-danger fw-bold">{service.price - service.priceCashier}</td>
-                                                                    <td className="date text-center" >{service.comment}</td>
+                                                                    <td className="date text-center" >{service.commentCashier}</td>
                                                                 </tr>
                                                             )
                                                         }
@@ -891,7 +951,7 @@ export const ClientsPages = () => {
                                                                 <td className="prices text-primary fw-bold">{service.price}</td>
                                                                 <td className="prices text-success fw-bold">{service.priceCashier}</td>
                                                                 <td className="prices text-danger fw-bold">{service.price - service.priceCashier}</td>
-                                                                <td className="date text-center" >{service.comment}</td>
+                                                                <td className="date text-center" >{service.commentCashier}</td>
                                                             </tr>
                                                         )
                                                     })}
@@ -907,7 +967,7 @@ export const ClientsPages = () => {
                 </table>
             </div>
             <div>
-                <div style={{ minWidth: "1000px" }} className='py-4' >
+                <div style={{ minWidth: "1100px" }} className='py-4' >
                     <table id="" className="table-striped table-hover pt-2" style={{ borderBottom: "1px solid #aaa", marginBottom: "10px" }} >
                         <tfooter>
                             <tr className="mt-4">
