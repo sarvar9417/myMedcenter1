@@ -676,7 +676,7 @@ export const NewClient = () => {
       </div>
 
       <div className="mt-5 text-center" >
-        <button  onClick={checkData} className="btn btn-primary profile-button mb-5">
+        <button disabled={loading}  onClick={checkData} className="btn btn-primary profile-button mb-5">
           Saqlash
         </button>
       </div>

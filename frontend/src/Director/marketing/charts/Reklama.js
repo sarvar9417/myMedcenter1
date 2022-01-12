@@ -56,6 +56,7 @@ export const Reklama = () => {
           }
         })
       })
+      console.log(a);
       setAdver(a)
     } catch (e) {
     }
@@ -66,8 +67,13 @@ export const Reklama = () => {
   }
 
   useEffect(() => {
-    getAdver()
-  }, [adver, ReactApexChart])
+    if (!t) {
+      getAdver()
+    }
+    if (adver.options.labels.length > 0) {
+      setT(1)
+    }
+  }, [setT, getAdver])
 
 
   return (
@@ -86,7 +92,7 @@ export const Reklama = () => {
         </div>
       </div>
       <div className="card-body p-4">
-        {adver.options.labels.length > 0 ? <ReactApexChart type="donut" options={adver.options} series={adver.series} type="donut" />:""}
+        {adver.options.labels.length > 0 ? <ReactApexChart type="donut" options={adver.options} series={adver.series} type="donut" /> : ""}
       </div>
 
     </div>
