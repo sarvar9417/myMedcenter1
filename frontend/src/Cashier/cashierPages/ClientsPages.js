@@ -189,8 +189,8 @@ export const ClientsPages = () => {
                                 <th scope="" className="fish text-center">Tahrirlash <FontAwesomeIcon icon={faSort} /></th>
                                 <th scope="" className="date text-center" >Kelgan vaqti <FontAwesomeIcon icon={faSort} /></th>
                                 <th scope="" className="section text-center">Bo'limi <FontAwesomeIcon icon={faSort} /></th>
-                                <th scope="" className="turn text-center">Navbati <FontAwesomeIcon icon={faSort} /></th>
                                 <th scope="" className="prices text-center">To'lov <FontAwesomeIcon icon={faSort} /></th>
+                                <th scope="" className="turn text-center">Izoh <FontAwesomeIcon icon={faSort} /></th>
                             </tr>
                         </thead>
                     </table>
@@ -212,6 +212,7 @@ export const ClientsPages = () => {
                             <th scope="" className="prices text-center">To'lov <FontAwesomeIcon icon={faSort} /></th>
                             <th scope="" className="prices text-center">To'langan <FontAwesomeIcon icon={faSort} /></th>
                             <th scope="" className="prices text-center">Qarz <FontAwesomeIcon icon={faSort} /></th>
+                            <th scope="" className="prices text-center">Izoh <FontAwesomeIcon icon={faSort} /></th>
                         </tr>
                     </thead>
                     <tbody className="" >
@@ -268,6 +269,7 @@ export const ClientsPages = () => {
                                                             <td >{section.payment === "to'lanmagan" ? "Rad etilgan" : section.price}</td>
                                                             <td >{section.payment === "to'lanmagan" ? "Rad etilgan" : section.priceCashier}</td>
                                                             <td >{section.payment === "to'lanmagan" ? "Rad etilgan" : section.price - section.priceCashier}</td>
+                                                            <td >{section.commentCashier}</td>
                                                         </tr>
                                                     )
                                                 } else {
@@ -283,6 +285,7 @@ export const ClientsPages = () => {
                                                             <td >{section.payment === "to'lanmagan" ? "Rad etilgan" : section.price}</td>
                                                             <td >{section.payment === "to'lanmagan" ? "Rad etilgan" : section.priceCashier}</td>
                                                             <td >{section.payment === "to'lanmagan" ? "Rad etilgan" : section.price - section.priceCashier}</td>
+                                                            <td >{section.commentCashier}</td>
                                                         </tr>
                                                     )
                                                 }
@@ -340,6 +343,7 @@ export const ClientsPages = () => {
                                                                 <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price}</td>
                                                                 <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.priceCashier}</td>
                                                                 <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price - service.priceCashier}</td>
+                                                                <td >{service.commentCashier}</td>
                                                             </tr>
                                                         )
                                                     } else {
@@ -355,6 +359,7 @@ export const ClientsPages = () => {
                                                                 <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price}</td>
                                                                 <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.priceCashier}</td>
                                                                 <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price - service.priceCashier}</td>
+                                                                <td >{service.commentCashier}</td>
                                                             </tr>
                                                         )
                                                     }
@@ -377,6 +382,7 @@ export const ClientsPages = () => {
                                                             <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price}</td>
                                                             <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.priceCashier}</td>
                                                             <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price - service.priceCashier}</td>
+                                                            <td >{service.commentCashier}</td>
                                                         </tr>
                                                     )
                                                 })}
@@ -435,6 +441,7 @@ export const ClientsPages = () => {
                                                                 <td >{section.payment === "to'lanmagan" ? "Rad etilgan" : section.price}</td>
                                                                 <td >{section.payment === "to'lanmagan" ? "Rad etilgan" : section.priceCashier}</td>
                                                                 <td >{section.payment === "to'lanmagan" ? "Rad etilgan" : section.price - section.priceCashier}</td>
+                                                                <td >{section.commentCashier}</td>
                                                             </tr>
                                                         )
                                                     } else {
@@ -450,6 +457,7 @@ export const ClientsPages = () => {
                                                                 <td >{section.payment === "to'lanmagan" ? "Rad etilgan" : section.price}</td>
                                                                 <td >{section.payment === "to'lanmagan" ? "Rad etilgan" : section.priceCashier}</td>
                                                                 <td >{section.payment === "to'lanmagan" ? "Rad etilgan" : section.price - section.priceCashier}</td>
+                                                                <td >{section.commentCashier}</td>
                                                             </tr>
                                                         )
                                                     }
@@ -522,6 +530,7 @@ export const ClientsPages = () => {
                                                                     <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price}</td>
                                                                     <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.priceCashier}</td>
                                                                     <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price - service.priceCashier}</td>
+                                                                    <td >{service.commentCashier}</td>
                                                                 </tr>
                                                             )
                                                         }
@@ -544,6 +553,7 @@ export const ClientsPages = () => {
                                                                 <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price}</td>
                                                                 <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.priceCashier}</td>
                                                                 <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price - service.priceCashier}</td>
+                                                                <td >{service.commentCashier}</td>
                                                             </tr>
                                                         )
                                                     })}
@@ -634,8 +644,8 @@ export const ClientsPages = () => {
                                                         </td>
                                                         <td className="date text-center border-left border-success" >{new mongoose.Types.ObjectId(section._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(section._id).getTimestamp().toLocaleTimeString()}</td>
                                                         <td className="section text-uppercase"> <Link to={`/reseption/clienthistory/${section._id}`} className={section.summary !== " " ? "prices fw-bold text-success" : "prices fw-bold text-danger"} > {section.name} <br /> <span style={{ fontSize: "10pt" }}>{section.subname}</span> </Link></td>
-                                                        <td className="turn">{section.bron === "offline" ? section.turn : section.bronTime + " " + new Date(section.bronDay).toLocaleDateString()}</td>
-                                                        <td className={section.price === section.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{section.payment === "to'lanmagan" ? "Rad etilgan" : section.price}</td>
+                                                        <td className={section.price === section.priceCashier ? "prices fw-bold text-success" : `${section.priceCashier === 0 ? "prices fw-bold text-danger" : "prices fw-bold text-warning"}`} >{section.payment === "to'lanmagan" ? "Rad etilgan" : section.price}</td>
+                                                        <td className="turn">{section.commentCashier}</td>
                                                     </tr>
                                                 )
                                             } else {
@@ -643,8 +653,8 @@ export const ClientsPages = () => {
                                                     <tr key={index}  >
                                                         <td className="date fw-normal border-left border-success "  >{new mongoose.Types.ObjectId(section._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(section._id).getTimestamp().toLocaleTimeString()}</td>
                                                         <td className="section text-uppercase"> <Link to={`/reseption/clienthistory/${section._id}`} className={section.summary !== " " ? "prices fw-bold text-success" : "prices fw-bold text-danger"} > {section.name} <br /> <span style={{ fontSize: "10pt" }}>{section.subname}</span> </Link></td>
-                                                        <td className="turn">{section.bron === "offline" ? section.turn : section.bronTime + " " + new Date(section.bronDay).toLocaleDateString()}</td>
-                                                        <td className={section.price === section.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{section.payment === "to'lanmagan" ? "Rad etilgan" : section.price}</td>
+                                                        <td className={section.price === section.priceCashier ? "prices fw-bold text-success" : `${section.priceCashier === 0 ? "prices fw-bold text-danger" : "prices fw-bold text-warning"}`} >{section.payment === "to'lanmagan" ? "Rad etilgan" : section.price}</td>
+                                                        <td className="turn">{section.commentCashier}</td>
                                                     </tr>
                                                 )
                                             }
@@ -711,8 +721,8 @@ export const ClientsPages = () => {
                                                                 </td>
                                                                 <td className="date fw-normal border-left border-success "  >{new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleTimeString()}</td>
                                                                 <td className="section text-uppercase fw-bold text-info"> {service.name} <br /> <span style={{ fontSize: "10pt" }}>{service.type}</span></td>
-                                                                <td className="turn">{service.pieces}(dona)</td>
-                                                                <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price}</td>
+                                                                <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : `${service.priceCashier === 0 ? "prices fw-bold text-danger" : "prices fw-bold text-warning"}`} >{service.payment === "to'lanmagan" ? "Rad etilgan" : service.price} (dona/ml)</td>
+                                                                <td className="turn">{service.commentCashier}</td>
                                                             </tr>
                                                         )
                                                     } else {
@@ -720,8 +730,8 @@ export const ClientsPages = () => {
                                                             <tr key={index}  >
                                                                 <td className="date fw-normal border-left border-success "  >{new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleTimeString()}</td>
                                                                 <td className="section text-uppercase fw-bold text-info"> {service.name} <br /> <span style={{ fontSize: "10pt" }}>{service.type}</span></td>
-                                                                <td className="turn">{service.pieces}(dona)</td>
-                                                                <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price}</td>
+                                                                <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : `${service.priceCashier === 0 ? "prices fw-bold text-danger" : "prices fw-bold text-warning"}`} >{service.payment === "to'lanmagan" ? "Rad etilgan" : service.price} (dona/ml)</td>
+                                                                <td className="turn">{service.commentCashier}</td>
                                                             </tr>
                                                         )
                                                     }
@@ -736,8 +746,8 @@ export const ClientsPages = () => {
                                                         <tr key={index}  >
                                                             <td className="date fw-normal border-left border-success "  >{new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleTimeString()}</td>
                                                             <td className="section text-uppercase fw-bold text-info"> {service.name} <br /> <span style={{ fontSize: "10pt" }}>{service.type}</span></td>
-                                                            <td className="turn">{service.pieces}(dona)</td>
-                                                            <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price}</td>
+                                                            <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : `${service.priceCashier === 0 ? "prices fw-bold text-danger" : "prices fw-bold text-warning"}`} >{service.payment === "to'lanmagan" ? "Rad etilgan" : service.price}</td>
+                                                            <td className="turn">{service.commentCashier}</td>
                                                         </tr>
                                                     )
                                                 })}
@@ -811,8 +821,8 @@ export const ClientsPages = () => {
                                                                     </td>
                                                                     <td className="date text-center border-left border-success" >{new mongoose.Types.ObjectId(section._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(section._id).getTimestamp().toLocaleTimeString()}</td>
                                                                     <td className="section text-uppercase"> <Link to={`/reseption/clienthistory/${section._id}`} className={section.summary !== " " ? "prices fw-bold text-success" : "prices fw-bold text-danger"} > {section.name} <br /> <span style={{ fontSize: "10pt" }}>{section.subname}</span> </Link></td>
-                                                                    <td className="turn">{section.bron === "offline" ? section.turn : section.bronTime + " " + new Date(section.bronDay).toLocaleDateString()}</td>
-                                                                    <td className={section.price === section.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{section.payment === "to'lanmagan" ? "Rad etilgan" : section.price}</td>
+                                                                    <td className={section.price === section.priceCashier ? "prices fw-bold text-success" : `${section.priceCashier === 0 ? "prices fw-bold text-danger" : "prices fw-bold text-warning"}`} >{section.payment === "to'lanmagan" ? "Rad etilgan" : section.price}</td>
+                                                                    <td className="turn">{section.commentCashier}</td>
                                                                 </tr>
                                                             )
                                                         } else {
@@ -820,8 +830,8 @@ export const ClientsPages = () => {
                                                                 <tr key={index}  >
                                                                     <td className="date fw-normal border-left border-success "  >{new mongoose.Types.ObjectId(section._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(section._id).getTimestamp().toLocaleTimeString()}</td>
                                                                     <td className="section text-uppercase"> <Link to={`/reseption/clienthistory/${section._id}`} className={section.summary !== " " ? "prices fw-bold text-success" : "prices fw-bold text-danger"} > {section.name} <br /> <span style={{ fontSize: "10pt" }}>{section.subname}</span> </Link></td>
-                                                                    <td className="turn">{section.bron === "offline" ? section.turn : section.bronTime + " " + new Date(section.bronDay).toLocaleDateString()}</td>
-                                                                    <td className={section.price === section.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{section.payment === "to'lanmagan" ? "Rad etilgan" : section.price}</td>
+                                                                    <td className={section.price === section.priceCashier ? "prices fw-bold text-success" : `${section.priceCashier === 0 ? "prices fw-bold text-danger" : "prices fw-bold text-warning"}`} >{section.payment === "to'lanmagan" ? "Rad etilgan" : section.price}</td>
+                                                                    <td className="turn">{section.commentCashier}</td>
                                                                 </tr>
                                                             )
                                                         }
@@ -888,8 +898,8 @@ export const ClientsPages = () => {
                                                                         </td>
                                                                         <td className="date fw-normal border-left border-success "  >{new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleTimeString()}</td>
                                                                         <td className="section text-uppercase fw-bold text-info"> {service.name} <br /> <span style={{ fontSize: "10pt" }}>{service.type}</span></td>
-                                                                        <td className="turn">{service.pieces}(dona)</td>
-                                                                        <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price}</td>
+                                                                        <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : `${service.priceCashier === 0 ? "prices fw-bold text-danger" : "prices fw-bold text-warning"}`} >{service.payment === "to'lanmagan" ? "Rad etilgan" : service.price}</td>
+                                                                        <td className="turn">{service.commentCashier}</td>
                                                                     </tr>
                                                                 )
                                                             } else {
@@ -897,8 +907,8 @@ export const ClientsPages = () => {
                                                                     <tr key={index}  >
                                                                         <td className="date fw-normal border-left border-success "  >{new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleTimeString()}</td>
                                                                         <td className="section text-uppercase fw-bold text-info"> {service.name} <br /> <span style={{ fontSize: "10pt" }}>{service.type}</span></td>
-                                                                        <td className="turn">{service.pieces}(dona)</td>
-                                                                        <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price}</td>
+                                                                        <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : `${service.priceCashier === 0 ? "prices fw-bold text-danger" : "prices fw-bold text-warning"}`} >{service.payment === "to'lanmagan" ? "Rad etilgan" : service.price}</td>
+                                                                        <td className="turn">{service.commentCashier}</td>
                                                                     </tr>
                                                                 )
                                                             }
@@ -913,8 +923,8 @@ export const ClientsPages = () => {
                                                                 <tr key={index}  >
                                                                     <td className="date fw-normal border-left border-success "  >{new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleTimeString()}</td>
                                                                     <td className="section text-uppercase fw-bold text-info"> {service.name} <br /> <span style={{ fontSize: "10pt" }}>{service.type}</span></td>
-                                                                    <td className="turn">{service.pieces}(dona)</td>
-                                                                    <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : "prices fw-bold text-danger"} >{service.price}</td>
+                                                                    <td className={service.price === service.priceCashier ? "prices fw-bold text-success" : `${service.priceCashier === 0 ? "prices fw-bold text-danger" : "prices fw-bold text-warning"}`} >{service.payment === "to'lanmagan" ? "Rad etilgan" : service.price}</td>
+                                                                    <td className="turn">{service.commentCashier}</td>
                                                                 </tr>
                                                             )
                                                         })}

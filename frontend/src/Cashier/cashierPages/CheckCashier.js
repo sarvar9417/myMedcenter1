@@ -71,7 +71,21 @@ export const CheckCashier = () => {
         }
     }
 
-    const setAllPayment = (event) => {
+    const setAllPayment = useCallback((event) => {
+        sections.map((section, key) => {
+            setSections(
+                Object.values({
+                    ...sections,
+                    [key]: { ...sections[key], paymentMethod: event.target.id },
+                }))
+        })
+        services.map((section, key) => {
+            setServices(
+                Object.values({
+                    ...services,
+                    [key]: { ...services[key], paymentMethod: event.target.id },
+                }))
+        })
         if (event.target.id === "card") {
             setPayment({
                 ...payment,
@@ -112,7 +126,7 @@ export const CheckCashier = () => {
                 transfer: 0
             })
         }
-    }
+    }, [setPayment, payment, setSections, setServices, services, sections])
 
     const getClient = useCallback(async () => {
         try {
@@ -160,19 +174,37 @@ export const CheckCashier = () => {
         }
     }, [request, connectorId, auth, setOldPayments, setL])
 
-    console.log(bepaid)
 
     const getSections = useCallback(async () => {
         try {
             const fetch = await request(`/api/section/cashierconnector/${connectorId}`, 'GET', null, {
                 Authorization: `Bearer ${auth.token}`
             })
+            let s = []
+            fetch.map(f => {
+                s.push(f)
+            })
             setSections(fetch)
-            setSections1(fetch)
+            setSections1(s)
         } catch (e) {
             notify(e)
         }
     }, [request, connectorId, auth, setSections, setSections1])
+
+    const getSections1 = useCallback(async () => {
+        try {
+            const fetch = await request(`/api/section/cashierconnector/${connectorId}`, 'GET', null, {
+                Authorization: `Bearer ${auth.token}`
+            })
+            const data = await request(`/api/service/cashierconnector/${connectorId}`, 'GET', null, {
+                Authorization: `Bearer ${auth.token}`
+            })
+            setSections1(fetch)
+            setServices1(data)
+        } catch (e) {
+            notify(e)
+        }
+    }, [request, connectorId, auth, setServices1, setSections1])
 
     const getServices = useCallback(async () => {
         try {
@@ -180,7 +212,7 @@ export const CheckCashier = () => {
                 Authorization: `Bearer ${auth.token}`
             })
             setServices(fetch)
-            setServices1(fetch)
+            setServices1([...fetch])
         } catch (e) {
             notify(e)
         }
@@ -263,7 +295,6 @@ export const CheckCashier = () => {
             sections.map((s, i) => {
                 k = k + (sections[i].priceCashier - sections1[i].priceCashier)
             })
-            console.log(k, " bu")
             services.map((s, i) => {
                 if (i === key) {
                     k = k + (parseInt(event.target.value) - services1[i].priceCashier)
@@ -274,7 +305,7 @@ export const CheckCashier = () => {
             setBepaid(k)
         }
     }, [services, setServices, services1, sections, sections1, setBepaid])
-    console.log(bepaid);
+
     const inputCommentSection = (event, key) => {
         setSections(
             Object.values({
@@ -291,16 +322,6 @@ export const CheckCashier = () => {
             }))
     }
 
-    const changePaymentSection = (key) => {
-        setDelSection(sections[key])
-        setModal3(true)
-    }
-
-    const changePaymentService = useCallback((key) => {
-
-    }, [])
-
-
     const checkboxSection = useCallback((event, key) => {
         if (event.target.checked) {
             setSections(
@@ -316,6 +337,7 @@ export const CheckCashier = () => {
                     k = k + (sections[i].priceCashier - sections1[i].priceCashier)
                 }
             })
+            console.log(k);
             services.map((s, i) => {
                 k = k + (services[i].priceCashier - services1[i].priceCashier)
             })
@@ -395,7 +417,7 @@ export const CheckCashier = () => {
                 return notify("Iltimos mijoz to'lovni bajarolmagani sababini to'liq ko'rsating.")
             }
         })
-        if ((payment.total !== payment.cash + payment.card + payment.transfer)) {
+        if ((payment.total !== payment.cash + payment.card + payment.transfer) || payment.total !== bepaid) {
             return notify("Diqqat to'lov turida summani kiritishda xatolikka yo'l qo'ydingiz. Iltimos to'lov turidagi summalarni yana bir bor tekshiring")
         }
         if (payment.type === "") {
@@ -483,43 +505,46 @@ export const CheckCashier = () => {
         }
     }, [request, auth, delService])
 
-    const Paymented = useCallback((event) => {
+    const paymenteds = useCallback((event) => {
         if (event.target.checked) {
             let k = 0
             let s = [...services]
-            s.map((service, key) => {
-                k = k + (services[key].price - services1[key].priceCashier)
-                service.priceCashier = service.price
-                service.payment = "to'langan"
-            })
+            for (let i = 0; i < services.length; i++) {
+                k = k + (s[i].price - services1[i].priceCashier)
+                s[i].priceCashier = s[i].price
+                s[i].payment = "to'langan"
+            }
             setServices(s)
-            s = [...sections]
-            s.map((section, key) => {
-                k = k + (sections[key].price - sections1[key].priceCashier)
-                section.priceCashier = section.price
-                section.payment = "to'langan"
-            })
-            setSections(s)
+            let m = [...sections]
+            for (let i = 0; i < sections.length; i++) {
+                k = k + (m[i].price - sections1[i].priceCashier)
+                m[i].priceCashier = m[i].price
+                m[i].payment = "to'langan"
+            }
+            setSections(m)
             setBepaid(k)
+            getSections1()
         } else {
-            let s = [...services]
             let k = 0
-            s.map((service, key) => {
-                k = k + (0 - services1[key].priceCashier)
-                service.priceCashier = 0
-                service.payment = "kutilmoqda"
-            })
+            let s = [...services]
+            for (let i = 0; i < services.length; i++) {
+                k = k + (0 - services1[i].priceCashier)
+                s[i].priceCashier = s[i].price
+                s[i].payment = "to'langan"
+            }
             setServices(s)
-            s = [...sections]
-            s.map((section, key) => {
-                k = k + (0 - sections1[key].priceCashier)
-                section.priceCashier = 0
-                section.payment = "kutilmoqda"
-            })
-            setSections(s)
+            let m = [...sections]
+            for (let i = 0; i < sections.length; i++) {
+                k = k + (0 - sections1[i].priceCashier)
+                m[i].priceCashier = m[i].price
+                m[i].payment = "to'langan"
+            }
+            setSections(m)
             setBepaid(k)
+            getSections1()
         }
-    }, [setBepaid, setSections, setServices, sections, services])
+    }, [setSections, setSections1, setBepaid, sections, setServices, services1, sections1])
+
 
     useEffect(() => {
         if (!l) {
@@ -542,6 +567,9 @@ export const CheckCashier = () => {
             getServices()
         }
     }, [notify, clearError])
+
+
+
     return (
         <>
             <div className="m-3" style={{ minWidth: "700px", maxWidth: "1000px", padding: "20px 10px", border: "1px solid #999", borderRadius: "5px" }}>
@@ -579,7 +607,7 @@ export const CheckCashier = () => {
                             <th style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>№</th>
                             <th style={{ width: "35%", textAlign: "center", padding: "10px 0" }}>Bo'limlar</th>
                             <th style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>Hisob</th>
-                            <th style={{ width: "25%", textAlign: "center", padding: "10px 0" }}>To'lov <input onChange={Paymented} type="checkbox" className="check" /></th>
+                            <th style={{ width: "25%", textAlign: "center", padding: "10px 0" }}>To'lov <input onChange={paymenteds} type="checkbox" className="check" /></th>
                             <th style={{ width: "10%", textAlign: "center", padding: "10px 0" }}>Sabab</th>
                         </tr>
                     </thead>
@@ -601,7 +629,7 @@ export const CheckCashier = () => {
                                         <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{section.price}</td>
                                         <td style={{ width: "25%", padding: "10px 0" }}>
                                             <input onChange={event => inputPriceSection(event, key)} value={section.priceCashier} type="number" className="form-control" style={{ width: "80%", margin: "auto", display: "inline" }} />
-                                            <input defaultChecked={section.priceCashier === section.price ? true : false} id={`checkbox${key}`} onChange={event => checkboxSection(event, key)} type="checkbox" className="check" style={{ position: "absolute" }} />
+                                            <input checked={section.priceCashier === section.price ? true : false} id={`checkbox${key}`} onChange={event => checkboxSection(event, key)} type="checkbox" className="check" style={{ position: "absolute" }} />
                                         </td>
 
                                         <td style={{ textAlign: "center", padding: "10px 0", color: "green" }}>
@@ -628,7 +656,7 @@ export const CheckCashier = () => {
                                         <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{service.price}</td>
                                         <td style={{ width: "25%", padding: "10px 0" }}>
                                             <input onChange={event => inputPriceService(event, key)} value={service.priceCashier} type="number" className="form-control" style={{ width: "80%", margin: "auto", display: "inline" }} />
-                                            <input defaultChecked={service.priceCashier === service.price ? true : false} id={`checkboxservice${key}`} onChange={event => checkboxService(event, key)} type="checkbox" className="check" style={{ position: "absolute" }} />
+                                            <input checked={service.priceCashier === service.price ? true : false} id={`checkboxservice${key}`} onChange={event => checkboxService(event, key)} type="checkbox" className="check" style={{ position: "absolute" }} />
                                         </td>
 
                                         <td style={{ textAlign: "center", padding: "10px 0", color: "green" }}>
