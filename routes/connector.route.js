@@ -4,6 +4,7 @@ const { Connector, validateConnector } = require('../models/Connector')
 const { Clients } = require('../models/Clients')
 const { Section } = require('../models/Section')
 const { Service } = require('../models/Service')
+const { Source } = require('../models/Source')
 const { UsedRoom } = require('../models/UsedRoom')
 const { Room } = require('../models/Rooms')
 
@@ -57,7 +58,7 @@ router.get('/director/:start/:end/:section', async (req, res) => {
             bronDay: {
                 $gte:
                     new Date(new Date(start).getFullYear(), new Date(start).getMonth(), new Date(start).getDate()),
-                $lt: new Date(new Date().getFullYear(),
+                $lt: new Date(new Date(end).getFullYear(),
                     new Date(end).getMonth(), new Date(end).getDate() + 1)
             }
         })
@@ -108,7 +109,7 @@ router.get('/reseptionoffline/:start/:end/:fish', async (req, res) => {
                 bronDay: {
                     $gte:
                         new Date(new Date(start).getFullYear(), new Date(start).getMonth(), new Date(start).getDate()),
-                    $lt: new Date(new Date().getFullYear(),
+                    $lt: new Date(new Date(end).getFullYear(),
                         new Date(end).getMonth(), new Date(end).getDate() + 1)
                 },
                 client: clientss[i]._id
@@ -159,7 +160,7 @@ router.get('/reseptiononline/:start/:end/:fish', async (req, res) => {
                 bronDay: {
                     $gte:
                         new Date(new Date(start).getFullYear(), new Date(start).getMonth(), new Date(start).getDate()),
-                    $lt: new Date(new Date().getFullYear(),
+                    $lt: new Date(new Date(end).getFullYear(),
                         new Date(end).getMonth(), new Date(end).getDate() + 1)
                 },
                 client: clientss[i]._id
@@ -202,7 +203,7 @@ router.get('/reseption/:start/:end', async (req, res) => {
             bronDay: {
                 $gte:
                     new Date(new Date(start).getFullYear(), new Date(start).getMonth(), new Date(start).getDate()),
-                $lt: new Date(new Date().getFullYear(),
+                $lt: new Date(new Date(end).getFullYear(),
                     new Date(end).getMonth(), new Date(end).getDate() + 1)
             }
         })
@@ -239,7 +240,7 @@ router.get('/reseptiononline/:start/:end', async (req, res) => {
             bronDay: {
                 $gte:
                     new Date(new Date(start).getFullYear(), new Date(start).getMonth(), new Date(start).getDate()),
-                $lt: new Date(new Date().getFullYear(),
+                $lt: new Date(new Date(end).getFullYear(),
                     new Date(end).getMonth(), new Date(end).getDate() + 1)
             },
             type: "online"
@@ -271,7 +272,7 @@ router.get('/statsionar/:start/:end', async (req, res) => {
             bronDay: {
                 $gte:
                     new Date(new Date(start).getFullYear(), new Date(start).getMonth(), new Date(start).getDate()),
-                $lt: new Date(new Date().getFullYear(),
+                $lt: new Date(new Date(end).getFullYear(),
                     new Date(end).getMonth(), new Date(end).getDate() + 1)
             },
             type: "statsionar"
@@ -312,7 +313,7 @@ router.get('/cashierstatsionar/:start/:end', async (req, res) => {
             bronDay: {
                 $gte:
                     new Date(new Date(start).getFullYear(), new Date(start).getMonth(), new Date(start).getDate()),
-                $lt: new Date(new Date().getFullYear(),
+                $lt: new Date(new Date(end).getFullYear(),
                     new Date(end).getMonth(), new Date(end).getDate() + 1)
             },
             type: "statsionar",
@@ -340,6 +341,29 @@ router.get('/cashierstatsionar/:start/:end', async (req, res) => {
             rooms.push(room)
         }
         res.json({ connectors, clients, sections, services, rooms })
+    } catch (e) {
+        res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
+    }
+})
+
+// /api/auth/connector/
+router.get('/marketing/:start/:end', async (req, res) => {
+    try {
+        const start = new Date(req.params.start)
+        const end = new Date(req.params.end)
+        const connectors = await Connector.find({
+            bronDay: {
+                $gte:
+                    new Date(new Date(start).getFullYear(), new Date(start).getMonth(), new Date(start).getDate()),
+                $lt: new Date(new Date(end).getFullYear(),
+                    new Date(end).getMonth(), new Date(end).getDate() + 1)
+            },
+            source: { $ne: " " },
+
+        })
+            .sort({ _id: -1 })
+        const sources = await Source.find()
+        res.json({ connectors, sources })
     } catch (e) {
         res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
     }

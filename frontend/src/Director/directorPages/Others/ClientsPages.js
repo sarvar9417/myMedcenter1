@@ -375,10 +375,6 @@ export const ClientsPages = () => {
                                                                     <Link className='text-success' style={{ fontWeight: "600" }} to={`/reseption/clientallhistory/${all.clients[key]._id}`} >
                                                                         {all && all.clients[key].lastname} {all && all.clients[key].firstname} {all && all.clients[key].fathername}
                                                                     </Link>
-                                                                    <br />
-                                                                    <Link className='btn button-success text-success' style={{ fontWeight: "600" }} to={`/reseption/edit/${all && all.clients[key]._id}`} >
-                                                                        <FontAwesomeIcon icon={faPenAlt} />
-                                                                    </Link>
                                                                 </td>
                                                                 <td
                                                                     className="id"
@@ -546,10 +542,6 @@ export const ClientsPages = () => {
                                                                     >
                                                                         <Link className='text-success' style={{ fontWeight: "600" }} to={`/reseption/clientallhistory/${all.clients[key]._id}`} >
                                                                             {all && all.clients[key].lastname} {all && all.clients[key].firstname} {all && all.clients[key].fathername}
-                                                                        </Link>
-                                                                        <br />
-                                                                        <Link className='btn button-success text-success' style={{ fontWeight: "600" }} to={`/reseption/edit/${all && all.clients[key]._id}`} >
-                                                                            <FontAwesomeIcon icon={faPenAlt} />
                                                                         </Link>
                                                                     </td>
                                                                     <td
@@ -728,10 +720,6 @@ export const ClientsPages = () => {
                                                                     <Link className='text-success' style={{ fontWeight: "600" }} to={`/reseption/clientallhistory/${all.clients[key]._id}`} >
                                                                         {all && all.clients[key].lastname} {all && all.clients[key].firstname} {all && all.clients[key].fathername}
                                                                     </Link>
-                                                                    <br />
-                                                                    <Link className='btn button-success text-success' style={{ fontWeight: "600" }} to={`/reseption/edit/${all && all.clients[key]._id}`} >
-                                                                        <FontAwesomeIcon icon={faPenAlt} />
-                                                                    </Link>
                                                                 </td>
                                                                 <td
                                                                     className="id"
@@ -819,10 +807,6 @@ export const ClientsPages = () => {
                                                                         <Link className='text-success' style={{ fontWeight: "600" }} to={`/reseption/clientallhistory/${all.clients[key]._id}`} >
                                                                             {all.clients[key].lastname} {all.clients[key].firstname} {all.clients[key].fathername}
                                                                         </Link>
-                                                                        <br />
-                                                                        <Link className='btn button-success text-success' style={{ fontWeight: "600" }} to={`/reseption/edit/${all.clients[key]._id}`} >
-                                                                            <FontAwesomeIcon icon={faPenAlt} />
-                                                                        </Link>
                                                                     </td>
                                                                     <td
                                                                         className="id"
@@ -882,10 +866,6 @@ export const ClientsPages = () => {
                                                                     >
                                                                         <Link className='text-success' style={{ fontWeight: "600" }} to={`/reseption/clientallhistory/${all.clients[key]._id}`} >
                                                                             {all && all.clients[key].lastname} {all && all.clients[key].firstname} {all && all.clients[key].fathername}
-                                                                        </Link>
-                                                                        <br />
-                                                                        <Link className='btn button-success text-success' style={{ fontWeight: "600" }} to={`/reseption/edit/${all && all.clients[key]._id}`} >
-                                                                            <FontAwesomeIcon icon={faPenAlt} />
                                                                         </Link>
                                                                     </td>
                                                                     <td

@@ -2,8 +2,8 @@ import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { FunnelChart } from 'react-funnel-pipeline'
 import DatePicker from "react-datepicker"
 import 'react-funnel-pipeline/dist/index.css'
-import { useHttp } from './../hooks/http.hook'
-import { AuthContext } from './../context/AuthContext'
+import { useHttp } from '../../hooks/http.hook'
+import { AuthContext } from '../../context/AuthContext'
 
 export const BarCharts = () => {
   const [calls, setCalls] = useState()
@@ -13,7 +13,7 @@ export const BarCharts = () => {
   const [startDate, setStartDate] = useState(new Date())
   const [endDate, setEndDate] = useState(new Date())
 
-  const getAllCalls = useCallback(async (index) => {
+  const getAllCalls = useCallback(async () => {
     try {
       const fetch = await request(`/api/callcenter/reseption/${startDate}/${endDate}`, 'GET', null, {
         Authorization: `Bearer ${auth.token}`
@@ -56,7 +56,7 @@ export const BarCharts = () => {
   }, [request, auth, setCalls, startDate, endDate])
 
   const searchDate = () => {
-    // getPayments()
+    getAllCalls()
   }
 
   useEffect(() => {
@@ -74,7 +74,7 @@ export const BarCharts = () => {
             <DatePicker className="form-control mb-2" selected={startDate} onChange={(date) => { setStartDate(date) }} />
           </div>
           <div className='col-6'>
-            <button className='btn fs-3' style={{ fontWeight: "600" }} >CallCenter</button>
+            <button className='btn fs-3' onClick={searchDate} style={{ fontWeight: "600" }} >CallCenter</button>
           </div>
           <div className="col-3 pt-2">
             <DatePicker className="form-control mb-2" selected={endDate} onChange={(date) => setEndDate(date)} />

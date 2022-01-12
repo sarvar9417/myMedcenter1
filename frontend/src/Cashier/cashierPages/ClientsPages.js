@@ -27,6 +27,7 @@ export const ClientsPages = () => {
     let paid = 0
     let unpaid = 0
     let k = 0
+    let counter = 0
     let kk = 0
     const [type, setType] = useState("all")
     const [startDate, setStartDate] = useState(new Date())
@@ -51,6 +52,7 @@ export const ClientsPages = () => {
             const fetch = await request(`/api/connector/reseption`, 'GET', null, {
                 Authorization: `Bearer ${auth.token}`
             })
+            console.log(fetch);
             setAll(fetch)
         } catch (e) {
             notify(e)
@@ -220,9 +222,6 @@ export const ClientsPages = () => {
                             all &&
                             all.connectors.map((connector, key) => {
                                 if (type === "all") {
-                                    if (all.sections[key].length !== 0) {
-                                        k++
-                                    }
                                     return (<>
                                         {
                                             all && all.sections[key].map((section, index) => {
@@ -237,7 +236,7 @@ export const ClientsPages = () => {
                                                                 className="no border-right"
                                                                 rowSpan={all.sections[key].length + all.services[key].length}
                                                             >
-                                                                {k}
+                                                                {++k}
                                                             </td>
                                                             <td
                                                                 className="fish text-uppercase ps-3 fw-bold text-success"
@@ -305,7 +304,7 @@ export const ClientsPages = () => {
                                                                     className="no border-right border-success"
                                                                     rowSpan={all && all.services[key].length}
                                                                 >
-                                                                    {++kk}
+                                                                    {++k}
                                                                 </td>
                                                                 <td
                                                                     className="fish text-uppercase ps-3"
@@ -313,10 +312,6 @@ export const ClientsPages = () => {
                                                                 >
                                                                     <Link className='text-success' style={{ fontWeight: "600" }} to={`/reseption/clientallhistory/${all.clients[key]._id}`} >
                                                                         {all && all.clients[key].lastname} {all && all.clients[key].firstname} {all && all.clients[key].fathername}
-                                                                    </Link>
-                                                                    <br />
-                                                                    <Link className='btn button-success text-success' style={{ fontWeight: "600" }} to={`/reseption/edit/${all && all.clients[key]._id}`} >
-                                                                        <FontAwesomeIcon icon={faPenAlt} />
                                                                     </Link>
                                                                 </td>
                                                                 <td
@@ -392,9 +387,6 @@ export const ClientsPages = () => {
                                     )
                                 } else {
                                     if (type === connector.type) {
-                                        if (all.sections[key].length !== 0) {
-                                            k++
-                                        }
                                         return (<>
                                             {
                                                 all && all.sections[key].map((section, index) => {
@@ -409,7 +401,7 @@ export const ClientsPages = () => {
                                                                     className="no border-right"
                                                                     rowSpan={all.sections[key].length + all.services[key].length}
                                                                 >
-                                                                    {k}
+                                                                    {++k}
                                                                 </td>
                                                                 <td
                                                                     className="fish text-uppercase ps-3 fw-bold text-success"
@@ -477,7 +469,7 @@ export const ClientsPages = () => {
                                                                         className="no border-right border-success"
                                                                         rowSpan={all && all.services[key].length}
                                                                     >
-                                                                        {++kk}
+                                                                        {++k}
                                                                     </td>
                                                                     <td
                                                                         className="fish text-uppercase ps-3"
@@ -485,10 +477,6 @@ export const ClientsPages = () => {
                                                                     >
                                                                         <Link className='text-success' style={{ fontWeight: "600" }} to={`/reseption/clientallhistory/${all.clients[key]._id}`} >
                                                                             {all && all.clients[key].lastname} {all && all.clients[key].firstname} {all && all.clients[key].fathername}
-                                                                        </Link>
-                                                                        <br />
-                                                                        <Link className='btn button-success text-success' style={{ fontWeight: "600" }} to={`/reseption/edit/${all && all.clients[key]._id}`} >
-                                                                            <FontAwesomeIcon icon={faPenAlt} />
                                                                         </Link>
                                                                     </td>
                                                                     <td
@@ -586,9 +574,6 @@ export const ClientsPages = () => {
                         {all &&
                             all.connectors.map((connector, key) => {
                                 if (type === "all") {
-                                    if (all.sections[key].length !== 0) {
-                                        kk++
-                                    }
                                     return (<>
                                         {all && all.sections[key].map((section, index) => {
                                             if (index === 0) {
@@ -598,7 +583,7 @@ export const ClientsPages = () => {
                                                             className="no border-right border-success"
                                                             rowSpan={all.sections[key].length + all.services[key].length}
                                                         >
-                                                            {kk}
+                                                            {++kk}
                                                         </td>
                                                         <td
                                                             className="fish text-uppercase ps-3"
@@ -663,8 +648,6 @@ export const ClientsPages = () => {
                                             <>{
                                                 all && all.services[key].map((service, index) => {
                                                     if (index === 0) {
-
-
                                                         return (
                                                             <tr className=' border-top border-success' >
                                                                 <td
@@ -679,10 +662,6 @@ export const ClientsPages = () => {
                                                                 >
                                                                     <Link className='text-success' style={{ fontWeight: "600" }} to={`/reseption/clientallhistory/${all.clients[key]._id}`} >
                                                                         {all && all.clients[key].lastname} {all && all.clients[key].firstname} {all && all.clients[key].fathername}
-                                                                    </Link>
-                                                                    <br />
-                                                                    <Link className='btn button-success text-success' style={{ fontWeight: "600" }} to={`/reseption/edit/${all && all.clients[key]._id}`} >
-                                                                        <FontAwesomeIcon icon={faPenAlt} />
                                                                     </Link>
                                                                 </td>
                                                                 <td
@@ -757,9 +736,6 @@ export const ClientsPages = () => {
                                     )
                                 } else {
                                     if (type === connector.type) {
-                                        if (all.sections[key].length !== 0) {
-                                            kk++
-                                        }
                                         return (
                                             <>
                                                 {
@@ -771,7 +747,7 @@ export const ClientsPages = () => {
                                                                         className="no border-right border-success"
                                                                         rowSpan={all.sections[key].length + all.services[key].length}
                                                                     >
-                                                                        {kk}
+                                                                        {++kk}
                                                                     </td>
                                                                     <td
                                                                         className="fish text-uppercase ps-3"
@@ -779,10 +755,6 @@ export const ClientsPages = () => {
                                                                     >
                                                                         <Link className='text-success' style={{ fontWeight: "600" }} to={`/reseption/clientallhistory/${all.clients[key]._id}`} >
                                                                             {all.clients[key].lastname} {all.clients[key].firstname} {all.clients[key].fathername}
-                                                                        </Link>
-                                                                        <br />
-                                                                        <Link className='btn button-success text-success' style={{ fontWeight: "600" }} to={`/reseption/edit/${all.clients[key]._id}`} >
-                                                                            <FontAwesomeIcon icon={faPenAlt} />
                                                                         </Link>
                                                                     </td>
                                                                     <td
@@ -840,8 +812,6 @@ export const ClientsPages = () => {
                                                     <>{
                                                         all && all.services[key].map((service, index) => {
                                                             if (index === 0) {
-
-
                                                                 return (
                                                                     <tr className=' border-top border-success' >
                                                                         <td
@@ -856,10 +826,6 @@ export const ClientsPages = () => {
                                                                         >
                                                                             <Link className='text-success' style={{ fontWeight: "600" }} to={`/reseption/clientallhistory/${all.clients[key]._id}`} >
                                                                                 {all && all.clients[key].lastname} {all && all.clients[key].firstname} {all && all.clients[key].fathername}
-                                                                            </Link>
-                                                                            <br />
-                                                                            <Link className='btn button-success text-success' style={{ fontWeight: "600" }} to={`/reseption/edit/${all && all.clients[key]._id}`} >
-                                                                                <FontAwesomeIcon icon={faPenAlt} />
                                                                             </Link>
                                                                         </td>
                                                                         <td

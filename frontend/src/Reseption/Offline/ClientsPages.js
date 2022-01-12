@@ -221,9 +221,6 @@ export const ClientsPages = () => {
                             all &&
                             all.connectors.map((connector, key) => {
                                 if (type === "all") {
-                                    if (all.sections[key].length !== 0) {
-                                        k++
-                                    }
                                     return (<>
                                         {all && all.sections[key].map((section, index) => {
                                             if (index === 0) {
@@ -237,7 +234,7 @@ export const ClientsPages = () => {
                                                             className="no border-right"
                                                             rowSpan={all.sections[key].length + all.services[key].length}
                                                         >
-                                                            {k}
+                                                            {++k}
                                                         </td>
                                                         <td
                                                             className="fish text-uppercase ps-3 fw-bold text-success"
@@ -386,9 +383,6 @@ export const ClientsPages = () => {
                                     </>)
                                 } else {
                                     if (type === connector.type) {
-                                        if (all.sections[key].length !== 0) {
-                                            k++
-                                        }
                                         return (<>
                                             {all && all.sections[key].map((section, index) => {
                                                 if (index === 0) {
@@ -402,7 +396,7 @@ export const ClientsPages = () => {
                                                                 className="no border-right"
                                                                 rowSpan={all.sections[key].length + all.services[key].length}
                                                             >
-                                                                {k}
+                                                                {++k}
                                                             </td>
                                                             <td
                                                                 className="fish text-uppercase ps-3 fw-bold text-success"
@@ -573,9 +567,6 @@ export const ClientsPages = () => {
                         {all &&
                             all.connectors.map((connector, key) => {
                                 if (type === "all") {
-                                    if (all.sections[key].length !== 0) {
-                                        kk++
-                                    }
                                     return (
                                         <>
                                             {all && all.sections[key].map((section, index) => {
@@ -586,7 +577,7 @@ export const ClientsPages = () => {
                                                                 className="no border-right border-success"
                                                                 rowSpan={all.sections[key].length + all.services[key].length}
                                                             >
-                                                                {kk}
+                                                                {++kk}
                                                             </td>
                                                             <td
                                                                 className="fish text-uppercase ps-3"
@@ -749,9 +740,6 @@ export const ClientsPages = () => {
 
                                 } else {
                                     if (type === connector.type) {
-                                        if (all.sections[key].length !== 0) {
-                                            kk++
-                                        }
                                         return (<>
                                             {all && all.sections[key].map((section, index) => {
                                                 if (index === 0) {
@@ -761,7 +749,7 @@ export const ClientsPages = () => {
                                                                 className="no border-right border-success"
                                                                 rowSpan={all.sections[key].length + all.services[key].length}
                                                             >
-                                                                {kk}
+                                                                {++kk}
                                                             </td>
                                                             <td
                                                                 className="fish text-uppercase ps-3"

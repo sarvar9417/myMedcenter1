@@ -1,5 +1,6 @@
 import React from 'react'
-import { BarCharts } from './BarCharts'
+import { BarCharts } from './charts/BarCharts'
+import { Reklama } from './charts/Reklama'
 export const ChartsMarketing = () => {
     return (
         <>
@@ -8,7 +9,7 @@ export const ChartsMarketing = () => {
                     <BarCharts />
                 </div>
                 <div className="col-lg-6">
-                    {/* <SimpleChart /> */}
+                    <Reklama />
                 </div>
                 <div className="col-lg-6">
                     {/* <BarChartsStatsionar /> */}

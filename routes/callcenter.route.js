@@ -28,10 +28,10 @@ router.get('/reseption/:start/:end', async (req, res) => {
         const start = new Date(req.params.start)
         const end = new Date(req.params.end)
         const calls = await CallCenter.find({
-            bronDay: {
+            callDay: {
                 $gte:
                     new Date(new Date(start).getFullYear(), new Date(start).getMonth(), new Date(start).getDate()),
-                $lt: new Date(new Date().getFullYear(),
+                $lt: new Date(new Date(end).getFullYear(),
                     new Date(end).getMonth(), new Date(end).getDate() + 1)
             }
         })
