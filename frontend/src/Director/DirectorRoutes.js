@@ -44,6 +44,7 @@ import { EditCounterDoctor } from './marketing/counterdoctors/EditCounterDoctor'
 import { EditWareHouse } from './directorPages/WareHouse/EditWareHouse'
 import { WareConnector } from './directorPages/WareHouse/WareConnectors'
 import { RecieptStatsionar } from './directorPages/RecieptStatsionar'
+import { ChartsMarketing } from './marketing/ChartsMarketing'
 
 export const DirectorRoutes = (isAuthenticated) => {
     if (isAuthenticated) {
@@ -99,7 +100,7 @@ export const DirectorRoutes = (isAuthenticated) => {
                         <RouterComponent component={<ClientsDoctor />} menu={true} />
                     </Route>
                     <Route path='/director/marketing' >
-                        <RouterComponent component={<Marketing component={<Doctors />} />} />
+                        <RouterComponent component={<Marketing component={<ChartsMarketing />} />} />
                     </Route>
                     <Route path='/director/counteragents' >
                         <RouterComponent component={<Marketing component={<CounterAgents />} />} />

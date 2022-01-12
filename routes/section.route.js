@@ -1,6 +1,8 @@
 const { Router } = require('express')
 const router = Router()
 const { Section, validateSection } = require('../models/Section')
+const { Service, validateService } = require('../models/Service')
+const { Payment, validatePayment } = require('../models/Payment')
 const auth = require('../middleware/auth.middleware')
 
 // ===================================================================================
@@ -234,6 +236,46 @@ router.patch('/cashier/:id', auth, async (req, res) => {
         const id = req.params.id
         const edit = await Section.findByIdAndUpdate(id, req.body)
         res.json(edit)
+
+    } catch (e) {
+        res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
+    }
+})
+
+// /api/section/cashier/
+router.patch('/cashier', auth, async (req, res) => {
+    try {
+        const sections = req.body.sections
+        const services = req.body.services
+        const payment = req.body.payment
+        for (let i = 0; i < sections.length; i++) {
+            const section = await Section.findByIdAndUpdate(sections[i]._id, sections[i])
+        }
+        for (let i = 0; i < services.length; i++) {
+            const service = await Service.findByIdAndUpdate(services[i]._id, services[i])
+        }
+        const {
+            client,
+            connector,
+            total,
+            type,
+            card,
+            transfer,
+            cash,
+            position
+        } = payment
+        const newpayment = new Payment({
+            client,
+            connector,
+            total,
+            type,
+            card,
+            transfer,
+            cash,
+            position
+        })
+        await newpayment.save()
+        res.json(newpayment)
 
     } catch (e) {
         res.status(500).json({ message: 'Serverda xatolik yuz berdi' })

@@ -72,20 +72,16 @@ export const CheckCashier = () => {
     }
 
     const setAllPayment = useCallback((event) => {
-        sections.map((section, key) => {
-            setSections(
-                Object.values({
-                    ...sections,
-                    [key]: { ...sections[key], paymentMethod: event.target.id },
-                }))
+        let s = [...sections]
+        s.map((section, key) => {
+            s[key].paymentMethod = event.target.id
         })
-        services.map((section, key) => {
-            setServices(
-                Object.values({
-                    ...services,
-                    [key]: { ...services[key], paymentMethod: event.target.id },
-                }))
+        let m = [...services]
+        m.map((section, key) => {
+            m[key].paymentMethod = event.target.id
         })
+        setSections(s)
+        setServices(m)
         if (event.target.id === "card") {
             setPayment({
                 ...payment,
@@ -429,44 +425,45 @@ export const CheckCashier = () => {
             setModal1(true)
         }
     }
-    const patchPaymentSections = useCallback(async (section) => {
-        try {
-            const fetch = await request(`/api/section/cashier/${section._id}`, 'PATCH', { ...section }, {
-                Authorization: `Bearer ${auth.token}`
-            })
-        } catch (e) {
-            notify(e)
-        }
-    }, [request, auth])
 
-    const patchPaymentServices = useCallback(async (service) => {
+    const patchPaymentSections = useCallback(async () => {
         try {
-            const fetch = await request(`/api/service/cashier/${service._id}`, 'PATCH', { ...service }, {
+            const fetch = await request(`/api/section/cashier`, 'PATCH', { sections, services, payment }, {
                 Authorization: `Bearer ${auth.token}`
             })
         } catch (e) {
             notify(e)
         }
-    }, [request, auth])
+    }, [request, auth, payment, sections, services])
 
-    const createPayment = useCallback(async () => {
-        try {
-            const fetch = await request(`/api/payment/register`, 'POST', { ...payment }, {
-                Authorization: `Bearer ${auth.token}`
-            })
-        } catch (e) {
-            notify(e)
-        }
-    }, [request, auth, payment])
+    // // const patchPaymentServices = useCallback(async (service) => {
+    // //     try {
+    // //         const fetch = await request(`/api/service/cashier/${service._id}`, 'PATCH', { ...service }, {
+    // //             Authorization: `Bearer ${auth.token}`
+    // //         })
+    // //     } catch (e) {
+    // //         notify(e)
+    // //     }
+    // // }, [request, auth])
+
+    // const createPayment = useCallback(async () => {
+    //     try {
+    //         const fetch = await request(`/api/payment/register`, 'POST', { ...payment }, {
+    //             Authorization: `Bearer ${auth.token}`
+    //         })
+    //     } catch (e) {
+    //         notify(e)
+    //     }
+    // }, [request, auth, payment])
 
     const setPayments = () => {
-        sections && sections.map((section) => {
-            patchPaymentSections(section)
-        })
-        services && services.map((service) => {
-            patchPaymentServices(service)
-        })
-        createPayment()
+        // createPayment()
+        // sections && sections.map((section) => {
+        patchPaymentSections()
+        // })
+        // services && services.map((service) => {
+        //     patchPaymentServices(service)
+        // })
         history.push({
             pathname: `/cashier/reciept/${clientId}/${connectorId}`
         })

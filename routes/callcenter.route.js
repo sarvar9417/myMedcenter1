@@ -99,6 +99,17 @@ router.get('/callborn/:born', async (req, res) => {
     }
 })
 
+router.get('/reseption', async (req, res) => {
+    try {
+
+        const callcenter = await CallCenter.find()
+        res.json(callcenter)
+
+    } catch (e) {
+        res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
+    }
+})
+
 router.get('/:id', async (req, res) => {
     try {
 

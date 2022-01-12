@@ -27,16 +27,17 @@ export const ClientsPayments = () => {
         { value: "transfer", label: "O'tkazma" },
         { value: "mixed", label: "Aralash" },
     ])
+    
     const [startDate, setStartDate] = useState(new Date())
     const [endDate, setEndDate] = useState(new Date())
+    const searchDate = () => {
+        getPayments()
+    }
 
     const notify = (e) => {
         toast.error(e);
     };
 
-    const searchDate = () => {
-        getPayments()
-    }
 
     //====================================================================================
     //====================================================================================

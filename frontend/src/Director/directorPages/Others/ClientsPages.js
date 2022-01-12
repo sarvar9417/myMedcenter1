@@ -248,7 +248,6 @@ export const ClientsPages = () => {
                                 <th scope="" className="phone text-center">Tel <FontAwesomeIcon icon={faSort} /></th>
                                 <th scope="" className="date text-center" >Kelgan vaqti <FontAwesomeIcon icon={faSort} /></th>
                                 <th scope="" className="section text-center">Bo'limi <FontAwesomeIcon icon={faSort} /></th>
-                                <th scope="" className="turn text-center">Navbati <FontAwesomeIcon icon={faSort} /></th>
                                 <th scope="" className="prices text-center">To'lov <FontAwesomeIcon icon={faSort} /></th>
                                 <th scope="" className="prices text-center">To'langan <FontAwesomeIcon icon={faSort} /></th>
                                 <th scope="" className="prices text-center">To'lanmagan <FontAwesomeIcon icon={faSort} /></th>
@@ -691,7 +690,6 @@ export const ClientsPages = () => {
                                                         </td>
                                                         <td className="date text-center border-left border-success" >{new mongoose.Types.ObjectId(section._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(section._id).getTimestamp().toLocaleTimeString()}</td>
                                                         <td className="section text-uppercase"> <Link to={`/reseption/clienthistory/${section._id}`} className={section.summary !== " " ? "prices fw-bold text-success" : "prices fw-bold text-danger"} > {section.name} <br /> <span style={{ fontSize: "10pt" }}>{section.subname}</span> </Link></td>
-                                                        <td className="turn">{section.bron === "offline" ? section.turn : section.bronTime + " " + new Date(section.bronDay).toLocaleDateString()}</td>
                                                         <td className="prices text-primary fw-bold">{section.price}</td>
                                                         <td className="prices text-success fw-bold">{section.priceCashier}</td>
                                                         <td className="prices text-danger fw-bold">{section.price - section.priceCashier}</td>
@@ -703,7 +701,6 @@ export const ClientsPages = () => {
                                                     <tr key={index}  >
                                                         <td className="date fw-normal border-left border-success "  >{new mongoose.Types.ObjectId(section._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(section._id).getTimestamp().toLocaleTimeString()}</td>
                                                         <td className="section text-uppercase"> <Link to={`/reseption/clienthistory/${section._id}`} className={section.summary !== " " ? "prices fw-bold text-success" : "prices fw-bold text-danger"} > {section.name} <br /> <span style={{ fontSize: "10pt" }}>{section.subname}</span> </Link></td>
-                                                        <td className="turn">{section.bron === "offline" ? section.turn : section.bronTime + " " + new Date(section.bronDay).toLocaleDateString()}</td>
                                                         <td className="prices text-primary fw-bold">{section.price}</td>
                                                         <td className="prices text-success fw-bold">{section.priceCashier}</td>
                                                         <td className="prices text-danger fw-bold">{section.price - section.priceCashier}</td>
@@ -756,7 +753,6 @@ export const ClientsPages = () => {
                                                                 </td>
                                                                 <td className="date fw-normal border-left border-success "  >{new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleTimeString()}</td>
                                                                 <td className="section text-uppercase fw-bold text-info"> {service.name} <br /> <span style={{ fontSize: "10pt" }}>{service.type}</span></td>
-                                                                <td className="turn">{service.pieces}(dona)</td>
                                                                 <td className="prices text-primary fw-bold">{service.price}</td>
                                                                 <td className="prices text-success fw-bold">{service.priceCashier}</td>
                                                                 <td className="prices text-danger fw-bold">{service.price - service.priceCashier}</td>
@@ -768,7 +764,6 @@ export const ClientsPages = () => {
                                                             <tr key={index}  >
                                                                 <td className="date fw-normal border-left border-success "  >{new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleTimeString()}</td>
                                                                 <td className="section text-uppercase fw-bold text-info"> {service.name} <br /> <span style={{ fontSize: "10pt" }}>{service.type}</span></td>
-                                                                <td className="turn">{service.pieces}(dona)</td>
                                                                 <td className="prices text-primary fw-bold">{service.price}</td>
                                                                 <td className="prices text-success fw-bold">{service.priceCashier}</td>
                                                                 <td className="prices text-danger fw-bold">{service.price - service.priceCashier}</td>
@@ -787,7 +782,6 @@ export const ClientsPages = () => {
                                                         <tr key={index}  >
                                                             <td className="date fw-normal border-left border-success "  >{new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleTimeString()}</td>
                                                             <td className="section text-uppercase fw-bold text-info"> {service.name} <br /> <span style={{ fontSize: "10pt" }}>{service.type}</span></td>
-                                                            <td className="turn">{service.pieces}(dona)</td>
                                                             <td className="prices text-primary fw-bold">{service.price}</td>
                                                             <td className="prices text-success fw-bold">{service.priceCashier}</td>
                                                             <td className="prices text-danger fw-bold">{service.price - service.priceCashier}</td>
@@ -850,7 +844,6 @@ export const ClientsPages = () => {
                                                                     </td>
                                                                     <td className="date text-center border-left border-success" >{new mongoose.Types.ObjectId(section._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(section._id).getTimestamp().toLocaleTimeString()}</td>
                                                                     <td className="section text-uppercase"> <Link to={`/reseption/clienthistory/${section._id}`} className={section.summary !== " " ? "prices fw-bold text-success" : "prices fw-bold text-danger"} > {section.name} <br /> <span style={{ fontSize: "10pt" }}>{section.subname}</span> </Link></td>
-                                                                    <td className="turn">{section.bron === "offline" ? section.turn : section.bronTime + " " + new Date(section.bronDay).toLocaleDateString()}</td>
                                                                     <td className="prices text-primary fw-bold">{section.price}</td>
                                                                     <td className="prices text-success fw-bold">{section.priceCashier}</td>
                                                                     <td className="prices text-danger fw-bold">{section.price - section.priceCashier}</td>
@@ -862,7 +855,6 @@ export const ClientsPages = () => {
                                                                 <tr key={index}  >
                                                                     <td className="date fw-normal border-left border-success "  >{new mongoose.Types.ObjectId(section._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(section._id).getTimestamp().toLocaleTimeString()}</td>
                                                                     <td className="section text-uppercase"> <Link to={`/reseption/clienthistory/${section._id}`} className={section.summary !== " " ? "prices fw-bold text-success" : "prices fw-bold text-danger"} > {section.name} <br /> <span style={{ fontSize: "10pt" }}>{section.subname}</span> </Link></td>
-                                                                    <td className="turn">{section.bron === "offline" ? section.turn : section.bronTime + " " + new Date(section.bronDay).toLocaleDateString()}</td>
                                                                     <td className="prices text-primary fw-bold">{section.price}</td>
                                                                     <td className="prices text-success fw-bold">{section.priceCashier}</td>
                                                                     <td className="prices text-danger fw-bold">{section.price - section.priceCashier}</td>
@@ -916,7 +908,6 @@ export const ClientsPages = () => {
                                                                     </td>
                                                                     <td className="date fw-normal border-left border-success "  >{new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleTimeString()}</td>
                                                                     <td className="section text-uppercase fw-bold text-info"> {service.name} <br /> <span style={{ fontSize: "10pt" }}>{service.type}</span></td>
-                                                                    <td className="turn">{service.pieces}(dona)</td>
                                                                     <td className="prices text-primary fw-bold">{service.price}</td>
                                                                     <td className="prices text-success fw-bold">{service.priceCashier}</td>
                                                                     <td className="prices text-danger fw-bold">{service.price - service.priceCashier}</td>
@@ -928,7 +919,6 @@ export const ClientsPages = () => {
                                                                 <tr key={index}  >
                                                                     <td className="date fw-normal border-left border-success "  >{new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleTimeString()}</td>
                                                                     <td className="section text-uppercase fw-bold text-info"> {service.name} <br /> <span style={{ fontSize: "10pt" }}>{service.type}</span></td>
-                                                                    <td className="turn">{service.pieces}(dona)</td>
                                                                     <td className="prices text-primary fw-bold">{service.price}</td>
                                                                     <td className="prices text-success fw-bold">{service.priceCashier}</td>
                                                                     <td className="prices text-danger fw-bold">{service.price - service.priceCashier}</td>
@@ -947,7 +937,6 @@ export const ClientsPages = () => {
                                                             <tr key={index}  >
                                                                 <td className="date fw-normal border-left border-success "  >{new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(service._id).getTimestamp().toLocaleTimeString()}</td>
                                                                 <td className="section text-uppercase fw-bold text-info"> {service.name} <br /> <span style={{ fontSize: "10pt" }}>{service.type}</span></td>
-                                                                <td className="turn">{service.pieces}(dona)</td>
                                                                 <td className="prices text-primary fw-bold">{service.price}</td>
                                                                 <td className="prices text-success fw-bold">{service.priceCashier}</td>
                                                                 <td className="prices text-danger fw-bold">{service.price - service.priceCashier}</td>
