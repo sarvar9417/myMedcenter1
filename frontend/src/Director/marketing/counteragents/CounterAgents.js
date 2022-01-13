@@ -47,13 +47,18 @@ export const CounterAgents = () => {
 
     return (
         <div>
-            <div className="row p-3">
-                <div className="col-12 text-end">
+            <div className="row pb-3">
+                <div className='col-4'>
+                    <Link to="/director/paymentscounteragents" className=" btn btn-primary">
+                        Ulushlar
+                    </Link>
+                </div>
+                <div className="col-8 text-end">
                     <Link to="/director/addcounteragent" className="btn button-success">
                         Kontragent yaratish
                     </Link>
 
-                    <Link to="/director/counterdoctors" className="btn mx-4 btn-success">
+                    <Link to="/director/counterdoctors" className="btn ms-4 btn-success">
                         Yo'naltiruvchi shifokorlar
                     </Link>
                 </div>

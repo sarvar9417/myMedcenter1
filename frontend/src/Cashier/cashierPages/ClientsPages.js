@@ -118,6 +118,85 @@ export const ClientsPages = () => {
         }
     }, [request, auth, setAll, startDate, endDate, fish])
 
+    //====================================================================================
+    //====================================================================================
+    //====================================================================================
+    // Bo'limlar bo'yicha sartirovka
+    const [allSections, setAllSections] = useState()
+
+    const getAllSections = useCallback(async () => {
+        try {
+            const data = await request("/api/direction/", "GET", null, {
+                Authorization: `Bearer ${auth.token}`
+            })
+            const fetch = await request("/api/warehouse/", "GET", null, {
+                Authorization: `Bearer ${auth.token}`
+            })
+            let m = [{
+                _id: "123",
+                __v: 0,
+                value: "all",
+                label: "Barcha bo'limlar",
+                subvalue: " ",
+                price: 0
+            }]
+            data.map((section) => {
+                let k = 0
+                m.map((mm) => {
+                    if (mm.value === section.section) {
+                        k++
+                    }
+                })
+                if (!k) {
+                    m.push({
+                        value: section.section,
+                        label: section.section,
+                        subvalue: " ",
+                        price: 0
+                    })
+                }
+            })
+            fetch.map((ware) => {
+                let k = 0
+                m.map((mm) => {
+                    if (mm.value === ware.name) {
+                        k++
+                    }
+                })
+                if (!k) {
+                    m.push({
+                        value: ware.name,
+                        label: ware.name,
+                        subvalue: " ",
+                        price: 0
+                    })
+                }
+            })
+            setAllSections(m)
+        } catch (e) {
+            notify(e)
+        }
+    }, [auth, request, setAllSections, options])
+
+    const getSortSection = useCallback(async (section) => {
+        try {
+            const fetch = await request(`/api/connector/director/${startDate}/${endDate}/${section}`, 'GET', null, {
+                Authorization: `Bearer ${auth.token}`
+            })
+            setAll(fetch)
+        } catch (e) {
+            notify(e)
+        }
+    }, [request, auth, startDate, endDate, setAll])
+
+    const sortSections = (event) => {
+        if (event.label === "all") {
+            getConnectors()
+        } else {
+            getSortSection(event.label)
+        }
+    }
+
 
     useEffect(() => {
         if (error) {
@@ -126,6 +205,9 @@ export const ClientsPages = () => {
         }
         if (!all) {
             getToday()
+        }
+        if (!allSections) {
+            getAllSections()
         }
     }, [notify, clearError])
 
@@ -166,7 +248,7 @@ export const ClientsPages = () => {
                 <div className='col-1'>
                     <button onClick={(event) => (searchName((event.target.value)))} className="btn text-white" style={{ backgroundColor: "#45D3D3" }}><FontAwesomeIcon icon={faSearch} /></button>
                 </div>
-                <div className="offset-8 col-1 text-end">
+                <div className="offset-6 col-1 text-end">
                     <ReactHTMLTableToExcel
                         className="btn text-white mb-2 btn-success"
                         table="reseptionReport"
@@ -174,6 +256,9 @@ export const ClientsPages = () => {
                         sheet="Sheet"
                         buttonText="Excel"
                     />
+                </div>
+                <div className=" col-2">
+                    <Select isDisabled={loading} onChange={(event) => sortSections(event)} defaultValue={allSections && allSections[0]} options={allSections && allSections} />
                 </div>
 
             </div>

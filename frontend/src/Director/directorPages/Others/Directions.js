@@ -3,7 +3,7 @@ import { Link, useHistory } from 'react-router-dom'
 import { AuthContext } from '../../context/AuthContext'
 import { useHttp } from '../../hooks/http.hook'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faTrashAlt, faEdit } from '@fortawesome/free-solid-svg-icons'
+import { faTrashAlt, faEdit, faSearch } from '@fortawesome/free-solid-svg-icons'
 import { toast } from "react-toastify"
 
 toast.configure()
@@ -42,6 +42,22 @@ export const Directions = () => {
         toast.error(e)
     }
 
+    //=================================================================================
+    //=================================================================================
+    //=================================================================================
+    // Tovar nomi bilan qidirish
+    const [directionName, setDirectionName] = useState()
+    const searchDirection = useCallback(async () => {
+        try {
+            const fetch = await request(`/api/direction/${directionName}`, 'GET', null, {
+                Authorization: `Bearer ${auth.token}`
+            })
+            setDirections(fetch)
+        } catch (e) {
+            notify(e)
+        }
+    }, [request, auth, directionName, setDirections])
+
     useEffect(() => {
         if (!directions) {
             getAllDirections()
@@ -59,8 +75,19 @@ export const Directions = () => {
                 <div className="col-sm-12">
                     <div className="card">
                         <div className="card-body">
-                            <div className="text-end p-3">
-                                <Link to="/director/adddirection" className=" mx-4 btn button-success">Bo'lim yaratish</Link>
+                            <div className='row mb-3'>
+                                <div className='col-2 '>
+                                    <input onChange={(event) => { setDirectionName(event.target.value) }} className='form-control' placeholder='Mijoz ism-familiyasi' />
+                                </div>
+                                <div className='col-1'>
+                                    <button onClick={searchDirection} className="btn text-white" style={{ backgroundColor: "#45D3D3" }}><FontAwesomeIcon icon={faSearch} /></button>
+                                </div>
+                                <div className='col-2'>
+                                    <button onClick={getAllDirections} className="btn text-white" style={{ backgroundColor: "#45D3D3" }}>Barcha Xizmatlar </button>
+                                </div>
+                                <div className="col-3 offset-4 text-end">
+                                    <Link to="/director/adddirection" className=" mx-4 btn button-success">Bo'lim yaratish</Link>
+                                </div>
                             </div>
                             <div className="table-responsive">
                                 <table className="datatable table table-hover table-center mb-0">

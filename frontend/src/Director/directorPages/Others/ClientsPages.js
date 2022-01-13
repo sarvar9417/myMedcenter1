@@ -19,61 +19,6 @@ export const ClientsPages = () => {
     const { loading, request, error, clearError } = useHttp()
 
     const auth = useContext(AuthContext)
-    const [options, setOptions] = useState()
-
-    const getOptions = useCallback(async () => {
-        try {
-            const data = await request("/api/direction/", "GET", null, {
-                Authorization: `Bearer ${auth.token}`
-            })
-            const fetch = await request("/api/warehouse/", "GET", null, {
-                Authorization: `Bearer ${auth.token}`
-            })
-            let m = [{
-                _id: "123",
-                __v: 0,
-                value: "all",
-                label: "All",
-                subvalue: " ",
-                price: 0
-            }]
-            data.map((section) => {
-                let k = 0
-                m.map((mm) => {
-                    if (mm.value === section.section) {
-                        k++
-                    }
-                })
-                if (!k) {
-                    m.push({
-                        value: section.section,
-                        label: section.section,
-                        subvalue: " ",
-                        price: 0
-                    })
-                }
-            })
-            fetch.map((ware) => {
-                let k = 0
-                m.map((mm) => {
-                    if (mm.value === ware.name) {
-                        k++
-                    }
-                })
-                if (!k) {
-                    m.push({
-                        value: ware.name,
-                        label: ware.name,
-                        subvalue: " ",
-                        price: 0
-                    })
-                }
-            })
-            setOptions(m)
-        } catch (e) {
-            notify(e)
-        }
-    }, [auth, request, setOptions, options])
 
     let paid = 0
     let unpaid = 0
@@ -131,6 +76,61 @@ export const ClientsPages = () => {
     //====================================================================================
     //====================================================================================
     // Bo'limlar bo'yicha sartirovka
+    const [options, setOptions] = useState()
+
+    const getOptions = useCallback(async () => {
+        try {
+            const data = await request("/api/direction/", "GET", null, {
+                Authorization: `Bearer ${auth.token}`
+            })
+            const fetch = await request("/api/warehouse/", "GET", null, {
+                Authorization: `Bearer ${auth.token}`
+            })
+            let m = [{
+                _id: "123",
+                __v: 0,
+                value: "all",
+                label: "All",
+                subvalue: " ",
+                price: 0
+            }]
+            data.map((section) => {
+                let k = 0
+                m.map((mm) => {
+                    if (mm.value === section.section) {
+                        k++
+                    }
+                })
+                if (!k) {
+                    m.push({
+                        value: section.section,
+                        label: section.section,
+                        subvalue: " ",
+                        price: 0
+                    })
+                }
+            })
+            fetch.map((ware) => {
+                let k = 0
+                m.map((mm) => {
+                    if (mm.value === ware.name) {
+                        k++
+                    }
+                })
+                if (!k) {
+                    m.push({
+                        value: ware.name,
+                        label: ware.name,
+                        subvalue: " ",
+                        price: 0
+                    })
+                }
+            })
+            setOptions(m)
+        } catch (e) {
+            notify(e)
+        }
+    }, [auth, request, setOptions, options])
 
     const getSortSection = useCallback(async (section) => {
         try {
@@ -215,7 +215,7 @@ export const ClientsPages = () => {
                     <button onClick={searchBornDate} className="btn text-white mb-2" style={{ backgroundColor: "#45D3D3" }}><FontAwesomeIcon icon={faSearch} /></button>
                 </div>
                 <div className="col-2">
-                    <Select onChange={(event) => sortOnOff(event)} defaultValue={options && options[0]} options={options} />
+                    <Select isDisabled={loading} onChange={(event) => sortOnOff(event)} defaultValue={options && options[0]} options={options} />
                 </div>
             </div>
             <div className="row">

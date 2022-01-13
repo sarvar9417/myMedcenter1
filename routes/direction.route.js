@@ -63,6 +63,20 @@ router.get('/fizioterapevt', async (req, res) => {
 })
 
 // /api/direction
+router.get('/:name', async (req, res) => {
+    try {
+        const name = new RegExp('.*' + req.params.name + ".*", "i")
+        const direction = await Direction.find({
+        })
+        .or([{section: name}, {subsection: name}])
+        .sort({ section: 1 })
+        res.json(direction)
+    } catch (e) {
+        res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
+    }
+})
+
+// /api/direction
 router.get('/', async (req, res) => {
     try {
         const direction = await Direction.find().sort({ section: 1 })

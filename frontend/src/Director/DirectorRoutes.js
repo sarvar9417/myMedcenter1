@@ -45,6 +45,7 @@ import { EditWareHouse } from './directorPages/WareHouse/EditWareHouse'
 import { WareConnector } from './directorPages/WareHouse/WareConnectors'
 import { RecieptStatsionar } from './directorPages/RecieptStatsionar'
 import { ChartsMarketing } from './marketing/ChartsMarketing'
+import { PaymentsCounterAgents } from './marketing/counteragents/PaymentsCounterAgents'
 
 export const DirectorRoutes = (isAuthenticated) => {
     if (isAuthenticated) {
@@ -113,6 +114,9 @@ export const DirectorRoutes = (isAuthenticated) => {
                     </Route>
                     <Route path='/director/counteragentprocient/:id' >
                         <RouterComponent component={<Marketing component={<ClientsCounterAgent />} />} />
+                    </Route>
+                    <Route path='/director/paymentscounteragents' >
+                        <RouterComponent component={<Marketing component={<PaymentsCounterAgents />} />} />
                     </Route>
                     <Route path='/director/advertisements' >
                         <RouterComponent component={<Marketing component={<Advertisements />} />} />

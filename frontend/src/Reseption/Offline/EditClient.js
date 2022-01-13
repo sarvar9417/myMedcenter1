@@ -13,16 +13,7 @@ export const EditClient = () => {
     const auth = useContext(AuthContext)
     const clientId = useParams().id
     const { loading, request, error, clearError } = useHttp()
-    const [form, setForm] = useState({
-        firstname: "",
-        lastname: "",
-        fathername: "",
-        gender: "",
-        phone: "",
-        id: 0,
-        born: "",
-        address: " "
-    })
+    const [form, setForm] = useState()
 
     const getClient = useCallback(async () => {
         try {
@@ -82,7 +73,7 @@ export const EditClient = () => {
             notify(error)
             clearError()
         }
-        if (form.firstname === "") {
+        if (!form) {
             getClient()
         }
     }, [error, clearError, getClient, form])
@@ -102,7 +93,7 @@ export const EditClient = () => {
                         <div className="row mt-2">
                             <div className="col-md-6 input_box mb-3" >
                                 <input
-                                    defaultValue={form.lastname}
+                                    defaultValue={form && form.lastname}
                                     onChange={changeHandlar}
                                     name='lastname'
                                     type="text"
@@ -113,7 +104,7 @@ export const EditClient = () => {
                             </div>
                             <div className="col-md-6 input_box mb-3" >
                                 <input
-                                    defaultValue={form.firstname}
+                                    defaultValue={form && form.firstname}
                                     onChange={changeHandlar}
                                     name="firstname"
                                     type="text"
@@ -125,7 +116,7 @@ export const EditClient = () => {
                         <div className="row mt-3">
                             <div className="col-md-6 input_box mb-3" >
                                 <input
-                                    defaultValue={form.fathername}
+                                    defaultValue={form && form.fathername}
                                     onChange={changeHandlar}
                                     name="fathername"
                                     type="text"
@@ -148,7 +139,7 @@ export const EditClient = () => {
                                                 defaultValue="man"
                                             />
                                             <label
-                                                className={form.gender === "man" ? "label clabel" : "label"}
+                                                className={form && form.gender === "man" ? "label clabel" : "label"}
                                                 for="erkak"
                                             >
                                                 Erkak
@@ -162,7 +153,7 @@ export const EditClient = () => {
                                                 defaultValue="woman"
                                             />
                                             <label
-                                                className={form.gender === "woman" ? "label clabel" : "label"}
+                                                className={form && form.gender === "woman" ? "label clabel" : "label"}
                                                 for="ayol"
                                             >
                                                 Ayol
@@ -177,7 +168,7 @@ export const EditClient = () => {
 
 
                                 <input
-                                    defaultValue={form.phone}
+                                    defaultValue={form && form.phone}
                                     name="phone"
                                     onChange={changeHandlar}
                                     type="number"
@@ -191,7 +182,7 @@ export const EditClient = () => {
                             <div className="col-md-6 input_box mb-3" >
                                 <input
                                     onChange={changeDate}
-                                    value={new Date(form.born).getFullYear().toString() + '-' + (new Date(form.born).getMonth() < 9 ? "0" + (new Date(form.born).getMonth() + 1).toString() : (new Date(form.born).getMonth() + 1).toString()) + '-' + (new Date(form.born).getDate() < 10 ? "0" + (new Date(form.born).getDate()).toString() : (new Date(form.born).getDate()).toString())}
+                                    defaultValue={form && new Date(form.born).getFullYear().toString() + '-' + (new Date(form.born).getMonth() < 9 ? "0" + (new Date(form.born).getMonth() + 1).toString() : (new Date(form.born).getMonth() + 1).toString()) + '-' + (new Date(form.born).getDate() < 10 ? "0" + (new Date(form.born).getDate()).toString() : (new Date(form.born).getDate()).toString())}
                                     type="date"
                                     name='born'
                                     className="form-control inp"
@@ -203,7 +194,7 @@ export const EditClient = () => {
                             </div>
                             <div className="col-12 mt-3">
                                 <input
-                                    defaultValue={form.address}
+                                    defaultValue={form && form.address}
                                     onChange={changeHandlar}
                                     name="address"
                                     type="text"

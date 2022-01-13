@@ -1,5 +1,5 @@
 import React, { useCallback, useEffect, useState, Component, useContext } from 'react'
-import { useHttp } from './../hooks/http.hook'
+import { useHttp } from '../../hooks/http.hook'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPenAlt, faSearch, faSort } from '@fortawesome/free-solid-svg-icons'
 import { toast } from 'react-toastify'
@@ -7,11 +7,11 @@ import DatePicker from "react-datepicker"
 import Select from 'react-select'
 import ReactHTMLTableToExcel from 'react-html-to-excel'
 import "react-datepicker/dist/react-datepicker.css"
-import { AuthContext } from './../context/AuthContext'
+import { AuthContext } from '../../context/AuthContext'
 const mongoose = require('mongoose')
 
 toast.configure()
-export const ClientsPayments = () => {
+export const PaymentsCounterAgents = () => {
     let cash = 0
     let transfer = 0
     let card = 0
@@ -66,9 +66,10 @@ export const ClientsPayments = () => {
 
     const getPayments = useCallback(async () => {
         try {
-            const fetch = await request(`/api/payment/directorclients/${startDate}/${endDate}`, 'GET', null, {
+            const fetch = await request(`/api/counteragentpayment/${startDate}/${endDate}`, 'GET', null, {
                 Authorization: `Bearer ${auth.token}`
             })
+            console.log(fetch);
             setAll(fetch)
         } catch (e) {
         }

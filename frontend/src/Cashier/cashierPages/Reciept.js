@@ -27,6 +27,23 @@ export const Reciept = () => {
     const [client, setClient] = useState()
     const { loading, request, error, clearError } = useHttp()
     const [sections, setSections] = useState()
+    //================================================================================
+    //================================================================================
+    //================================================================================
+    //Xonalarni olish
+    const [allSections, setAllSections] = useState()
+    const getAllSections = useCallback(async () => {
+        try {
+            const data = await request("/api/direction/", "GET", null, {
+                Authorization: `Bearer ${auth.token}`
+            })
+            console.log(data)
+            setAllSections(data)
+        } catch (e) {
+            notify(e)
+        }
+    }, [auth, request, setAllSections])
+
     const getClient = useCallback(async () => {
         try {
             const data = await request(`/api/clients/reseption/${clientId}`, 'GET', null, {
@@ -115,6 +132,9 @@ export const Reciept = () => {
         if (!services) {
             getServices()
         }
+        if (!allSections) {
+            getAllSections()
+        }
     }, [error, clearError])
 
     if (loading) {
@@ -171,6 +191,7 @@ export const Reciept = () => {
                                             <th className="text-center" style={{ fontSize: "10pt", fontFamily: "times" }}>№</th>
                                             <th className="text-center" style={{ fontSize: "10pt", fontFamily: "times" }}>Bo'lim</th>
                                             <th className="text-center" style={{ fontSize: "10pt", fontFamily: "times" }}>Navbat</th>
+                                            <th className="text-center" style={{ fontSize: "10pt", fontFamily: "times" }}>Xona</th>
                                             <th className="text-center" style={{ fontSize: "10pt", fontFamily: "times" }}>To'lov miqdori</th>
                                             <th className="text-center" style={{ fontSize: "10pt", fontFamily: "times" }}>To'langan</th>
                                             <th className="text-center" style={{ fontSize: "10pt", fontFamily: "times" }}>To'lanmagan</th>
@@ -187,6 +208,11 @@ export const Reciept = () => {
                                                     <td style={{ fontSize: "10pt", fontFamily: "times" }}>{k}</td>
                                                     <td style={{ fontSize: "10pt", fontFamily: "times" }} className="ps-3">{section.name} {section.subname}</td>
                                                     <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.bron === 'offline' ? section.turn : section.bronTime}</td>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{allSections && allSections.map((sec)=>{
+                                                        if (section.name === sec.section && section.subname === sec.subsection) {
+                                                            return sec.room
+                                                        }
+                                                    })}</td>
                                                     <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.payment === "to'lanmagan" ? "Rad etilgan" : section.price}</td>
                                                     <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.payment === "to'lanmagan" ? "Rad etilgan" : section.priceCashier}</td>
                                                     <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center"> {section.payment === "to'lanmagan" ? "Rad etilgan" : section.price - section.priceCashier}</td>
@@ -206,6 +232,7 @@ export const Reciept = () => {
                                                     <td style={{ fontSize: "10pt", fontFamily: "times" }}>{index + 1}</td>
                                                     <td style={{ fontSize: "10pt", fontFamily: "times" }} className="ps-3">{service.name} {service.type}</td>
                                                     <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{service.pieces} (dona)</td>
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center"></td>
                                                     <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{service.price}</td>
                                                     <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{service.priceCashier}</td>
                                                     <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center"> {service.price - service.priceCashier}</td>
@@ -218,6 +245,7 @@ export const Reciept = () => {
                                     </tbody>
                                     <tfoot>
                                         <tr>
+                                            <th style={{ fontSize: "10pt", fontFamily: "times" }} className="text-right"></th>
                                             <th style={{ fontSize: "10pt", fontFamily: "times" }} className="text-right"></th>
                                             <th style={{ fontSize: "10pt", fontFamily: "times" }} className="text-right"></th>
                                             <th style={{ fontSize: "10pt", fontFamily: "times" }} className="text-right">Jami to'lov:</th>

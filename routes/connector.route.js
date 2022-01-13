@@ -5,6 +5,8 @@ const { Clients } = require('../models/Clients')
 const { Section } = require('../models/Section')
 const { Service } = require('../models/Service')
 const { Source } = require('../models/Source')
+const { Doctor } = require('../models/Doctor')
+const { Direction } = require('../models/Direction')
 const { UsedRoom } = require('../models/UsedRoom')
 const { Room } = require('../models/Rooms')
 
@@ -191,7 +193,38 @@ router.get('/reseptiononline/:start/:end/:fish', async (req, res) => {
     }
 })
 
-
+// /api/auth/connector/
+router.get('/doctor/:start/:end/:id', async (req, res) => {
+    try {
+        const start = new Date(req.params.start)
+        const end = new Date(req.params.end)
+        const id = req.params.id
+        const doctor = await Doctor.findById(id)
+        const sections = await Section.find({
+            name: doctor.section,
+            bronDay: {
+                $gte:
+                    new Date(new Date(start).getFullYear(), new Date(start).getMonth(), new Date(start).getDate()),
+                $lt: new Date(new Date(end).getFullYear(),
+                    new Date(end).getMonth(), new Date(end).getDate() + 1)
+            }
+        }).sort({ _id: -1 })
+        let directions = []
+        let clients = []
+        for (let i = 0; i < sections.length; i++) {
+            const client = await Clients.findById(sections[i].client)
+            const direction = await Direction.findOne({
+                section: sections[i].name,
+                subsection: sections[i].subname
+            })
+            clients.push(client)
+            directions.push(direction)
+        }
+        res.json({ clients, sections, directions })
+    } catch (e) {
+        res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
+    }
+})
 
 
 // /api/auth/connector/
