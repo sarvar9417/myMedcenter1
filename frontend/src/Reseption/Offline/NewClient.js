@@ -89,7 +89,7 @@ export const NewClient = () => {
   }
   //==============================================================================
   //==============================================================================
-  
+
   const getSources = useCallback(async () => {
     try {
       const fetch = await request('/api/source/', 'GET', null, {
@@ -323,7 +323,7 @@ export const NewClient = () => {
         counteragent: counteragent ? counteragent.counteragent : " ",
         type: "offline",
         position: " ",
-        prepayment: 0,
+        doctor: " ",
         diagnosis: " ",
         bronDay: new Date(),
         prepaymentCashier: 0,
@@ -676,7 +676,7 @@ export const NewClient = () => {
       </div>
 
       <div className="mt-5 text-center" >
-        <button disabled={loading}  onClick={checkData} className="btn btn-primary profile-button mb-5">
+        <button disabled={loading} onClick={checkData} className="btn btn-primary profile-button mb-5">
           Saqlash
         </button>
       </div>

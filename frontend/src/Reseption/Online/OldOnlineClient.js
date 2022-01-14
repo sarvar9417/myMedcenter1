@@ -234,7 +234,7 @@ export const OldOnlineClient = () => {
                 counteragent: counteragent ? counteragent.counteragent : " ",
                 type: "online",
                 position: " ",
-                prepayment: 0,
+                doctor: " ",
                 diagnosis: " ",
                 bronDay: sections ? sections[0].bronDay : new Date(),
                 prepaymentCashier: 0,

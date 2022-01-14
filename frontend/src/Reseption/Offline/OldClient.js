@@ -287,7 +287,7 @@ export const OldClient = () => {
         counteragent: counteragent ? counteragent.counteragent : " ",
         type: "offline",
         position: " ",
-        prepayment: 0,
+        doctor: " ",
         diagnosis: " ",
         bronDay: new Date(),
         prepaymentCashier: 0,
