@@ -436,34 +436,8 @@ export const CheckCashier = () => {
         }
     }, [request, auth, payment, sections, services])
 
-    // // const patchPaymentServices = useCallback(async (service) => {
-    // //     try {
-    // //         const fetch = await request(`/api/service/cashier/${service._id}`, 'PATCH', { ...service }, {
-    // //             Authorization: `Bearer ${auth.token}`
-    // //         })
-    // //     } catch (e) {
-    // //         notify(e)
-    // //     }
-    // // }, [request, auth])
-
-    // const createPayment = useCallback(async () => {
-    //     try {
-    //         const fetch = await request(`/api/payment/register`, 'POST', { ...payment }, {
-    //             Authorization: `Bearer ${auth.token}`
-    //         })
-    //     } catch (e) {
-    //         notify(e)
-    //     }
-    // }, [request, auth, payment])
-
     const setPayments = () => {
-        // createPayment()
-        // sections && sections.map((section) => {
         patchPaymentSections()
-        // })
-        // services && services.map((service) => {
-        //     patchPaymentServices(service)
-        // })
         history.push({
             pathname: `/cashier/reciept/${clientId}/${connectorId}`
         })

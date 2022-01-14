@@ -123,6 +123,7 @@ router.get('/statsionar/:id', auth, async (req, res) => {
         const payment = await Payment.find({
             connector: req.params.id
         })
+        console.log(payment)
         res.json(payment)
     } catch (e) {
         res.status(500).json({ message: 'Serverda xatolik yuz berdi' })

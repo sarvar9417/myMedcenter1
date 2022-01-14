@@ -336,7 +336,7 @@ export const NewStatsionarClient = () => {
         counteragent: counteragent ? counteragent.counteragent : " ",
         type: "statsionar",
         position: "davolanishda",
-        prepayment: 0,
+        doctor: doctor,
         diagnosis,
         bronDay: new Date(),
         prepaymentCashier: 0,
@@ -403,7 +403,6 @@ export const NewStatsionarClient = () => {
         }
       })
     })
-    console.log(wareuseds)
     createWareUseds(wareuseds)
   }
 
@@ -419,6 +418,32 @@ export const NewStatsionarClient = () => {
   // =================================================================================
   // =================================================================================
 
+  // =================================================================================
+  // =================================================================================
+  // Statsionar doctor
+
+  const [doctors, setDoctors] = useState()
+  const [doctor, setDoctor] = useState()
+  const getDoctors = useCallback(async () => {
+    try {
+      const fetch = await request("/api/auth/doctor/historyclient", "GET", null, {
+        Authorization: `Bearer ${auth.token}`
+      })
+      let doc = []
+      fetch.map((d) => {
+        doc.push({
+          label: d.lastname + " " + d.firstname,
+          value: d.lastname + " " + d.firstname,
+        })
+      })
+      setDoctors(doc)
+    } catch (e) {
+      notify(e)
+    }
+  }, [request, auth, setDoctors])
+
+  // =================================================================================
+  // =================================================================================
 
   useEffect(() => {
     if (!options) {
@@ -442,6 +467,9 @@ export const NewStatsionarClient = () => {
     }
     if (!wareconnectors) {
       getWareConnectors()
+    }
+    if (!doctors) {
+      getDoctors()
     }
   }, [notify, error])
 
@@ -588,7 +616,19 @@ export const NewStatsionarClient = () => {
             escapeClearsValue="true"
           />
         </div>
+        <div className="col-6 mb-2 input_box">
+          <Select
+
+            placeholder="Biriktirilgan shifokor"
+            className="m-0 p-0"
+            onChange={(event) => setDoctor(event.value)}
+            components={animatedComponents}
+            options={doctors && doctors}
+            escapeClearsValue="true"
+          />
+        </div>
       </div>
+      
 
       <div className="text-end">
         {

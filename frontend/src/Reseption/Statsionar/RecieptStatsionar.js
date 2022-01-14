@@ -280,6 +280,10 @@ export const RecieptStatsionar = () => {
                                             <td className='w-75 p-1 px-3'>{connector && connector.prepaymentCashier} </td>
                                         </tr>
                                         <tr>
+                                            <td className='w-25 p-1 text-start px-3'>Shifokor</td>
+                                            <td className='w-75 p-1 px-3'>{connector && connector.doctor} </td>
+                                        </tr>
+                                        <tr>
                                             <td className='w-25 p-1 text-start px-3'>Tashxis</td>
                                             <td className='w-75 p-1 px-3'>{connector && connector.diagnosis} </td>
                                         </tr>

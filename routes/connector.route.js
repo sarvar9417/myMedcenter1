@@ -26,7 +26,7 @@ router.post('/register', async (req, res) => {
             counteragent,
             type,
             position,
-            prepayment,
+            doctor,
             prepaymentCashier,
             diagnosis,
             bronDay
@@ -37,7 +37,7 @@ router.post('/register', async (req, res) => {
             counteragent,
             type,
             position,
-            prepayment,
+            doctor,
             prepaymentCashier,
             diagnosis,
             bronDay
@@ -207,7 +207,8 @@ router.get('/doctor/:start/:end/:id', async (req, res) => {
                     new Date(new Date(start).getFullYear(), new Date(start).getMonth(), new Date(start).getDate()),
                 $lt: new Date(new Date(end).getFullYear(),
                     new Date(end).getMonth(), new Date(end).getDate() + 1)
-            }
+            },
+
         }).sort({ _id: -1 })
         let directions = []
         let clients = []
