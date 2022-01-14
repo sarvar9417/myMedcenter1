@@ -92,7 +92,10 @@ export const Adoption = () => {
             
 `
         })
-        setSection({ ...section, summary: s })
+        setSection({
+            ...section, summary: section.summary + `  
+        ` + s
+        })
     }
 
     const changeHandlar = (event) => {

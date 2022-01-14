@@ -285,7 +285,7 @@ export const ClientsStatsionarPages = () => {
                                             {connector.position === "yakunlangan" ? <Link to={`/cashier/paystatsionar/${all.clients[key]._id}/${connector._id}`} className='btn button-danger' >Qabul qilish </Link> : "Xizmat yakunlanmagan"}
                                         </td>
                                         <td scope="" className="cek text-center">
-                                            <Link to={`/cashier/reciept/${all && all.clients[key]._id}/${connector._id}`} > <FontAwesomeIcon icon={faPrint} className="fa-2x" /> </Link>
+                                            <Link to={`/cashier/recieptstatsionar/${all && all.clients[key]._id}/${connector._id}`} > <FontAwesomeIcon icon={faPrint} className="fa-2x" /> </Link>
                                         </td>
                                     </tr>
                                 )
@@ -308,7 +308,7 @@ export const ClientsStatsionarPages = () => {
                                                 {connector.position === "yakunlangan" ? <Link to={`/cashier/paystatsionar/${all.clients[key]._id}/${connector._id}`} className='btn button-danger' >Qabul qilish </Link> : "Xizmat yakunlanmagan"}
                                             </td>
                                             <td scope="" className="cek text-center">
-                                                <Link to={`/cashier/reciept/${all && all.clients[key]._id}/${connector._id}`} > <FontAwesomeIcon icon={faPrint} className="fa-2x" /> </Link>
+                                                <Link to={`/cashier/recieptstatsionar/${all && all.clients[key]._id}/${connector._id}`} > <FontAwesomeIcon icon={faPrint} className="fa-2x" /> </Link>
                                             </td>
                                         </tr>
                                     )

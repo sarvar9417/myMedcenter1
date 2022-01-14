@@ -48,7 +48,6 @@ export const Doctors = () => {
                             <th className="text-center" scope="col">Ixtisosligi</th>
                             <th className="text-center" scope="col">Tu'gilgan yili</th>
                             <th className="text-center" scope="col">Telefon raqami</th>
-                            <th className="text-center" scope="col">Ish haqi (% da)</th>
                             <th className="text-center" scope="col">Tahrirlash</th>
                         </tr>
                     </thead>
@@ -63,7 +62,6 @@ export const Doctors = () => {
                                         <td className="text-center">{doctor.section}</td>
                                         <td className="text-center">{new Date(doctor.born).toLocaleDateString()}</td>
                                         <td className="text-center">+{doctor.phone}</td>
-                                        <td className="text-center">{doctor.procient}%</td>
                                         <td className="text-center">
                                             <Link to={`/director/editdoctor/${doctor._id}`} className="btn" style={{ backgroundColor: "rgba(15, 183, 107, 0.12", color: "#26af48"}}>
                                                 Tahrirlash

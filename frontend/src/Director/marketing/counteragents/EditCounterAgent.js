@@ -31,7 +31,13 @@ export const EditCounterAgent = () => {
       const data = await request(`/api/counteragent/${counteragentId}`, "GET", null, {
         Authorization: `Bearer ${auth.token}`
       })
-      setCounterAgent(data)
+      setCounterAgent({
+        firstname: data.firstname,
+        lastname: data.lastname,
+        phone: data.phone,
+        login: data.login,
+        password: "",
+      })
     } catch (error) {
       notify(error)
     }
@@ -42,15 +48,6 @@ export const EditCounterAgent = () => {
     setCounterAgent({ ...counteragent, [event.target.name]: event.target.value })
   }
 
-  const changeProcient = (event) => {
-    if (parseInt(event.target.value) > 100) {
-      return notify("Diqqat! Kontragent foizi umumiy summadan ortib ketdi. Iltimos, foiz miqdori 100 foizdan oshmasligiga e'tibor qarating!")
-    }
-    if (parseInt(event.target.value) < 0) {
-      return notify("Diqqat! Kontragent foizi umumiy summaning 0 foizidan kam. Iltimos, foiz miqdori 0 foizdan kam emasligiga e'tibor qarating!")
-    }
-    setCounterAgent({ ...counteragent, procient: parseInt(event.target.value) })
-  }
 
 
   const checkData = () => {
@@ -105,16 +102,24 @@ export const EditCounterAgent = () => {
       <div className="card p-3">
         <div className="card-body">
           <div className="row">
-            <div className="col-12 col-md-6 p-4">
+            <div className="col-md-6 p-4">
               <p className="fs-4"> Kontragent </p>
+              <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Login</label>
+              <input placeholder='Login' defaultValue={counteragent && counteragent.login} onChange={changeHandler} name="login" type="text" className="form-control" />
+              <br />
+              <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Parol</label>
+              <input type="password" placeholder="Parol" defaultValue={counteragent && counteragent.password} onChange={changeHandler} name="password" className='form-control' />
+            </div>
+            <div className=" col-md-6 p-4">
+              <p className="fs-4 text-white" > Kontragent </p>
               <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Familiyasi</label>
               <input placeholder='Familiyasini kiriting' defaultValue={counteragent && counteragent.lastname} onChange={changeHandler} name="lastname" type="text" className="form-control" />
               <br />
               <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Ismi</label>
               <input type="text" placeholder="Ismini kiriting" defaultValue={counteragent && counteragent.firstname} onChange={changeHandler} name="firstname" className='form-control' />
               <br />
-              <label htmlFor="name" className="fw-normal pt-1" style={{ color: "#888" }}>Telefon raqami</label>
-              <input defaultValue={counteragent && counteragent.phone} onChange={changeHandler} name="phone" className="form-control" />
+              <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Telefon raqami</label>
+              <input defaultValue={counteragent && counteragent && counteragent.phone} type="number" placeholder="Telefon raqami" name='phone' onChange={changeHandler} className='form-control' />
             </div>
           </div>
         </div>
@@ -135,19 +140,25 @@ export const EditCounterAgent = () => {
                   Diqqat! Kontragentning quyida ko'rsatilgan barcha ma'lumotlari to'g'riligini tasdiqlaysizmi?
                 </h6>
               </div>
-              <div className="card-body">
-                <div className="row">
-                  <div className="col-12 col-md-6 p-4">
-                    <p className="fs-4"> Kontragent </p>
-                    <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Familiyasi</label>
-                    <input disabled placeholder='Familiyasini kiriting' value={counteragent && counteragent.lastname} onChange={changeHandler} name="lastname" type="text" className="form-control" />
-                    <br />
-                    <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Ismi</label>
-                    <input disabled type="text" placeholder="Ismini kiriting" value={counteragent && counteragent.firstname} onChange={changeHandler} name="firstname" className='form-control' />
-                    <br />
-                    <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Telefon raqami</label>
-                    <input disabled value={counteragent && counteragent.phone} onChange={changeHandler} name="phone" className="form-control" />
-                  </div>
+              <div className="row">
+                <div className="col-md-6 p-4">
+                  <p className="fs-4"> Kontragent </p>
+                  <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Login</label>
+                  <input disabled placeholder='Login' defaultValue={counteragent && counteragent.login} onChange={changeHandler} name="login" type="text" className="form-control" />
+                  <br />
+                  <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Parol</label>
+                  <input disabled type="text" placeholder="Parol" defaultValue={counteragent && counteragent.password} onChange={changeHandler} name="password" className='form-control' />
+                </div>
+                <div className=" col-md-6 p-4">
+                  <p className="fs-4 text-white" > Kontragent </p>
+                  <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Familiyasi</label>
+                  <input disabled placeholder='Familiyasini kiriting' defaultValue={counteragent && counteragent.lastname} onChange={changeHandler} name="lastname" type="text" className="form-control" />
+                  <br />
+                  <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Ismi</label>
+                  <input disabled type="text" placeholder="Ismini kiriting" defaultValue={counteragent && counteragent.firstname} onChange={changeHandler} name="firstname" className='form-control' />
+                  <br />
+                  <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Telefon raqami</label>
+                  <input disabled defaultValue={counteragent && counteragent.phone} type="number" placeholder="Telefon raqami" name='phone' onChange={changeHandler} className='form-control' />
                 </div>
               </div>
               <div className="card-footer text-center">

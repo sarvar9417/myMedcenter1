@@ -9,9 +9,6 @@ export const CheckDoctorData = (doctor) => {
     if (doctor.fathername === '') {
         return "Shifokor otasining ismi kiritilmagan. Iltimos shifokor otasining ismi kiriting!"
     }
-    if (doctor.phone.toString().length < 12) {
-        return "Telefon raqami kiritishda xatolikka yo'l qo'yilgan. Iltimos tekshirib qayta kiriting!"
-    }
     if (doctor.born === '') {
         return "Shifokorning tug'ilgan yili belgilanmagan. Iltimos shifokorning tug'ilgan yilini belgiling!"
     }

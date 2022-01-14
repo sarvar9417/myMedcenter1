@@ -73,7 +73,6 @@ router.post('/login', async (req, res) => {
         const token = jwt.sign(
             { directorId: director._id },
             config.get('jwtSecret')
-
         )
         res.send({ token, directorId: director._id, director: director })
 

@@ -1,42 +1,16 @@
 import React, { useCallback, useContext, useEffect, useState } from 'react'
 import { PieChart } from 'react-minimal-pie-chart';
 import DatePicker from "react-datepicker"
-import 'react-funnel-pipeline/dist/index.css'
 import { useHttp } from '../../hooks/http.hook'
 import { AuthContext } from '../../context/AuthContext'
-import ReactApexChart from 'react-apexcharts'
 
 export const Reklama = () => {
   const [t, setT] = useState()
-  const [adver, setAdver] = useState({
-    series: [1, 1, 1, 1, 1],
-    options: {
-      chart: {
-        type: 'donut',
-      },
-      labels: [],
-      dataLabels: {
-        formatter(val, opts) {
-          const name = opts.w.globals.labels[opts.seriesIndex]
-          return [name, val.toFixed(1) + '%']
-        }
-      },
-      responsive: [{
-        breakpoint: 300,
-        options: {
-          chart: {
-            width: 200
-          }
-        }
-      }],
-      legend: {
-        show: false
-      }
-    },
-  })
+  const [adver, setAdver] = useState()
+  const [label, setLabel] = useState()
   const auth = useContext(AuthContext)
   const { request } = useHttp()
-
+  const COLORS = ['#0088FE', '#00C49F', '#fA01Ef', '#FFBB28', '#FF8042', '#00EEff'];
   const [startDate, setStartDate] = useState(new Date())
   const [endDate, setEndDate] = useState(new Date())
 
@@ -45,35 +19,44 @@ export const Reklama = () => {
       const fetch = await request(`/api/connector/marketing/${startDate}/${endDate}`, 'GET', null, {
         Authorization: `Bearer ${auth.token}`
       })
-      let a = adver
+      let a = []
+      let l = []
       fetch.sources.map((source, index) => {
-        a.options.labels.push(source.name)
+        l.push({
+          label: source.name
+        })
+        a.push({
+          title: source.name,
+          value: 1,
+          color: COLORS[index]
+        })
       })
       fetch.connectors.map((connector) => {
-        a.options.labels.map((ad, index) => {
-          if (connector.source === ad) {
-            a.series[index] = a.series[index] + 1
+        a.map((source) => {
+          if (source.name === connector.source) {
+            source.value = source.value + 1
           }
         })
       })
-      console.log(a);
       setAdver(a)
+      setLabel(l)
     } catch (e) {
     }
-  }, [request, auth, setAdver, startDate, endDate, adver])
+  }, [request, auth, setAdver, startDate, endDate, adver, setLabel])
 
   const searchDate = () => {
     getAdver()
   }
 
   useEffect(() => {
-    if (!t) {
+    if (!adver) {
       getAdver()
     }
-    if (adver.options.labels.length > 0) {
-      setT(1)
-    }
-  }, [setT, getAdver])
+
+    // if (adver.options.labels.length > 0) {
+    //   setT(1)
+    // }
+  }, [])
 
 
   return (
@@ -91,9 +74,49 @@ export const Reklama = () => {
           </div>
         </div>
       </div>
-      <div className="card-body p-4">
-        {adver.options.labels.length > 0 ? <ReactApexChart type="donut" options={adver.options} series={adver.series} type="donut" /> : ""}
+      <div className="card-body p-4 chart-container">
+        <PieChart
+          animation
+          animationDuration={500}
+          animationEasing="ease-out"
+          width="300px"
+          data={adver && adver}
+          label={({ x, y, dx, dy, dataEntry }) => (
+            <text
+              x={x}
+              y={y}
+              dx={dx}
+              dy={dy}
+              dominant-baseline="central"
+              text-anchor="middle"
+              style={{ fontSize: "4pt", color: "white", }}
+            >
+              {dataEntry.title + `
+              `
+                + dataEntry.value}
+            </text>
+          )}
+          lengthAngle={360}
+          lineWidth={20}
+          paddingAngle={0}
+          radius={50}
+          startAngle={0}
+          viewBoxSize={[100, 100]}
+          labelPosition={65}
+          labelStyle={{
+            fontSize: "10px",
+            fontColor: "FFFFFF",
+            fontWeight: "800",
+          }}
+        />
       </div>
+      <style jsx>{`
+        .chart-container {
+          margin-left: auto;
+          margin-right: auto;
+          color: white
+        }
+      `}</style>
 
     </div>
   )

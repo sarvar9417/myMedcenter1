@@ -1,14 +1,13 @@
 import React, { useCallback, useEffect, useState, Component, useContext } from 'react'
-import { useHttp } from '../../hooks/http.hook'
+import { useHttp } from './../hooks/http.hook'
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faPenAlt, faSearch, faSort } from '@fortawesome/free-solid-svg-icons'
 import { toast } from 'react-toastify'
 import DatePicker from "react-datepicker"
 import Select from 'react-select'
 import ReactHTMLTableToExcel from 'react-html-to-excel'
-import { useParams } from 'react-router-dom'
 import "react-datepicker/dist/react-datepicker.css"
-import { AuthContext } from '../../context/AuthContext'
+import { AuthContext } from './../context/AuthContext'
 
 const mongoose = require('mongoose')
 
@@ -18,13 +17,13 @@ export const PaymentsCounterAgents = () => {
     let transfer = 0
     let card = 0
     let k = 0
-    const counteragentId = useParams().id
+    const auth = useContext(AuthContext)
+    const counteragentId = auth.callcenterId
     //Avtorizatsiyani olish
     let doctor = 0
     let counterAgent = 0
     const { request, error, clearError } = useHttp()
     const [all, setAll] = useState()
-    const auth = useContext(AuthContext)
     const [options, setOptions] = useState()
 
     const [startDate, setStartDate] = useState(new Date())
@@ -66,7 +65,7 @@ export const PaymentsCounterAgents = () => {
 
     const getPayments = useCallback(async () => {
         try {
-            const fetch = await request(`/api/counteragentpayment/${startDate}/${endDate}/${counteragentId}`, 'GET', null, {
+            const fetch = await request(`/api/counteragentpayment/${startDate}/${endDate}/${auth.counteragentId}`, 'GET', null, {
                 Authorization: `Bearer ${auth.token}`
             })
             setAll(fetch)
@@ -76,7 +75,7 @@ export const PaymentsCounterAgents = () => {
 
     const getDoctors = useCallback(async () => {
         try {
-            const fetch = await request(`/api/counterdoctor/${counteragentId}`, 'GET', null, {
+            const fetch = await request(`/api/counterdoctor/${auth.counteragentId}`, 'GET', null, {
                 Authorization: `Bearer ${auth.token}`
             })
             let o = [{
@@ -90,26 +89,25 @@ export const PaymentsCounterAgents = () => {
                     value: doctor.lastname + " " + doctor.firstname,
                 })
             })
-            console.log(o);
             setOptions(o)
         } catch (e) {
         }
-    }, [request, auth, setOptions, startDate, endDate,counteragentId])
+    }, [request, auth, setOptions, startDate, endDate, auth])
 
     useEffect(() => {
         if (error) {
             notify(error)
             clearError()
         }
-        if (!all) {
+        if (!all && auth.counteragentId) {
             getPayments()
         }
-        if (!options) {
+        if (!options && auth.counteragentId) {
             getDoctors()
         }
     }, [notify, clearError])
 
-
+console.log(auth);
     return (
         <div className="container m-5 mx-auto" style={{ minWidth: "1100px" }}  >
             <div className="row mb-3">
@@ -123,7 +121,7 @@ export const PaymentsCounterAgents = () => {
                     <button onClick={searchDate} className="btn text-white mb-2" style={{ backgroundColor: "#45D3D3" }}> <FontAwesomeIcon icon={faSearch} /> </button>
                 </div>
                 <div className="col-2">
-                    <Select onChange={(event) => sortOnOff(event)} defaultValue={options && options[0]} options={options} />
+                    <Select styles={{ menuPortal: base => ({ ...base, zIndex: 9999 }) }} onChange={(event) => sortOnOff(event)} defaultValue={options && options[0]} options={options} />
                 </div>
                 <div className="offset-4 col-1 text-end">
                     <ReactHTMLTableToExcel

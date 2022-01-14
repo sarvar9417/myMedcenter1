@@ -139,7 +139,6 @@ export const EditDoctor = () => {
     }
     setDoctor({ ...doctor, procient: event.target.value })
   }
-  console.log(doctor.procient)
   const [borderGreen, setBorderGreen] = useState(false)
   const [borderRed, setBorderRed] = useState(false)
   const [pwd, setPwd] = useState(false)
@@ -227,9 +226,9 @@ export const EditDoctor = () => {
               <br />
               <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Parolni qayta kiriting</label>
               <input type="password" placeholder="Parolni qayta kiriting" onChange={changePassword} className={borderGreen ? `form-control border border-success` : `${borderRed ? "form-control border border-danger" : "form-control border"}`} />
-              <br />
+              {/* <br />
               <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Ish haqi(foiz - % miqdorida)</label>
-              <input defaultValue={doctor.procient} onChange={changeProcient} name="procient" type="number" className="form-control" />
+              <input defaultValue={doctor.procient} onChange={changeProcient} name="procient" type="number" className="form-control" /> */}
             </div>
             <div className="col-12 col-md-6 p-4">
               <p className="fs-4"> Qabul bo'lim xodimi ma'lumotlari </p>
@@ -292,9 +291,9 @@ export const EditDoctor = () => {
                     <br />
                     <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Parol</label>
                     <input disabled placeholder="Parolni kiriting" value={doctor.password} onChange={createPassword} name="password" type="text" className={borderGreen ? `form-control border border-success` : `${borderRed ? "form-control border border-danger" : "form-control border"}`} />
-                    <br />
+                    {/* <br />
                     <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Ish haqi(foiz - % miqdorida)</label>
-                    <input defaultValue={doctor.procient} disabled name="procient" type="number" className="form-control" />
+                    <input defaultValue={doctor.procient} disabled name="procient" type="number" className="form-control" /> */}
                   </div>
                   <div className="col-12 col-md-6 p-4">
                     <p className="fs-4"> Rahbar ma'lumotlari </p>

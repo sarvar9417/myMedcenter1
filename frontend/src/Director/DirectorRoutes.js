@@ -46,6 +46,7 @@ import { WareConnector } from './directorPages/WareHouse/WareConnectors'
 import { RecieptStatsionar } from './directorPages/RecieptStatsionar'
 import { ChartsMarketing } from './marketing/ChartsMarketing'
 import { PaymentsCounterAgents } from './marketing/counteragents/PaymentsCounterAgents'
+import { CallCenterClientsPages } from './marketing/callcenter/CallCenterClientsPages'
 
 export const DirectorRoutes = (isAuthenticated) => {
     if (isAuthenticated) {
@@ -115,7 +116,7 @@ export const DirectorRoutes = (isAuthenticated) => {
                     <Route path='/director/counteragentprocient/:id' >
                         <RouterComponent component={<Marketing component={<ClientsCounterAgent />} />} />
                     </Route>
-                    <Route path='/director/paymentscounteragents' >
+                    <Route path='/director/paymentscounteragents/:id' >
                         <RouterComponent component={<Marketing component={<PaymentsCounterAgents />} />} />
                     </Route>
                     <Route path='/director/advertisements' >
@@ -129,6 +130,9 @@ export const DirectorRoutes = (isAuthenticated) => {
                     </Route>
                     <Route path='/director/clientsadvertisiments/:id' >
                         <RouterComponent component={<Marketing component={<ClientsAdvertisements />} />} />
+                    </Route>
+                    <Route path='/director/callcenter' >
+                        <RouterComponent component={<Marketing component={<CallCenterClientsPages />} />} />
                     </Route>
                     <Route path='/director/warehouse' >
                         <RouterComponent component={<WareHouse />} menu={true} />

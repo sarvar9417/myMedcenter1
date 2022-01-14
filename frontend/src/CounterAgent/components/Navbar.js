@@ -17,7 +17,7 @@ export const Navbar = () => {
     const logoutHandler = (event) => {
         event.preventDefault()
         auth.logout()
-        history.push('/callcenter/auth')
+        history.push('/counteragent/auth')
     }
 
     const goBack = () => {
@@ -35,10 +35,10 @@ export const Navbar = () => {
                 <div className={show ? "collapse navbar-collapse" : "collapse navbar-collapse show"} id="navbarNav">
                     <ul className="navbar-nav ms-auto ull">
                         <li className="nav-item">
-                            <Link className="nav-link a aktive" to="/reseption/home">Ro'yxatga olish</Link>
+                            <Link className="nav-link a aktive" to="/counteragent/home">Tushum</Link>
                         </li>
                         <li className="nav-item" >
-                            <Link className="nav-link a" to="/callcenter/clients">Mijozlar</Link>
+                            <Link className="nav-link a" to="/counteragent/doctors">Shifokorlar</Link>
                         </li>
 
                     </ul>

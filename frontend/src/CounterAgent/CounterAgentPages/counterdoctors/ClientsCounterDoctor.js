@@ -273,7 +273,7 @@ export const ClientsCounterAgent = () => {
                                         <tr key={key} >
                                             <td className="no" >{kk}</td>
                                             <td className="date" >{new mongoose.Types.ObjectId(client._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(client._id).getTimestamp().toLocaleTimeString()}</td>
-                                            <td className="fish text-uppercase" > {client.lastname} {client.firstname}</td>
+                                            <td className="fish text-uppercase" > {client.lastname} {client.firstname} {client.fathername}</td>
                                             <td className="id" >{client.id}</td>
                                             <td className="phone">+{client.phone}</td>
                                             <td > {section.name} </td>
@@ -311,7 +311,7 @@ export const ClientsCounterAgent = () => {
                                         <tr key={key} >
                                             <td className="no" >{k}</td>
                                             <td className="date" >{new mongoose.Types.ObjectId(client._id).getTimestamp().toLocaleDateString()} {new mongoose.Types.ObjectId(client._id).getTimestamp().toLocaleTimeString()}</td>
-                                            <td className="fish text-uppercase text-success" style={{ fontWeight: "600" }} >{client.lastname} {client.firstname} </td>
+                                            <td className="fish text-uppercase text-success" style={{ fontWeight: "600" }} >{client.lastname} {client.firstname} {client.fathername}</td>
                                             <td className="id" >{client.id}</td>
                                             <td className="phone">+{client.phone}</td>
                                             <td className="section text-uppercase text-success" style={{ fontWeight: "600" }}>  {section.name} <br /> <span style={{ fontSize: "10pt" }}>{section.subname}</span> </td>

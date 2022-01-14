@@ -141,10 +141,6 @@ router.patch('/director/:id', async (req, res) => {
             phone,
             image } = req.body
 
-        // const candidate = await Director.findOne({ login })
-        // if (candidate) {
-        //     return res.status(400).json({ message: 'Bunday Loginli foydalanuvchi tizimda avvaldan mavjud' })
-        // }
         const hash = await bcrypt.hash(password, 8)
         const doctor = await Doctor.findById(req.params.id)
         doctor.login = login

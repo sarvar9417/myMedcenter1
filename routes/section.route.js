@@ -327,7 +327,8 @@ router.get('/doctoroffline/:section', auth, async (req, res) => {
             bron: "offline",
             checkup: "chaqirilmagan",
             name: req.params.section,
-            payment: { $ne: "to'lanmagan" }
+            payment: { $ne: "to'lanmagan" },
+            priceCashier: { $ne: 0 }
         })
             .or([{ payment: "to'langan" }, { commentCashier: { $ne: " " } }])
             .sort({ turn: 1 })

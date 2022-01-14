@@ -36,6 +36,17 @@ router.post('/register', auth, async (req, res) => {
     }
 })
 
+router.get('/:id', async (req, res) => {
+    try {
+        const counterDoctor = await CounterDoctor.find({
+            counteragent: req.params.id
+        })
+        res.json(counterDoctor)
+    } catch (e) {
+        res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
+    }
+})
+
 router.get('/', auth, async (req, res) => {
     try {
         const counterDoctor = await CounterDoctor.find().sort({ _id: -1 })
@@ -46,14 +57,7 @@ router.get('/', auth, async (req, res) => {
     }
 })
 
-router.get('/:id', async (req, res) => {
-    try {
-        const counterDoctor = await CounterDoctor.findById(req.params.id)
-        res.json(counterDoctor)
-    } catch (e) {
-        res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
-    }
-})
+
 
 
 router.patch('/:id', auth, async (req, res) => {

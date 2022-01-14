@@ -4,6 +4,7 @@ import DatePicker from "react-datepicker"
 import 'react-funnel-pipeline/dist/index.css'
 import { useHttp } from '../../hooks/http.hook'
 import { AuthContext } from '../../context/AuthContext'
+import { Link } from 'react-router-dom'
 
 export const BarCharts = () => {
   const [calls, setCalls] = useState()
@@ -19,13 +20,13 @@ export const BarCharts = () => {
         Authorization: `Bearer ${auth.token}`
       })
       let d = [
-        { name: "Barchasi", value: 0 },
-        { name: "Javobsiz", value: 0 },
-        { name: "Qiziqmadi", value: 0 },
-        { name: "Qayta qo'ng'iroq", value: 0 },
-        { name: "O'ylab ko'radi", value: 0 },
-        { name: "Kelmoqchi", value: 0 },
-        { name: "Kelgan", value: 0 },
+        { name: "Barchasi", value: 1 },
+        { name: "Javobsiz", value: 1 },
+        { name: "Qiziqmadi", value: 1 },
+        { name: "Qayta qo'ng'iroq", value: 1 },
+        { name: "O'ylab ko'radi", value: 1 },
+        { name: "Kelmoqchi", value: 1 },
+        { name: "Kelgan", value: 1 },
       ]
       fetch.calls.map((call, index) => {
         d[0].value = d[0].value + 1
@@ -79,14 +80,21 @@ export const BarCharts = () => {
           <div className="col-3 pt-2">
             <DatePicker className="form-control mb-2" selected={endDate} onChange={(date) => setEndDate(date)} />
           </div>
+
         </div>
       </div>
       <div className="card-body p-4">
         <FunnelChart
+
           data={calls && calls}
         />
-      </div>
 
+      </div>
+      <div className='card-footer row'>
+        <div className='col-12 text-center'>
+          <Link to="/director/callcenter" className='fw-bold text-success'>Mijozalar</Link>
+        </div>
+      </div>
     </div>
   )
 }

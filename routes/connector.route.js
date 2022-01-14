@@ -208,7 +208,7 @@ router.get('/doctor/:start/:end/:id', async (req, res) => {
                 $lt: new Date(new Date(end).getFullYear(),
                     new Date(end).getMonth(), new Date(end).getDate() + 1)
             },
-
+            priceCashier: {$ne: 0}
         }).sort({ _id: -1 })
         let directions = []
         let clients = []
@@ -226,6 +226,8 @@ router.get('/doctor/:start/:end/:id', async (req, res) => {
         res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
     }
 })
+
+
 
 
 // /api/auth/connector/

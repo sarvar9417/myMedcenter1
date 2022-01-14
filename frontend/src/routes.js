@@ -3,6 +3,7 @@ import { Switch, Redirect, Route } from 'react-router-dom'
 import { CallCenter } from './CallCenter/CallCenter'
 import { Cashier } from './Cashier/Cashier'
 import { ClientHistory } from './Client/ClientHistory'
+import { CounterAgent } from './CounterAgent/CounterAgent'
 import { Director } from './Director/Director'
 import { Doctor } from './Doctor/Doctor'
 import { Fizioterapevt } from './Fizioterapevt/Fizioterapevt'
@@ -44,6 +45,9 @@ export const useRoutes = () => {
             </Route>
             <Route path="/fizioterapevt" >
                 <Fizioterapevt />
+            </Route>
+            <Route path="/counteragent" >
+                <CounterAgent />
             </Route>
             <Route path="/" >
                 <Sayt />

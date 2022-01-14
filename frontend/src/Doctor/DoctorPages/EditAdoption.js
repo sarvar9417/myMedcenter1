@@ -35,7 +35,6 @@ export const EditAdoption = () => {
             const fetch = await request(`/api/section/doctor/${sectionId}`, 'GET', null, {
                 Authorization: `Bearer ${auth.token}`
             })
-            console.log(fetch)
             getClient(fetch.client)
             setSection(fetch)
         } catch (error) {

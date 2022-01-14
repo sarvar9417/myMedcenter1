@@ -195,9 +195,9 @@ export const ClientsDoctor = () => {
                                 allPrice = allPrice + section.price
                                 paid = paid + section.priceCashier
                                 if (all && all.directions[index].doctorProcient <= 100) {
-                                    doctorSumma = doctorSumma + section.price * all.directions[index].doctorProcient / 100
+                                    doctorSumma = doctorSumma + section.price * parseInt(all.directions[index].doctorProcient) / 100
                                 } else {
-                                    doctorSumma = doctorSumma + all.directions.doctorProcient
+                                    doctorSumma = doctorSumma + parseInt(all.directions[index].doctorProcient)
                                 }
                                 return (
                                     <tr index={index} className=' border-top' >
@@ -249,7 +249,7 @@ export const ClientsDoctor = () => {
                                 if (all && all.directions[index].doctorProcient <= 100) {
                                     doctorSumma = doctorSumma + section.price * all.directions[index].doctorProcient / 100
                                 } else {
-                                    doctorSumma = doctorSumma + all.directions.doctorProcient
+                                    doctorSumma = doctorSumma + parseInt(all.directions[index].doctorProcient)
                                 }
                                 return (
                                     <tr index={index} className=' border-top' >
