@@ -27,9 +27,10 @@ export const EditCounterDoctor = () => {
 
   const getCounterDoctor = useCallback(async () => {
     try {
-      const data = await request(`/api/counterdoctor/${counterdoctorId}`, "GET", null, {
+      const data = await request(`/api/counterdoctor/doctor/${counterdoctorId}`, "GET", null, {
         Authorization: `Bearer ${auth.token}`
       })
+      console.log(data);
       setCounterDoctor(data)
     } catch (error) {
       notify(error)
@@ -52,13 +53,12 @@ export const EditCounterDoctor = () => {
     }
   }
 
-
   const createHandler = async () => {
     try {
       const data = await request(`/api/counterdoctor/${counterdoctorId}`, "PATCH", { ...counterdoctor }, {
         Authorization: `Bearer ${auth.token}`
       })
-      history.push("/director/counterdoctors")
+      history.push("/counteragent/doctors")
     } catch (e) {
       notify(e)
     }
@@ -69,35 +69,11 @@ export const EditCounterDoctor = () => {
       const data = await request(`/api/counterdoctor/${counterdoctorId}`, "DELETE", null, {
         Authorization: `Bearer ${auth.token}`
       })
-      history.push("/director/counterdoctors")
+      history.push("/counteragent/doctors")
     } catch (e) {
       notify(e)
     }
   }
-
-  const [counteragents, setCounterAgents] = useState()
-  const getCounterAgents = useCallback(async () => {
-    try {
-      const data = await request("/api/counteragent", "GET", null, {
-        Authorization: `Bearer ${auth.token}`
-      })
-      let a = []
-      data.map(d => {
-        a.push({
-          label: d.lastname + " " + d.firstname,
-          value: d._id
-        })
-      })
-      setCounterAgents(a)
-    } catch (error) {
-      notify(error)
-    }
-  }, [])
-
-  const setAgent = (event) => {
-    setCounterDoctor({ ...counterdoctor, counteragent: event.value })
-  }
-
 
   useEffect(() => {
     if (error) {
@@ -107,9 +83,6 @@ export const EditCounterDoctor = () => {
     if (!counterdoctor) {
       getCounterDoctor()
     }
-    if (!counteragents) {
-      getCounterAgents()
-    }
   }, [error, clearError])
 
   if (loading) {
@@ -117,7 +90,7 @@ export const EditCounterDoctor = () => {
   }
 
   return (
-    <div>
+    <div className='container'>
       <div className="card p-3">
         <div className="card-body">
           <div className="row">
@@ -128,17 +101,14 @@ export const EditCounterDoctor = () => {
               <br />
               <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Ismi</label>
               <input type="text" placeholder="Ismini kiriting" defaultValue={counterdoctor && counterdoctor.firstname} onChange={changeHandler} name="firstname" className='form-control' />
-              <br />
+            </div>
+            <div className="col-12 col-md-6 p-4">
+              <p className="fs-4 text-white"> Kontrdoctor </p>
+
               <label htmlFor="name" className="fw-normal pt-1" style={{ color: "#888" }}>Klinikasi</label>
               <input defaultValue={counterdoctor && counterdoctor.clinic} onChange={changeHandler} name="clinic" className="form-control" />
             </div>
             <div className='col-12 col-md-6 p-4'>
-              <br />
-              <br />
-              <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Kontragent</label>
-              <div className="">
-                <Select onChange={(event) => setAgent(event)} options={counteragents && counteragents} />
-              </div>
             </div>
           </div>
         </div>

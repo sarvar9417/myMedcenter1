@@ -71,7 +71,7 @@ export const PaymentsCounterAgents = () => {
             setAll(fetch)
         } catch (e) {
         }
-    }, [request, auth, setAll, startDate, endDate,counteragentId])
+    }, [request, auth, setAll, startDate, endDate, counteragentId])
 
     const getDoctors = useCallback(async () => {
         try {
@@ -82,7 +82,7 @@ export const PaymentsCounterAgents = () => {
                 label: "Barchasi",
                 value: "all",
             }]
-            fetch.map((doctor)=>{
+            fetch.map((doctor) => {
                 o.push({
                     id: doctor._id,
                     label: doctor.lastname + " " + doctor.firstname,
@@ -107,7 +107,6 @@ export const PaymentsCounterAgents = () => {
         }
     }, [notify, clearError])
 
-console.log(auth);
     return (
         <div className="container m-5 mx-auto" style={{ minWidth: "1100px" }}  >
             <div className="row mb-3">

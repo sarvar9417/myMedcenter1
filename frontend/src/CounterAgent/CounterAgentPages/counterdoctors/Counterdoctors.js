@@ -19,14 +19,14 @@ export const CounterDoctors = () => {
 
     const getCounterDoctors = useCallback(async () => {
         try {
-            const fetch = await request('/api/counterdoctor/', 'GET', null, {
+            const fetch = await request(`/api/counterdoctor/${auth.counteragentId}`, 'GET', null, {
                 Authorization: `Bearer ${auth.token}`
             })
             setCounterDoctors(fetch)
         } catch (error) {
             notify(error)
         }
-    }, [auth, request, setCounterDoctors, notify])
+    }, [auth, request, setCounterDoctors, notify, auth])
 
     const Delete = useCallback(async () => {
         const fetch = request(`/api/counterdoctor/${doctorId && doctorId}`, 'DELETE', null, {
@@ -36,7 +36,7 @@ export const CounterDoctors = () => {
     }, [doctorId])
 
     useEffect(() => {
-        if (!counterdoctors) {
+        if (!counterdoctors && auth.counteragentId) {
             getCounterDoctors()
         }
         if (error) {
@@ -46,10 +46,10 @@ export const CounterDoctors = () => {
     }, [notify, clearError])
 
     return (
-        <div>
+        <div className='container' >
             <div className="row p-3">
                 <div className="col-12 text-end">
-                    <Link to="/director/addcounterdoctor" className="btn button-success">
+                    <Link to="/counteragent/adddoctor" className="btn button-success">
                         Shifokor yaratish
                     </Link>
                 </div>
@@ -72,11 +72,11 @@ export const CounterDoctors = () => {
                                 return (
                                     <tr key={index}>
                                         <th className="text-center" >{index + 1}</th>
-                                        <td className="ps-3"> <Link className='text-success' style={{ fontWeight: "600" }} to={`/director/counterdoctorprocient/${doctor._id}`} >{doctor.lastname} {doctor.firstname} {doctor.fathername}</Link> </td>
+                                        <td className="ps-3"> <Link className='text-success' style={{ fontWeight: "600" }} to={`/counteragent/edit/${doctor._id}`} >{doctor.lastname} {doctor.firstname} {doctor.fathername}</Link> </td>
                                         <td className="text-center">{doctor.clinic}</td>
                                         <td className="text-center">{doctor.counteragentname}</td>
                                         <td className="text-center">
-                                            <Link to={`/director/editcounterdoctor/${doctor._id}`} className="btn" style={{ backgroundColor: "rgba(15, 183, 107, 0.12", color: "#26af48" }}>
+                                            <Link to={`/counteragent/edit/${doctor._id}`} className="btn" style={{ backgroundColor: "rgba(15, 183, 107, 0.12", color: "#26af48" }}>
                                                 <FontAwesomeIcon icon={faPenAlt} />
                                             </Link>
                                         </td>

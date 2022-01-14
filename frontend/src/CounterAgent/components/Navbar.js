@@ -40,7 +40,6 @@ export const Navbar = () => {
                         <li className="nav-item" >
                             <Link className="nav-link a" to="/counteragent/doctors">Shifokorlar</Link>
                         </li>
-
                     </ul>
                     <li className="nav-item ll" >
                         <span style={{ backgroundColor: "#EA5353" }} className="nav-link btn text-white" href="" onClick={logoutHandler} >Chiqish</span>

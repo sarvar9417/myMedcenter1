@@ -42,9 +42,10 @@ export const EditDirection = () => {
 
   const getDirection = useCallback(async () => {
     try {
-      const data = await request(`/api/direction/${directionId}`, 'GET', null, {
+      const data = await request(`/api/direction/id/${directionId}`, 'GET', null, {
         Authorization: `Bearer ${auth.token}`
       })
+      console.log(data);
       setDirection({
         value: data.value,
         price: data.price,

@@ -49,7 +49,15 @@ router.post('/register', auth, async (req, res) => {
         res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
     }
 })
-
+router.get('/id/:id', auth, async (req, res) => {
+    try {
+        console.log("Salom");
+        const direction = await Direction.findById(req.params.id)
+        res.json(direction)
+    } catch (e) {
+        res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
+    }
+})
 
 router.get('/fizioterapevt', async (req, res) => {
     try {
@@ -62,19 +70,21 @@ router.get('/fizioterapevt', async (req, res) => {
     }
 })
 
+
 // /api/direction
 router.get('/:name', async (req, res) => {
     try {
         const name = new RegExp('.*' + req.params.name + ".*", "i")
         const direction = await Direction.find({
         })
-        .or([{section: name}, {subsection: name}])
-        .sort({ section: 1 })
+            .or([{ section: name }, { subsection: name }])
+            .sort({ section: 1 })
         res.json(direction)
     } catch (e) {
         res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
     }
 })
+
 
 // /api/direction
 router.get('/', async (req, res) => {
@@ -86,14 +96,7 @@ router.get('/', async (req, res) => {
     }
 })
 
-router.get('/:id', auth, async (req, res) => {
-    try {
-        const direction = await Direction.findById(req.params.id)
-        res.json(direction)
-    } catch (e) {
-        res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
-    }
-})
+
 
 
 router.patch('/:id', auth, async (req, res) => {

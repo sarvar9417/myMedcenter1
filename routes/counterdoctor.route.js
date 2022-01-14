@@ -36,6 +36,15 @@ router.post('/register', auth, async (req, res) => {
     }
 })
 
+router.get('/doctor/:id', async (req, res) => {
+    try {
+        const counterDoctor = await CounterDoctor.findById(req.params.id)
+        res.json(counterDoctor)
+    } catch (e) {
+        res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
+    }
+})
+
 router.get('/:id', async (req, res) => {
     try {
         const counterDoctor = await CounterDoctor.find({

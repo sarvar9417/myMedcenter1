@@ -22,9 +22,8 @@ export const AddCounterDoctor = () => {
     firstname: "",
     lastname: "",
     clinic: "",
-    // phone: 998,
-    counteragent: auth.counteragentId,
-    counteragentname: ""
+    counteragent: auth.counteragentId && auth.counteragentId,
+    counteragentname: auth.counteragent && auth.counteragent.lastname + " " + auth.counteragent.firstname
   })
 
 
@@ -56,7 +55,7 @@ export const AddCounterDoctor = () => {
       const data = await request("/api/counterdoctor/register", "POST", { ...counterdoctor }, {
         Authorization: `Bearer ${auth.token}`
       })
-      history.push("/director/counterdoctors")
+      history.push("/counteragent/doctors")
     } catch (e) {
       notify(e)
     }
@@ -99,7 +98,7 @@ export const AddCounterDoctor = () => {
   }
 
   return (
-    <div>
+    <div className='container'>
       <div className="card p-3">
         <div className="card-body">
           <div className="row">
@@ -119,11 +118,11 @@ export const AddCounterDoctor = () => {
               <p className="fs-4 text-white"> Kontragent  </p>
               <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Klinikasi</label>
               <input defaultValue={counterdoctor && counterdoctor.clinic} type="text" placeholder="Klinikasi" name='clinic' onChange={changeHandler} className='form-control' />
-              <br />
+              {/* <br />
               <label htmlFor="name" className="fw-normal" style={{ color: "#888" }}>Kontragent</label>
               <div className="">
                 <Select onChange={(event) => setAgent(event)} options={counteragents && counteragents} />
-              </div>
+              </div> */}
             </div>
           </div>
         </div>

@@ -33,7 +33,7 @@ export const AuthPage = () => {
     const loginHandler = async () => {
         try {
             const data = await request('/api/counteragent/login', 'POST', { ...form })
-            auth.login(data.token, data.counteragentId, data.user)
+            auth.login(data.token, data.counteragentId, data.counteragent)
         } catch (e) {
             notify(e)
         }
