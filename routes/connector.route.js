@@ -208,7 +208,7 @@ router.get('/doctor/:start/:end/:id', async (req, res) => {
                 $lt: new Date(new Date(end).getFullYear(),
                     new Date(end).getMonth(), new Date(end).getDate() + 1)
             },
-            priceCashier: {$ne: 0}
+            priceCashier: { $ne: 0 }
         }).sort({ _id: -1 })
         let directions = []
         let clients = []
@@ -687,6 +687,33 @@ router.get('/statsionarid/:id', async (req, res) => {
 
 router.delete('/reseption/:id', async (req, res) => {
     try {
+        const edit = await Connector.findByIdAndDelete(req.params.id)
+        res.json(edit)
+
+    } catch (e) {
+        res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
+    }
+})
+
+router.delete('/statsionardelete/:id', async (req, res) => {
+    try {
+        const id = req.params.id
+        const room = await UsedRoom.findOne({
+            connector: id
+        })
+        const del = await UsedRoom.findByIdAndDelete(room._id)
+        const sections = await Section.find({
+            connector: id
+        })
+        sections.map(async (section)=>{
+            const del = await Section.findByIdAndDelete(section._id)
+        })
+        const services = await Service.find({
+            connector: id
+        })
+        services.map(async (service) => {
+            const del = await Service.findByIdAndDelete(service._id)
+        })
         const edit = await Connector.findByIdAndDelete(req.params.id)
         res.json(edit)
 

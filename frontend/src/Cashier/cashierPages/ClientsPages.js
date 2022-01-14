@@ -991,40 +991,6 @@ export const ClientsPages = () => {
                     </tbody>
                 </table>
             </div>
-            <div>
-                <div style={{ minWidth: "1100px" }} className='py-4' >
-                    <table id="" className="table-striped table-hover pt-2" style={{ borderBottom: "1px solid #aaa", marginBottom: "10px" }} >
-                        <tfooter>
-                            <tr className="mt-4">
-                                <th className="no" scope="" ></th>
-                                <th scope="" className="date text-center" ></th>
-                                <th scope="" className="fish text-center"></th>
-                                <th scope="" className="id text-center"></th>
-                                <th scope="" className="phone text-center"></th>
-                                <th scope="" className="section text-center"></th>
-                                <th scope="" className="edit text-center"> </th>
-                                <th scope="" className="prices text-center"> </th>
-                                <th scope="" className="cek text-center "> Umumiy</th>
-                                <th scope="" className="cek text-center text-success"> To'langan </th>
-                                <th scope="" className="cek text-center text-danger">  To'lanmagan </th>
-                            </tr>
-                            <tr className="mt-4">
-                                <th className="no" scope="" >Jami:</th>
-                                <th scope="" className="date text-center" ></th>
-                                <th scope="" className="fish text-center"></th>
-                                <th scope="" className="id text-center"></th>
-                                <th scope="" className="phone text-center"></th>
-                                <th scope="" className="section text-center"></th>
-                                <th scope="" className="edit text-center"> </th>
-                                <th scope="" className="prices text-center"> </th>
-                                <th scope="" className="cek text-center "> {unpaid + paid}</th>
-                                <th scope="" className="cek text-center text-success"> {paid} </th>
-                                <th scope="" className="cek text-center text-danger">  {unpaid} </th>
-                            </tr>
-                        </tfooter>
-                    </table>
-                </div>
-            </div>
         </div>
     )
 }

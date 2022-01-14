@@ -114,6 +114,19 @@ export const ClientsStatsionarPages = () => {
         }
     }, [request, auth, connectorId])
 
+    const Delete = useCallback(async (id) => {
+        try {
+            const fetch = await request(`/api/connector/statsionardelete/${id}`, 'DELETE', null, {
+                Authorization: `Bearer ${auth.token}`
+            })
+            window.location.reload()
+        } catch (e) {
+            notify(e)
+        }
+    }, [request, auth])
+
+
+
     useEffect(() => {
         if (error) {
             notify(error)
@@ -181,6 +194,7 @@ export const ClientsStatsionarPages = () => {
                                 <th scope="" className="fish text-center">Xizmat qo'shish <FontAwesomeIcon icon={faSort} /></th>
                                 <th scope="" className="cek text-center"> Tugatish   </th>
                                 <th scope="" className="cek text-center"> Chek <FontAwesomeIcon icon={faSort} /></th>
+                                <th scope="" className="cek text-center"> Delete <FontAwesomeIcon icon={faSort} /></th>
                             </tr>
                         </thead>
                     </table>
@@ -240,7 +254,7 @@ export const ClientsStatsionarPages = () => {
                                                 {connector.position}
                                             </td>
                                             <td scope="" className="cek text-center">
-                                                {all.rooms[key]!== null && new Date(all.rooms[key].beginDay).toLocaleDateString()}
+                                                {all.rooms[key] !== null && new Date(all.rooms[key].beginDay).toLocaleDateString()}
                                             </td>
                                             <td scope="" className="cek text-center">
                                                 {all.rooms[key] !== null && new Date(all.rooms[key].endDay).toLocaleDateString()}
@@ -281,6 +295,9 @@ export const ClientsStatsionarPages = () => {
                                         <td scope="" className="cek text-center">
                                             <Link to={`/reseption/statsionarreciept/${all && all.clients[key]._id}/${connector._id}`} > <FontAwesomeIcon icon={faPrint} className="fa-2x" /> </Link>
                                         </td>
+                                        <td>
+                                            <button onClick={() => { Delete(connector._id) }} className='btn btn-danger'>Delete</button>
+                                        </td>
                                     </tr>
                                 )
                             } else {
@@ -302,6 +319,9 @@ export const ClientsStatsionarPages = () => {
                                             </td>
                                             <td scope="" className="cek text-center">
                                                 <Link to={`/reseption/statsionarreciept/${all && all.clients[key]._id}/${connector._id}`} > <FontAwesomeIcon icon={faPrint} className="fa-2x" /> </Link>
+                                            </td>
+                                            <td>
+                                                <button onClick={() => { Delete(connector._id) }} className='btn btn-danger'>Delete</button>
                                             </td>
                                         </tr>
                                     )
