@@ -244,8 +244,6 @@ export const ClientsDoctor = () => {
                     <tbody className="" >
                         {
                             all && all.sections.map((section, index) => {
-                                allPrice = allPrice + section.price
-                                paid = paid + section.priceCashier
                                 if (all && all.directions[index].doctorProcient <= 100) {
                                     doctorSumma = doctorSumma + section.price * all.directions[index].doctorProcient / 100
                                 } else {

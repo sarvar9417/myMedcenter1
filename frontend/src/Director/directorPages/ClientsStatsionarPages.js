@@ -274,7 +274,7 @@ export const ClientsStatsionarPages = () => {
                                         <td className="phone">+{all && all.clients[key].phone}</td>
                                         <td className="diagnos ">  {connector.diagnosis} </td>
                                         <td scope="" className="fish text-center">
-                                            {connector.prepayment}
+                                            {connector.prepaymentCashier}
                                         </td>
                                         <td scope="" className="cek text-center">
                                             {connector.position}
@@ -296,7 +296,7 @@ export const ClientsStatsionarPages = () => {
                                             <td className="phone">+{all && all.clients[key].phone}</td>
                                             <td className="diagnos ">  {connector.diagnosis} </td>
                                             <td scope="" className="fish text-center">
-                                                {connector.prepayment}
+                                                {connector.prepaymentCashier}
                                             </td>
                                             <td scope="" className="cek text-center">
                                                 {connector.position}
