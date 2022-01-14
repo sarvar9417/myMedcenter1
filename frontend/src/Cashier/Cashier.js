@@ -5,11 +5,13 @@ import { useAuth } from './hooks/auth.hook'
 import { AuthContext } from './context/AuthContext'
 import { Navbar } from './components/Navbar'
 export const Cashier = () => {
+    localStorage.removeItem('directorData')
     localStorage.removeItem('doctorData')
     localStorage.removeItem('reseptionData')
-    localStorage.removeItem('directorData')
     localStorage.removeItem('callcenterData')
     localStorage.removeItem('medsestraData')
+    localStorage.removeItem('fizioterapevtData')
+    localStorage.removeItem('counteragentData')
     const { login, token, logout, cashierId } = useAuth()
     const isAuthenticated = !!token
     const cashierRouter = CashierRoutes(isAuthenticated)

@@ -123,7 +123,18 @@ export const EditStatsionarClient = () => {
       const fetch = await request('/api/warehouse/', 'GET', null, {
         Authorization: `Bearer ${auth.token}`
       })
-      setWarehouse(fetch)
+      let s = []
+      fetch.map(p => {
+        s.push({
+          label: p.name + " " + p.type,
+          value: p.name + " " + p.type,
+          name: p.name,
+          type: p.type,
+          price: p.price,
+          _id: p._id
+        })
+      })
+      setWarehouse(s)
     } catch (error) {
       notify(error)
     }
@@ -185,7 +196,6 @@ export const EditStatsionarClient = () => {
     window.scrollTo({ top: 0 })
     setModal(true)
   }
-
 
   const createAllSections = () => {
     sections && sections.map((section) => {

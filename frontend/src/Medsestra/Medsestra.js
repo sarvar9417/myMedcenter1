@@ -10,6 +10,8 @@ export const Medsestra = () => {
     localStorage.removeItem('cashierData')
     localStorage.removeItem('callcenterData')
     localStorage.removeItem('reseptionData')
+    localStorage.removeItem('fizioterapevtData')
+    localStorage.removeItem('counteragentData')
     const { login, token, logout, medsestraId } = useAuth()
     const isAuthenticated = !!token
     const medsestraRouter = MedsestraRoutes(isAuthenticated)

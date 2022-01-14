@@ -244,11 +244,6 @@ export const ClientsDoctor = () => {
                     <tbody className="" >
                         {
                             all && all.sections.map((section, index) => {
-                                if (all && all.directions[index].doctorProcient <= 100) {
-                                    doctorSumma = doctorSumma + section.price * all.directions[index].doctorProcient / 100
-                                } else {
-                                    doctorSumma = doctorSumma + parseInt(all.directions[index].doctorProcient)
-                                }
                                 return (
                                     <tr index={index} className=' border-top' >
                                         <td className="no border-right" >

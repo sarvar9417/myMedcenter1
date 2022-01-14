@@ -211,8 +211,6 @@ export const RecieptAll = () => {
                                                 )
                                             })
                                         }
-
-
                                     </tbody>
                                     <tfoot>
                                         <tr>

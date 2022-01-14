@@ -9,8 +9,9 @@ export const Fizioterapevt = () => {
     localStorage.removeItem('doctorData')
     localStorage.removeItem('cashierData')
     localStorage.removeItem('callcenterData')
-    localStorage.removeItem('reseptionData')
     localStorage.removeItem('medsestraData')
+    localStorage.removeItem('reseptionData')
+    localStorage.removeItem('counteragentData')
     const { login, token, logout, fizioterapevtId } = useAuth()
     const isAuthenticated = !!token
     const fizioterapevtRouter = FizioterapevtRoutes(isAuthenticated)

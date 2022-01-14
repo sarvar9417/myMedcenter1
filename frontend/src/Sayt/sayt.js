@@ -12,6 +12,7 @@ import { Turn } from './Turn'
 import { CallCenter } from './CallCenter'
 import { Medsestra } from './Sections/Medsestra'
 import { Fizioterapevt } from './Sections/Fizioterapevt'
+import { CounterAgent } from './../CounterAgent/CounterAgent'
 
 export const Sayt = () => {
 
@@ -46,6 +47,11 @@ export const Sayt = () => {
             <div className='row mt-5'>
                 <Medsestra />
                 <Fizioterapevt />
+            </div>
+            <div className='row mt-5'>
+                <div className='col-12 text-center'>
+                    <Link className='btn btn-warning px-5' to="/counteragent"> Kontragent </Link>
+                </div>
             </div>
             <Turn />
             <CallCenter />

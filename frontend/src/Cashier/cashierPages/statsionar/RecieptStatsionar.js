@@ -378,7 +378,7 @@ export const RecieptStatsionar = () => {
                                         </tr>
                                         <tr>
                                             <td className="text-right px-3" colSpan="4">Qarz:</td>
-                                            <td className="text-center">{(room && connector && tulov && bronDay) && price + bronDay * room.price - (tulov + connector.prepaymentCashier)}</td>
+                                            <td className="text-center">{(room && connector && tulov && bronDay) && price + bronDay * room.price - tulov}</td>
                                         </tr>
                                     </tfoot>
                                 </table>
