@@ -484,6 +484,7 @@ export const CheckCashier = () => {
                 k = k + (s[i].price - services1[i].priceCashier)
                 s[i].priceCashier = s[i].price
                 s[i].payment = "to'langan"
+                s[i].commentCashier = " "
             }
             setServices(s)
             let m = [...sections]
@@ -491,6 +492,7 @@ export const CheckCashier = () => {
                 k = k + (m[i].price - sections1[i].priceCashier)
                 m[i].priceCashier = m[i].price
                 m[i].payment = "to'langan"
+                m[i].commentCashier = " "
             }
             setSections(m)
             setBepaid(k)
@@ -500,22 +502,24 @@ export const CheckCashier = () => {
             let s = [...services]
             for (let i = 0; i < services.length; i++) {
                 k = k + (0 - services1[i].priceCashier)
-                s[i].priceCashier = s[i].price
-                s[i].payment = "to'langan"
+                s[i].priceCashier = 0
+
+                s[i].payment = "kutilmoqda"
             }
             setServices(s)
             let m = [...sections]
             for (let i = 0; i < sections.length; i++) {
                 k = k + (0 - sections1[i].priceCashier)
-                m[i].priceCashier = m[i].price
-                m[i].payment = "to'langan"
+                m[i].priceCashier = 0
+
+                m[i].payment = "kutilmoqda"
             }
             setSections(m)
             setBepaid(k)
             getSections1()
         }
     }, [setSections, setSections1, setBepaid, sections, setServices, services1, sections1])
-
+    console.log(sections);
 
     useEffect(() => {
         if (!l) {

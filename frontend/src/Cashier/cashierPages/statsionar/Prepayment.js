@@ -134,6 +134,10 @@ export const Prepayment = () => {
             const fetch = await request(`/api/payment/register`, 'POST', { ...payment }, {
                 Authorization: `Bearer ${auth.token}`
             })
+            history.push({
+                pathname: `/cashier/recieptprepayment/${clientId}/${connectorId}`,
+                state:fetch
+            })
         } catch (e) {
             notify(e)
         }
@@ -142,9 +146,6 @@ export const Prepayment = () => {
     const setPayments = () => {
         patchConnector()
         createPayment()
-        history.push({
-            pathname: `/cashier/reciept/${clientId}/${connectorId}`
-        })
     }
 
     const confirm = () => {

@@ -483,6 +483,7 @@ export const CheckStatsionar = () => {
                 k = k + (s[i].price - services1[i].priceCashier)
                 s[i].priceCashier = s[i].price
                 s[i].payment = "to'langan"
+                s[i].commentCashier = " "
             }
             setServices(s)
             let m = [...sections]
@@ -490,30 +491,31 @@ export const CheckStatsionar = () => {
                 k = k + (m[i].price - sections1[i].priceCashier)
                 m[i].priceCashier = m[i].price
                 m[i].payment = "to'langan"
+                m[i].commentCashier = " "
             }
             setSections(m)
-            setBepaid(k-connector.prepaymentCashier)
+            setBepaid(k - connector.prepaymentCashier)
             getSections1()
         } else {
             let k = 0
             let s = [...services]
             for (let i = 0; i < services.length; i++) {
                 k = k + (0 - services1[i].priceCashier)
-                s[i].priceCashier = s[i].price
-                s[i].payment = "to'langan"
+                s[i].priceCashier = 0
+                s[i].payment = "kutilmoqda"
             }
             setServices(s)
             let m = [...sections]
             for (let i = 0; i < sections.length; i++) {
                 k = k + (0 - sections1[i].priceCashier)
-                m[i].priceCashier = m[i].price
-                m[i].payment = "to'langan"
+                m[i].priceCashier = 0
+                m[i].payment = "kutilmoqda"
             }
             setSections(m)
             setBepaid(k)
             getSections1()
         }
-    }, [setSections, setSections1, setBepaid, sections, setServices, services1, sections1])
+    }, [oldPayments, setSections, setSections1, setBepaid, sections, setServices, services1, sections1])
 
     const oneDay = 1000 * 60 * 60 * 24
     const [bronDay, setBronDay] = useState()
@@ -693,15 +695,6 @@ export const CheckStatsionar = () => {
                     </div>
                     <div className="row ms-3 me-5">
                         <div className="col-6">
-                            <div className="fw-bold text-success">Oldindan to'lov:</div>
-                        </div>
-                        <div className="col-6">
-                            <div className="fw-bold  text-end text-success">{connector && connector.prepaymentCashier}</div>
-                        </div>
-                        <hr />
-                    </div>
-                    <div className="row ms-3 me-5">
-                        <div className="col-6">
                             <div className="fw-bold text-warning">To'lanayotgan:</div>
                         </div>
                         <div className="col-6">
@@ -714,7 +707,7 @@ export const CheckStatsionar = () => {
                             <div className="fw-bold text-danger">Qarz:</div>
                         </div>
                         <div className="col-6">
-                            <div className="fw-bold  text-end text-danger">{connector && allPrice - (oldPayments + bepaid+connector.prepaymentCashier)}</div>
+                            <div className="fw-bold  text-end text-danger">{connector && allPrice - (oldPayments + bepaid)}</div>
                         </div>
                         <hr />
                     </div>

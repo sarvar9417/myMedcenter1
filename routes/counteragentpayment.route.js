@@ -45,7 +45,6 @@ router.get('/doctor/:start/:end/:id', auth, async (req, res) => {
         const start = new Date(req.params.start)
         const end = new Date(req.params.end)
         const id = req.params.id
-        console.log(id);
         const counterAgentPayment = await CounterAgentPayment.find({
             counterdoctor: id,
             paymentDay: {
@@ -74,7 +73,8 @@ router.get('/doctor/:start/:end/:id', auth, async (req, res) => {
         let directions = []
         for (let i = 0; i < connectors.length; i++) {
             const sec = await Section.find({
-                connector: connectors[i]._id
+                connector: connectors[i]._id,
+                priceCashier: { $ne: 0 }
             })
             let dir = []
             for (let k = 0; k < sec.length; k++) {
@@ -128,7 +128,8 @@ router.get('/:start/:end/:id', auth, async (req, res) => {
         let directions = []
         for (let i = 0; i < connectors.length; i++) {
             const sec = await Section.find({
-                connector: connectors[i]._id
+                connector: connectors[i]._id,
+                priceCashier: { $ne: 0 }
             })
             let dir = []
             for (let k = 0; k < sec.length; k++) {

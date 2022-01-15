@@ -158,9 +158,9 @@ export const PaymentsCounterAgents = () => {
                                     all && all.sections.map((sectionss, index) => {
                                         return sectionss.map((section, key) => {
                                             if (all.directions[index][key].counterDoctor > 100) {
-                                                doctor = doctor + all.directions[index][key].doctorProcient
+                                                doctor = doctor + all.directions[index][key].counterDoctor
                                             } else {
-                                                doctor = doctor + all.directions[index][key].doctorProcient * section.price / 100
+                                                doctor = doctor + all.directions[index][key].counterDoctor * section.price / 100
                                             }
                                             if (all.directions[index][key].counteragentProcient > 100) {
                                                 counterAgent = counterAgent + all.directions[index][key].counteragentProcient
