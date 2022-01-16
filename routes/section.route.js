@@ -248,6 +248,8 @@ router.patch('/cashier', auth, async (req, res) => {
         const sections = req.body.sections
         const services = req.body.services
         const payment = req.body.payment
+
+        
         for (let i = 0; i < sections.length; i++) {
             const section = await Section.findByIdAndUpdate(sections[i]._id, sections[i])
         }

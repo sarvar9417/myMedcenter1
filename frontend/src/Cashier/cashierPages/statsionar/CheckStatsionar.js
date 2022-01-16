@@ -436,10 +436,26 @@ export const CheckStatsionar = () => {
     }, [request, auth, payment, sections, services])
 
     const setPayments = () => {
-        patchPaymentSections()
-        history.push({
-            pathname: `/cashier/recieptstatsionar/${clientId}/${connectorId}`
+        let summaSections1 = 0
+        sections1.map((section) => {
+            summaSections1 = summaSections1 + section.priceCashier
         })
+        let summaSections = 0
+        sections.map((section) => {
+            summaSections = summaSections + section.priceCashier
+        })
+        let summaPaymenteds = paymenteds.cash + paymenteds.card + paymenteds.transfer
+        if (
+            summaSections - summaSections1 === paymenteds.total
+            && paymenteds.total === summaPaymenteds
+        ) {
+            patchPaymentSections()
+            history.push({
+                pathname: `/cashier/recieptstatsionar/${clientId}/${connectorId}`
+            })
+        } else {
+            return notify("Diqqat! To'lovda xatolik yuz beragan iltimos sahifani qayta yuklab urinib ko'ring")
+        }
     }
 
     const getchangeSections = useCallback(async (event) => {

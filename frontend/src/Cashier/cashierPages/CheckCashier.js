@@ -519,7 +519,6 @@ export const CheckCashier = () => {
             getSections1()
         }
     }, [setSections, setSections1, setBepaid, sections, setServices, services1, sections1])
-    console.log(sections);
 
     useEffect(() => {
         if (!l) {
