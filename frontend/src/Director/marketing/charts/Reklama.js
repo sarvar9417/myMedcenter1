@@ -64,12 +64,15 @@ export const Reklama = () => {
       <div className="card-header text-center pt-3">
         <div className='row'>
           <div className="col-3 pt-2">
-            <DatePicker className="form-control mb-2" selected={startDate} onChange={(date) => { setStartDate(date) }} />
+            <DatePicker className="form-control mb-2 mt-5" selected={startDate} onChange={(date) => { setStartDate(date) }} />
           </div>
           <div className='col-6'>
-            <button onClick={searchDate} className='btn fs-3' style={{ fontWeight: "600" }} >Reklama</button>
+            <div className='fs-3 fw-bolder pb-1'>Reklama</div>
+            <button className='btn btn-outline-primary mt-2' onClick={searchDate} style={{ fontWeight: "600" }} >
+              Qidirish
+            </button>
           </div>
-          <div className="col-3 pt-2">
+          <div className="col-3 pt-2 mt-5">
             <DatePicker className="form-control mb-2" selected={endDate} onChange={(date) => setEndDate(date)} />
           </div>
         </div>

@@ -30,6 +30,7 @@ export const ClientsPages = () => {
     const [born, setBorn] = useState('')
     const [clientId, setClientId] = useState('')
     const [all, setAll] = useState()
+    const [t, setT]= useState()
     const getConnectors = useCallback(async () => {
         try {
             const fetch = await request(`/api/connector/reseption/${startDate}/${endDate}`, 'GET', null, {
@@ -180,8 +181,9 @@ export const ClientsPages = () => {
             notify(error)
             clearError()
         }
-        if (!all) {
+        if (!t) {
             getConnectors()
+            setT(true)
         }
         if (!options) {
             getOptions()

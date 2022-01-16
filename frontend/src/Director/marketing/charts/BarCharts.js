@@ -72,15 +72,17 @@ export const BarCharts = () => {
       <div className="card-header text-center pt-3">
         <div className='row'>
           <div className="col-3 pt-2">
-            <DatePicker className="form-control mb-2" selected={startDate} onChange={(date) => { setStartDate(date) }} />
+            <DatePicker className="form-control mb-2 mt-5" selected={startDate} onChange={(date) => { setStartDate(date) }} />
           </div>
           <div className='col-6'>
-            <button className='btn fs-3' onClick={searchDate} style={{ fontWeight: "600" }} >CallCenter</button>
+            <div className='fs-3 fw-bolder pb-1'>CallCenter</div> 
+            <button className='btn btn-outline-primary mt-2' onClick={searchDate} style={{ fontWeight: "600" }} >
+             Qidirish
+            </button>
           </div>
-          <div className="col-3 pt-2">
+          <div className="col-3 pt-2 mt-5">
             <DatePicker className="form-control mb-2" selected={endDate} onChange={(date) => setEndDate(date)} />
           </div>
-
         </div>
       </div>
       <div className="card-body p-4">
