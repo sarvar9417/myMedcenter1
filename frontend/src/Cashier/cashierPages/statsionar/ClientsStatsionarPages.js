@@ -69,7 +69,7 @@ export const ClientsStatsionarPages = () => {
             notify(e)
         }
     }, [request, auth, clientId, setAll])
-    console.log(all);
+
     const getBorn = useCallback(async () => {
         try {
             const fetch = await request(`/api/connector/statsionarborn/${born}`, 'GET', null, {

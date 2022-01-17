@@ -705,7 +705,7 @@ router.delete('/statsionardelete/:id', async (req, res) => {
         const sections = await Section.find({
             connector: id
         })
-        sections.map(async (section)=>{
+        sections.map(async (section) => {
             const del = await Section.findByIdAndDelete(section._id)
         })
         const services = await Service.find({
@@ -793,6 +793,9 @@ router.get('/cashierstatsionar', async (req, res) => {
                     $lt: new Date(new Date().getFullYear(),
                         new Date().getMonth(), new Date().getDate() + 1)
                 }
+            },
+            {
+                price: { $eq: 0 }
             }])
         let connectors = []
         let clients = []
