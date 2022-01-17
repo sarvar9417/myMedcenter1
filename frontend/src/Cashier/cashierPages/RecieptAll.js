@@ -156,8 +156,9 @@ export const RecieptAll = () => {
                     <div className="row">
                         <div className="col-lg-12">
                             <div className="invoice-from">
-                                <h6 style={{ textTransform: "uppercase", fontFamily: "times", fontSize: "17pt" }} >ID: {client && client.id}</h6>
-                                <h6 style={{ fontSize: "12pt", fontFamily: "times" }}>F.I.O: {client && client.lastname} {client && client.firstname} {client && client.fathername}</h6>
+                                <h6 style={{ textTransform: "uppercase", fontFamily: "times", fontSize: "20pt" }} >ID: {client && client.id}</h6>
+                                <h6 style={{ fontSize: "20pt", fontFamily: "times" }}>F.I.O: {client && client.lastname} {client && client.firstname} {client && client.fathername}</h6>
+                                <h6 style={{ fontSize: "20pt", fontFamily: "times" }}>Tug'ilgan yil: {client && new Date(client.born).toLocaleDateString()}</h6>
                                 {/* <h6>Maqsad: {client.intact}</h6> */}
                             </div>
                         </div>
