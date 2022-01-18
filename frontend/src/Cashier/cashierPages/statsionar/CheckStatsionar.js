@@ -15,10 +15,6 @@ export const CheckStatsionar = () => {
     let num = 0
     let num2 = 0
     const [modal1, setModal1] = useState(false)
-    const [modal2, setModal2] = useState(false)
-    const [modal3, setModal3] = useState(false)
-    const [delSection, setDelSection] = useState()
-    const [delService, setDelService] = useState()
     let allPrice = 0
     let paymented = 0
     let back = 0
@@ -213,191 +209,6 @@ export const CheckStatsionar = () => {
         }
     }, [request, connectorId, auth, setServices, setServices1])
 
-    const inputPriceSection = useCallback((event, key) => {
-        document.getElementById(`checkbox${key}`).checked = false
-        if (parseInt(event.target.value) > sections[key].price) {
-            return notify("Iltimos to'lovdan ortiqcha summa kiritmang")
-        }
-        if (parseInt(event.target.value) === sections[key].price) {
-            setSections(
-                Object.values({
-                    ...sections,
-                    [key]: { ...sections[key], priceCashier: parseInt(event.target.value), payment: "to'langan", commentCashier: " " },
-                }))
-            let k = 0
-            sections.map((s, i) => {
-                if (i === key) {
-                    k = k + (parseInt(event.target.value) - sections1[i].priceCashier)
-                } else {
-                    k = k + (sections[i].priceCashier - sections1[i].priceCashier)
-                }
-            })
-            services.map((s, i) => {
-                k = k + (services[i].priceCashier - services1[i].priceCashier)
-            })
-            setBepaid(k)
-        } else {
-            setSections(
-                Object.values({
-                    ...sections,
-                    [key]: { ...sections[key], priceCashier: parseInt(event.target.value), payment: "kutilmoqda" },
-                }))
-            let k = 0
-            sections.map((s, i) => {
-                if (i === key) {
-                    k = k + (parseInt(event.target.value) - sections1[i].priceCashier)
-                } else {
-                    k = k + (sections[i].priceCashier - sections1[i].priceCashier)
-                }
-            })
-            services.map((s, i) => {
-                k = k + (services[i].priceCashier - services1[i].priceCashier)
-            })
-            setBepaid(k)
-        }
-    }, [services, setSections, services1, sections, sections1, setBepaid])
-
-    const inputPriceService = useCallback((event, key) => {
-        document.getElementById(`checkboxservice${key}`).checked = false
-        if (parseInt(event.target.value) > services[key].price) {
-            return notify("Iltimos to'lovdan ortiqcha summa kiritmang")
-        }
-        if (parseInt(event.target.value) === services[key].price) {
-            setServices(
-                Object.values({
-                    ...services,
-                    [key]: { ...services[key], priceCashier: parseInt(event.target.value), payment: "to'langan", commentCashier: " " },
-                }))
-            let k = 0
-            sections.map((s, i) => {
-                k = k + (sections[i].priceCashier - sections1[i].priceCashier)
-            })
-            services.map((s, i) => {
-                if (i === key) {
-                    k = k + (parseInt(event.target.value) - services1[i].priceCashier)
-                } else {
-                    k = k + (services[i].priceCashier - services1[i].priceCashier)
-                }
-            })
-            setBepaid(k)
-        } else {
-            setServices(
-                Object.values({
-                    ...services,
-                    [key]: { ...services[key], priceCashier: parseInt(event.target.value), payment: "kutilmoqda" },
-                }))
-            let k = 0
-            sections.map((s, i) => {
-                k = k + (sections[i].priceCashier - sections1[i].priceCashier)
-            })
-            services.map((s, i) => {
-                if (i === key) {
-                    k = k + (parseInt(event.target.value) - services1[i].priceCashier)
-                } else {
-                    k = k + (services[i].priceCashier - services1[i].priceCashier)
-                }
-            })
-            setBepaid(k)
-        }
-    }, [services, setServices, services1, sections, sections1, setBepaid])
-
-    const inputCommentSection = (event, key) => {
-        setSections(
-            Object.values({
-                ...sections,
-                [key]: { ...sections[key], commentCashier: event.target.value },
-            }))
-    }
-
-    const inputCommentService = (event, key) => {
-        setServices(
-            Object.values({
-                ...services,
-                [key]: { ...services[key], commentCashier: event.target.value },
-            }))
-    }
-
-    const checkboxSection = useCallback((event, key) => {
-        if (event.target.checked) {
-            setSections(
-                Object.values({
-                    ...sections,
-                    [key]: { ...sections[key], priceCashier: sections[key].price, payment: "to'langan" },
-                }))
-            let k = 0
-            sections.map((s, i) => {
-                if (i === key) {
-                    k = k + (sections[key].price - sections1[i].priceCashier)
-                } else {
-                    k = k + (sections[i].priceCashier - sections1[i].priceCashier)
-                }
-            })
-            console.log(k);
-            services.map((s, i) => {
-                k = k + (services[i].priceCashier - services1[i].priceCashier)
-            })
-            setBepaid(k)
-        } else {
-            setSections(
-                Object.values({
-                    ...sections,
-                    [key]: { ...sections[key], priceCashier: 0, payment: "kutilmoqda", commentCashier: " " },
-                }))
-            let k = 0
-            sections.map((s, i) => {
-                if (i === key) {
-                    k = k + (0 - sections1[i].priceCashier)
-                } else {
-                    k = k + (sections[i].priceCashier - sections1[i].priceCashier)
-                }
-            })
-            services.map((s, i) => {
-                k = k + (services[i].priceCashier - services1[i].priceCashier)
-            })
-            setBepaid(k)
-        }
-    }, [setSections, sections, bepaid, sections1, services1, services, setBepaid])
-
-    const checkboxService = useCallback((event, key) => {
-        if (event.target.checked) {
-            setServices(
-                Object.values({
-                    ...services,
-                    [key]: { ...services[key], priceCashier: services[key].price, payment: "to'langan" },
-                }))
-            let k = 0
-            sections.map((s, i) => {
-                k = k + (sections[i].priceCashier - sections1[i].priceCashier)
-            })
-            services.map((s, i) => {
-                if (i === key) {
-                    k = k + (services[key].price - services1[i].priceCashier)
-                } else {
-                    k = k + (services[i].priceCashier - services1[i].priceCashier)
-                }
-            })
-            setBepaid(k)
-        } else {
-            setServices(
-                Object.values({
-                    ...services,
-                    [key]: { ...services[key], priceCashier: 0, payment: "kutilmoqda", commentCashier: " " },
-                }))
-            let k = 0
-            sections.map((s, i) => {
-                k = k + (sections[i].priceCashier - sections1[i].priceCashier)
-            })
-            services.map((s, i) => {
-                if (i === key) {
-                    k = k + (0 - services1[i].priceCashier)
-                } else {
-                    k = k + (services[i].priceCashier - services1[i].priceCashier)
-                }
-            })
-            setBepaid(k)
-        }
-    }, [setSections, sections, bepaid, sections1, services1, services, setBepaid])
-
     const checkPrices = () => {
         let k = 0
         sections && sections.map(section => {
@@ -444,10 +255,21 @@ export const CheckStatsionar = () => {
         sections.map((section) => {
             summaSections = summaSections + section.priceCashier
         })
-        let summaPaymenteds = paymenteds.cash + paymenteds.card + paymenteds.transfer
+
+        let summaServices1 = 0
+        services1.map((service) => {
+            summaServices1 = summaServices1 + service.priceCashier
+        })
+        let summaServices = 0
+        services.map((service) => {
+            summaServices = summaServices + service.priceCashier
+        })
+        console.log(payment.total);
+        console.log((summaSections - summaSections1) + (summaServices - summaServices1) + room.price * bronDay - connector.prepaymentCashier);
+        let summaPaymenteds = payment.cash + payment.card + payment.transfer
         if (
-            summaSections - summaSections1 === paymenteds.total
-            && paymenteds.total === summaPaymenteds
+            (summaSections - summaSections1) + (summaServices - summaServices1) + room.price * bronDay - connector.prepaymentCashier === payment.total
+            && payment.total === summaPaymenteds
         ) {
             patchPaymentSections()
             history.push({
@@ -458,38 +280,6 @@ export const CheckStatsionar = () => {
         }
     }
 
-    const getchangeSections = useCallback(async (event) => {
-        try {
-            const fetch = await request(`/api/clients/cashierid/${parseInt(event.target.value)}`, 'GET', null, {
-                Authorization: `Bearer ${auth.token}`
-            })
-            setClientId(fetch[0]._id)
-        } catch (e) {
-            notify(e)
-        }
-    }, [request, clientid, auth, setClientId])
-
-    const DeleteSection = useCallback(async () => {
-        try {
-            const fetch = await request(`/api/section/${delSection && delSection._id}`, 'DELETE', null, {
-                Authorization: `Bearer ${auth.token}`
-            })
-            window.location.reload()
-        } catch (e) {
-            notify(e)
-        }
-    }, [request, auth, delSection])
-
-    const DeleteService = useCallback(async () => {
-        try {
-            const fetch = await request(`/api/service/${delService && delService._id}`, 'DELETE', null, {
-                Authorization: `Bearer ${auth.token}`
-            })
-            window.location.reload()
-        } catch (e) {
-            notify(e)
-        }
-    }, [request, auth, delService])
 
     const paymenteds = useCallback((event) => {
         if (event.target.checked) {
@@ -510,7 +300,7 @@ export const CheckStatsionar = () => {
                 m[i].commentCashier = " "
             }
             setSections(m)
-            setBepaid(k - connector.prepaymentCashier)
+            setBepaid(k + bronDay * room.price - connector.prepaymentCashier)
             getSections1()
         } else {
             let k = 0
@@ -542,9 +332,9 @@ export const CheckStatsionar = () => {
                 Authorization: `Bearer ${auth.token}`
             })
             if (data.position === "band") {
-                setBronDay(Math.abs((new Date(new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()) - new Date(new Date(data.beginDay).getFullYear(), new Date(data.beginDay).getMonth() + 1, new Date(data.beginDay).getDate())) / oneDay))
+                setBronDay(Math.abs((new Date(new Date().getFullYear(), new Date().getMonth() + 1, new Date().getDate()) - new Date(new Date(data.beginDay).getFullYear(), new Date(data.beginDay).getMonth() + 1, new Date(data.beginDay).getDate())) / oneDay) + 1)
             } else {
-                setBronDay(Math.abs((new Date(new Date(data.beginDay).getFullYear(), new Date(data.beginDay).getMonth() + 1, new Date(data.endDay).getDate()) - new Date(new Date(data.beginDay).getFullYear(), new Date(data.beginDay).getMonth() + 1, new Date(data.beginDay).getDate())) / oneDay))
+                setBronDay(Math.abs((new Date(new Date(data.beginDay).getFullYear(), new Date(data.beginDay).getMonth() + 1, new Date(data.endDay).getDate()) - new Date(new Date(data.beginDay).getFullYear(), new Date(data.beginDay).getMonth() + 1, new Date(data.beginDay).getDate())) / oneDay) + 1)
             }
             setRoom(data)
         } catch (e) {
@@ -647,7 +437,7 @@ export const CheckStatsionar = () => {
                                         </td>
                                         <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{section.price}</td>
                                         <td style={{ width: "25%", padding: "10px 0" }}>
-                                            <input onChange={event => inputPriceSection(event, key)} value={section.priceCashier} type="number" className="form-control" style={{ width: "80%", margin: "auto", display: "inline" }} />
+                                            <input value={section.priceCashier} type="number" className="form-control" style={{ width: "80%", margin: "auto", display: "inline" }} />
                                         </td>
                                     </tr>
                                 )
@@ -669,7 +459,7 @@ export const CheckStatsionar = () => {
                                         </td>
                                         <td style={{ width: "15%", textAlign: "center", padding: "10px 0" }}>{service.price}</td>
                                         <td style={{ width: "25%", padding: "10px 0" }}>
-                                            <input onChange={event => inputPriceService(event, key)} value={service.priceCashier} type="number" className="form-control" style={{ width: "80%", margin: "auto", display: "inline" }} />
+                                            <input value={service.priceCashier} type="number" className="form-control" style={{ width: "80%", margin: "auto", display: "inline" }} />
                                         </td>
                                     </tr>
                                 )
@@ -695,7 +485,7 @@ export const CheckStatsionar = () => {
                             <div className="fw-bold text-primary">Jami to'lov:</div>
                         </div>
                         <div className="col-6">
-                            <div className="fw-bold  text-end ">{allPrice}</div>
+                            <div className="fw-bold  text-end ">{room && bronDay && allPrice + bronDay * room.price}</div>
                         </div>
                         <hr />
 
@@ -723,7 +513,7 @@ export const CheckStatsionar = () => {
                             <div className="fw-bold text-danger">Qarz:</div>
                         </div>
                         <div className="col-6">
-                            <div className="fw-bold  text-end text-danger">{connector && allPrice - (oldPayments + bepaid)}</div>
+                            <div className="fw-bold  text-end text-danger">{connector && bronDay && room && allPrice + bronDay * room.price - (oldPayments + bepaid)}</div>
                         </div>
                         <hr />
                     </div>
@@ -858,7 +648,7 @@ export const CheckStatsionar = () => {
                                     <div className="fw-bold text-primary">Jami to'lov:</div>
                                 </div>
                                 <div className="col-6">
-                                    <div className="fw-bold  text-end ">{allPrice}</div>
+                                    <div className="fw-bold  text-end ">{room && bronDay && allPrice + bronDay * room.price}</div>
                                 </div>
                                 <hr />
 
@@ -871,14 +661,13 @@ export const CheckStatsionar = () => {
                                     <div className="fw-bold  text-end text-success">{oldPayments}</div>
                                 </div>
                                 <hr />
-
                             </div>
                             <div className="row ms-3 me-5">
                                 <div className="col-6">
                                     <div className="fw-bold text-warning">To'lanayotgan:</div>
                                 </div>
                                 <div className="col-6">
-                                    <div className="fw-bold  text-end text-warning">{payment.total}</div>
+                                    <div className="fw-bold  text-end text-warning">{bepaid}</div>
                                 </div>
                                 <hr />
                             </div>
@@ -887,7 +676,7 @@ export const CheckStatsionar = () => {
                                     <div className="fw-bold text-danger">Qarz:</div>
                                 </div>
                                 <div className="col-6">
-                                    <div className="fw-bold  text-end text-danger">{allPrice - (payment.total + oldPayments)}</div>
+                                    <div className="fw-bold  text-end text-danger">{connector && bronDay && room && allPrice + bronDay * room.price - (oldPayments + bepaid)}</div>
                                 </div>
                                 <hr />
                             </div>
@@ -905,53 +694,7 @@ export const CheckStatsionar = () => {
                 </div>
             </div>
 
-            {/* Modal oynaning ochilishi */}
-            <div className={modal2 ? "modal" : "d-none"}>
-                <div className="modal-card">
-                    <div className="card">
-                        <div className="card-header">
-                            <div className="text-center fs-4 fw-bold text-secondary">
-                                <span className="text-dark">Mijoz: </span>
-                                {client && client.lastname} {client && client.firstname} {client && client.fathername}ga ko'rsatilayotgan
-                                <span className='text-danger'> {delService && delService.name + " " + delService.type}</span> xizmati mijozning xizmatlar bo'limidan o'chiriladi. O'chirishni tasdiqlaysizmi?
-                            </div>
-                        </div>
-                        <div className="card-footer">
-                            <div className="row ">
-                                <div className="col-12 text-center">
-                                    <button onClick={DeleteService} disabled={loading} className="btn button-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
-                                    <button onClick={() => setModal2(false)} className="btn button-danger" >Qaytish</button>
-                                </div>
-                            </div>
 
-                        </div>
-                    </div>
-                </div>
-            </div>
-
-            {/* Modal oynaning ochilishi */}
-            <div className={modal3 ? "modal" : "d-none"}>
-                <div className="modal-card">
-                    <div className="card">
-                        <div className="card-header">
-                            <div className="text-center fs-4 fw-bold text-secondary">
-                                <span className="text-dark">Mijoz: </span>
-                                {client && client.lastname} {client && client.firstname} {client && client.fathername}ga ko'rsatilayotgan
-                                <span className='text-danger'> {delSection && delSection.name + " " + delSection.subname}</span> xizmati(yoki ashyosi) mijozning xizmatlar bo'limidan o'chiriladi. O'chirishni tasdiqlaysizmi?
-                            </div>
-                        </div>
-                        <div className="card-footer">
-                            <div className="row ">
-                                <div className="col-12 text-center">
-                                    <button onClick={DeleteSection} disabled={loading} className="btn button-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
-                                    <button onClick={() => setModal3(false)} className="btn button-danger" >Qaytish</button>
-                                </div>
-                            </div>
-
-                        </div>
-                    </div>
-                </div>
-            </div>
         </>
     )
 }

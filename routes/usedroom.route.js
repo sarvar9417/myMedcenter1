@@ -72,8 +72,18 @@ router.get('/reseption/:id', auth, async (req, res) => {
 router.patch('/:id', auth, async (req, res) => {
     try {
         const id = req.params.id
+        const r = await UsedRoom.findById(id)
+        const rr = await Room.findById(r.room)
+        rr.position = "bo'sh"
+        await rr.save()
         const edit = await UsedRoom.findByIdAndUpdate(id, req.body)
         await edit.save()
+        if (req.body.price !== "0") {
+            const rooms = await Room.findById(req.body.room)
+            rooms.position = "band"
+            await rooms.save()
+        }
+        await newroom.save()
         res.json(edit)
 
     } catch (e) {

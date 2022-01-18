@@ -136,7 +136,7 @@ export const Prepayment = () => {
             })
             history.push({
                 pathname: `/cashier/recieptprepayment/${clientId}/${connectorId}`,
-                state:fetch
+                state: fetch
             })
         } catch (e) {
             notify(e)
@@ -149,9 +149,17 @@ export const Prepayment = () => {
     }
 
     const confirm = () => {
-        setConnector({ ...connector, prepaymentCashier: parseInt(connector.prepaymentCashier) + paymented })
-        setModal1(true)
-        window.scrollTo({ top: 0 })
+        if (
+            payment.total === payment.cash + payment.transfer + payment.card
+            &&
+            payment.total === paymented
+        ) {
+            setConnector({ ...connector, prepaymentCashier: parseInt(connector.prepaymentCashier) + paymented })
+            setModal1(true)
+            window.scrollTo({ top: 0 })
+        } else {
+            notify("Diqqat! To'lov summasi kiritilgan summasi teng emas. ")
+        }
     }
 
 
