@@ -337,7 +337,7 @@ export const RecieptStatsionar = () => {
                                             <tr>
                                                 <td >{++k}</td>
                                                 <td className="text-start px-2">{room && room.roomname}</td>
-                                                <td className="text-center">{bronDay && bronDay}</td>
+                                                <td className="text-center">{bronDay && bronDay} kun</td>
                                                 <td className="text-center">{room && room.price}</td>
                                                 <td className="text-center">{room && bronDay && (room.price * bronDay)}</td>
                                             </tr>

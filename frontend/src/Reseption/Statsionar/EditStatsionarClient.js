@@ -228,17 +228,18 @@ export const EditStatsionarClient = () => {
     }
   }, [auth, request, setRooms])
 
+  const [usedRoomId, setUsedRoomId] = useState()
   const getUsedRoom = useCallback(async () => {
     try {
       const fetch = await request(`/api/usedroom/reseption/${connectorId}`, 'GET', null, {
         Authorization: `Bearer ${auth.token}`
       })
-      console.log(fetch);
       setRoom(fetch)
+      setUsedRoomId(fetch._id)
     } catch (error) {
       notify(error)
     }
-  }, [auth, request, setRoom, connectorId])
+  }, [auth, request, setRoom, connectorId, setUsedRoomId])
 
   const changeRooms = (event) => {
     setRoom({
@@ -246,7 +247,7 @@ export const EditStatsionarClient = () => {
       roomname: event.value,
       beginDay: new Date(),
       endDay: new Date(),
-      position: "band",
+      position: event.price !== 0 ? "band" : "bo'sh",
       bed: event.bed,
       price: event.price,
       priceCashier: 0
@@ -255,7 +256,7 @@ export const EditStatsionarClient = () => {
 
   const createRoom = async (id, connector) => {
     try {
-      const data = await request(`/api/usedroom/${room && room._id}`, "PATCH", { ...room, connector, client: id }, {
+      const data = await request(`/api/usedroom/${usedRoomId && usedRoomId}`, "PATCH", { ...room, connector, client: id }, {
         Authorization: `Bearer ${auth.token}`
       })
     } catch (e) {
@@ -456,7 +457,7 @@ export const EditStatsionarClient = () => {
               setRoom({
                 ...room,
                 beginDay: event.target.value,
-                endDay: event.target.value
+                endDay: new Date()
               })
             }}
             type="date"

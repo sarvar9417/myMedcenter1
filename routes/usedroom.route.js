@@ -73,6 +73,7 @@ router.patch('/:id', auth, async (req, res) => {
     try {
         const id = req.params.id
         const edit = await UsedRoom.findByIdAndUpdate(id, req.body)
+        await edit.save()
         res.json(edit)
 
     } catch (e) {

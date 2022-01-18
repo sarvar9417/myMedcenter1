@@ -698,10 +698,6 @@ router.delete('/reseption/:id', async (req, res) => {
 router.delete('/statsionardelete/:id', async (req, res) => {
     try {
         const id = req.params.id
-        const room = await UsedRoom.findOne({
-            connector: id
-        })
-        const del = await UsedRoom.findByIdAndDelete(room._id)
         const sections = await Section.find({
             connector: id
         })
@@ -715,6 +711,10 @@ router.delete('/statsionardelete/:id', async (req, res) => {
             const del = await Service.findByIdAndDelete(service._id)
         })
         const edit = await Connector.findByIdAndDelete(req.params.id)
+        const room = await UsedRoom.findOne({
+            connector: id
+        })
+        const del = await UsedRoom.findByIdAndDelete(room._id)
         res.json(edit)
 
     } catch (e) {
