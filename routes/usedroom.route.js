@@ -43,7 +43,7 @@ router.post('/register', auth, async (req, res) => {
             price,
             priceCashier
         })
-        if (bed !== "0") {
+        if (price !== 0) {
             const rooms = await Room.findById(room)
             rooms.position = "band"
             await rooms.save()
@@ -78,7 +78,7 @@ router.patch('/:id', auth, async (req, res) => {
         await rr.save()
         const edit = await UsedRoom.findByIdAndUpdate(id, req.body)
         await edit.save()
-        if (req.body.price !== "0") {
+        if (req.body.price !== 0) {
             const rooms = await Room.findById(req.body.room)
             rooms.position = "band"
             await rooms.save()

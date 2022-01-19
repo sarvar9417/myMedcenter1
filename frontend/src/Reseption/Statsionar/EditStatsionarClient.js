@@ -258,7 +258,7 @@ export const EditStatsionarClient = () => {
       roomname: event.value,
       beginDay: new Date(),
       endDay: new Date(),
-      position: event.price !== 0 ? "band" : "bo'sh",
+      position: event.price === 0 ? "bo'sh" : "band",
       bed: event.bed,
       price: event.price,
       priceCashier: 0
