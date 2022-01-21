@@ -5,7 +5,7 @@ const payment = new Schema({
     client: { type: Types.ObjectId, ref: "Clients" },
     connector: { type: Types.ObjectId, ref: "Connector" },
     total: { type: Number },
-    type: { type: String },
+    type: { type: String, minlength: 3 },
     card: { type: Number },
     transfer: { type: Number },
     cash: Number,
