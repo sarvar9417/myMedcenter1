@@ -58,21 +58,29 @@ export const DashboardMenu = () => {
             const payments = await request(`/api/payment/directorclients/${new Date()}/${new Date()}`, 'GET', null, {
                 Authorization: `Bearer ${auth.token}`
             })
+            const sec = await request(`/api/section/director/kunduzgi`, 'GET', null, {
+                Authorization: `Bearer ${auth.token}`
+            })
+            const services = await request(`/api/service/director`, 'GET', null, {
+                Authorization: `Bearer ${auth.token}`
+            })
             let on = 0
             let off = 0
             let pay = 0
             let stat = 0
             let t = 0
+            services.map(s => {
+                off = off + s.priceCashier
+            })
+            sec.map(s => {
+                if (s.bron !== "statsionar") {
+                    off = off + s.priceCashier
+                }
+            })
             payments.payments.map(p => {
                 t = t + p.total
                 if (p.position === "statsionar") {
                     stat = stat + p.total
-                }
-                if (p.position === "offline") {
-                    off = off + p.total
-                }
-                if (p.position === "online") {
-                    on = on + p.total
                 }
             })
             setTushum(t)

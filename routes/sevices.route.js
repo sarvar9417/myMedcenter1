@@ -3,6 +3,7 @@ const router = Router()
 const { Service, validateService } = require('../models/Service')
 const auth = require('../middleware/auth.middleware')
 const { WareHouse } = require('../models/WareHouse')
+const { Connector } = require('../models/Connector')
 
 // ===================================================================================
 // ===================================================================================
@@ -108,6 +109,33 @@ router.patch('/cashier/:id', auth, async (req, res) => {
         const edit = await Service.findByIdAndUpdate(id, req.body)
         res.json(edit)
 
+    } catch (e) {
+        res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
+    }
+})
+
+router.get('/director', async (req, res) => {
+    try {
+        const connectors = await Connector.find({
+            bronDay: {
+                $gte:
+                    new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate()),
+                $lt:
+                    new Date(new Date().getFullYear(), new Date().getMonth(), new Date().getDate() + 1)
+            }
+            ,
+            type: { $ne: "statsionar" }
+        })
+        let services = []
+        for (let i = 0; i < connectors.length; i++) {
+            const sers = await Service.find({
+                connector: connectors[i]._id
+            })
+            sers.map(s => {
+                services.push(s)
+            })
+        }
+        res.json(services)
     } catch (e) {
         res.status(500).json({ message: 'Serverda xatolik yuz berdi' })
     }
