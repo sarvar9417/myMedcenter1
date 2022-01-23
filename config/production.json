@@ -3,4 +3,5 @@
     "mongoUri": "mongodb://localhost/medcenter",
     "jwtSecret": "sarvar9417",
     "baseUrl": "http://80.249.147.28"
+    
 }
