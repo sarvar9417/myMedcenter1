@@ -427,31 +427,6 @@ export const CheckCashier = () => {
         }
     }
 
-    const checkPrices2 = () => {
-        let k = 0
-
-        sections && sections.map(section => {
-            if (section.price !== section.priceCashier && section.commentCashier.length < 6) {
-                k++
-                return notify("Iltimos mijoz to'lovni bajarolmagani sababini to'liq ko'rsating.")
-            }
-        })
-        services && services.map(service => {
-            if (service.price !== service.priceCashier && service.commentCashier.length < 6) {
-                k++
-                return notify("Iltimos mijoz to'lovni bajarolmagani sababini to'liq ko'rsating.")
-            }
-        })
-        if ((payment.total !== payment.cash + payment.card + payment.transfer) || payment.total !== bepaid) {
-            return notify("Diqqat to'lov turida summani kiritishda xatolikka yo'l qo'ydingiz. Iltimos to'lov turidagi summalarni yana bir bor tekshiring")
-        }
-        if (payment.type === "") {
-            return notify("Diqqat to'lov turini tanlashni unutdingiz")
-
-        }
-        setPayments()
-    }
-
     const patchPaymentSections = useCallback(async () => {
         try {
             const fetch = await request(`/api/section/cashier`, 'PATCH', { sections, services, payment }, {
@@ -876,7 +851,7 @@ export const CheckCashier = () => {
                         <div className="card-footer">
                             <div className="row ">
                                 <div className="col-12 text-center">
-                                    <button onClick={checkPrices2} disabled={loading} className="btn button-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
+                                    <button onClick={setPayments} disabled={loading} className="btn button-success" style={{ marginRight: "30px" }}>Tasdiqlash</button>
                                     <button onClick={() => setModal1(false)} className="btn button-danger" >Qaytish</button>
                                 </div>
                             </div>
