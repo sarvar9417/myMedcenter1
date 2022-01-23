@@ -714,6 +714,7 @@ router.delete('/statsionardelete/:id', async (req, res) => {
         const room = await UsedRoom.findOne({
             connector: id
         })
+
         const del = await UsedRoom.findByIdAndDelete(room._id)
         res.json(edit)
 

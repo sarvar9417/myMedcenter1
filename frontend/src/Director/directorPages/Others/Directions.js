@@ -77,7 +77,7 @@ export const Directions = () => {
                         <div className="card-body">
                             <div className='row mb-3'>
                                 <div className='col-2 '>
-                                    <input onChange={(event) => { setDirectionName(event.target.value) }} className='form-control' placeholder='Mijoz ism-familiyasi' />
+                                    <input onChange={(event) => { setDirectionName(event.target.value) }} className='form-control' placeholder='Xizmat nomini' />
                                 </div>
                                 <div className='col-1'>
                                     <button onClick={searchDirection} className="btn text-white" style={{ backgroundColor: "#45D3D3" }}><FontAwesomeIcon icon={faSearch} /></button>
