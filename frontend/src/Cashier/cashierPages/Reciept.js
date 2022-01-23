@@ -175,13 +175,15 @@ export const Reciept = () => {
                         </table>
                     </div>
                     <div className="row">
-                        <div className="col-lg-12">
-                            <div className="invoice-from">
-                                <h6 style={{ textTransform: "uppercase", fontFamily: "times", fontSize: "20pt" }} >ID: {client && client.id}</h6>
-                                <h6 style={{ fontSize: "20pt", fontFamily: "times" }}>F.I.O: {client && client.lastname} {client && client.firstname} {client && client.fathername}</h6>
-                                <h6 style={{ fontSize: "20pt", fontFamily: "times" }}>Tug'ilgan yil: {client && new Date(client.born).toLocaleDateString()}</h6>
-                                {/* <h6>Maqsad: {client.intact}</h6> */}
-                            </div>
+                        <div className="col-4">
+                            <h6 style={{ textTransform: "uppercase", fontFamily: "times", fontSize: "15pt", paddingRight: "10px" }} >ID: {client && client.id}</h6>
+                                
+                        </div>
+                        <div className="col-4 ">
+                            <h6 style={{ fontSize: "15pt", fontFamily: "times", textAlign:"center" }}>F.I.O: {client && client.lastname} {client && client.firstname} {client && client.fathername}</h6>
+                        </div>
+                        <div className="col-4">
+                            <h6 style={{ fontSize: "15pt", fontFamily: "times", textAlign:"end", paddingRight:"10px" }}>Tug'ilgan yil: {client && new Date(client.born).toLocaleDateString()}</h6>
                         </div>
                         <div className="col-lg-12">
                             <div className="table-responsive" style={{ overflow: "hidden", outline: "none" }} tabindex="0">
@@ -192,9 +194,6 @@ export const Reciept = () => {
                                             <th className="text-center" style={{ fontSize: "10pt", fontFamily: "times" }}>Bo'lim</th>
                                             <th className="text-center" style={{ fontSize: "10pt", fontFamily: "times" }}>Navbat</th>
                                             <th className="text-center" style={{ fontSize: "10pt", fontFamily: "times" }}>Xona</th>
-                                            <th className="text-center" style={{ fontSize: "10pt", fontFamily: "times" }}>To'lov miqdori</th>
-                                            <th className="text-center" style={{ fontSize: "10pt", fontFamily: "times" }}>To'langan</th>
-                                            <th className="text-center" style={{ fontSize: "10pt", fontFamily: "times" }}>To'lanmagan</th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -208,14 +207,11 @@ export const Reciept = () => {
                                                     <td style={{ fontSize: "10pt", fontFamily: "times" }}>{k}</td>
                                                     <td style={{ fontSize: "10pt", fontFamily: "times" }} className="ps-3">{section.name} {section.subname}</td>
                                                     <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.bron === 'offline' ? section.turn : section.bronTime}</td>
-                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{allSections && allSections.map((sec)=>{
+                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{allSections && allSections.map((sec) => {
                                                         if (section.name === sec.section && section.subname === sec.subsection) {
                                                             return sec.room
                                                         }
                                                     })}</td>
-                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.payment === "to'lanmagan" ? "Rad etilgan" : section.price}</td>
-                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{section.payment === "to'lanmagan" ? "Rad etilgan" : section.priceCashier}</td>
-                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center"> {section.payment === "to'lanmagan" ? "Rad etilgan" : section.price - section.priceCashier}</td>
                                                 </tr>
                                                 )
 
@@ -233,9 +229,6 @@ export const Reciept = () => {
                                                     <td style={{ fontSize: "10pt", fontFamily: "times" }} className="ps-3">{service.name} {service.type}</td>
                                                     <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{service.pieces} (dona)</td>
                                                     <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center"></td>
-                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{service.price}</td>
-                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{service.priceCashier}</td>
-                                                    <td style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center"> {service.price - service.priceCashier}</td>
                                                 </tr>
                                                 )
                                             })
@@ -245,13 +238,16 @@ export const Reciept = () => {
                                     </tbody>
                                     <tfoot>
                                         <tr>
-                                            <th style={{ fontSize: "10pt", fontFamily: "times" }} className="text-right"></th>
-                                            <th style={{ fontSize: "10pt", fontFamily: "times" }} className="text-right"></th>
-                                            <th style={{ fontSize: "10pt", fontFamily: "times" }} className="text-right"></th>
-                                            <th style={{ fontSize: "10pt", fontFamily: "times" }} className="text-right">Jami to'lov:</th>
-                                            <th style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{unpaid + paid}</th>
-                                            <th style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{paid}</th>
-                                            <th style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center">{unpaid}</th>
+                                            <th colSpan="3" style={{ fontSize: "10pt", fontFamily: "times" }} className="text-right m-0 p-0 px-3">Jami to'lov:</th>
+                                            <th style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center m-0 p-0">{unpaid + paid}</th>
+                                        </tr>
+                                        <tr>
+                                            <th colSpan="3"  style={{ fontSize: "10pt", fontFamily: "times" }} className="text-right m-0 p-0 px-3">To'langan:</th>
+                                            <th style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center m-0 p-0">{paid}</th>
+                                        </tr>
+                                        <tr>
+                                            <th colSpan="3"  style={{ fontSize: "10pt", fontFamily: "times" }} className="text-right m-0 p-0 px-3">To'lanmagan:</th>
+                                            <th style={{ fontSize: "10pt", fontFamily: "times" }} className="text-center m-0 p-0">{unpaid}</th>
                                         </tr>
                                     </tfoot>
                                 </table>
